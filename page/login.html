@@ -275,9 +275,9 @@
   </div>
 
   <script>
-    // ¡IMPORTANTE! Reemplaza estos valores con los tuyos de Supabase
-    const supabaseUrl = https://zcuodmndmrrvamyvgczm.supabase.co
-    const supabaseKey = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpjdW9kbW5kbXJydmFteXZnY3ptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIzNTA1ODMsImV4cCI6MjA2NzkyNjU4M30.l0XJgelYCQQ8sQyhL3XsY_4FOLGu6DwyZQ7PiocyLEE
+    // ¡IMPORTANTE! Configurar estas variables con tus credenciales de Supabase
+    const supabaseUrl = 'https://zcuodmndmrrvamyvgczm.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpjdW9kbW5kbXJydmFteXZnY3ptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIzNTA1ODMsImV4cCI6MjA2NzkyNjU4M30.l0XJgelYCQQ8sQyhL3XsY_4FOLGu6DwyZQ7PiocyLEE';
     
     // Crear cliente de Supabase
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey, {
@@ -286,7 +286,7 @@
         persistSession: false,
         detectSessionInUrl: false
       }
-    })
+    });
 
     // Elementos del DOM
     const usuarioInput = document.getElementById('usuario');
@@ -315,8 +315,6 @@
 
     // Función para validar campos
     function validateInputs(usuario, password) {
-      let isValid = true;
-      
       // Limpiar estilos de error anteriores
       usuarioInput.classList.remove('error');
       passwordInput.classList.remove('error');
@@ -368,11 +366,7 @@
         loginBtn.textContent = 'Verificando...';
         clearAlert();
         
-        // Verificar si Supabase está configurado
-        if (supabaseUrl === 'TU_URL_DE_SUPABASE_AQUI' || supabaseKey === 'TU_ANON_KEY_AQUI') {
-          showAlert('Por favor, configure las credenciales de Supabase primero', 'info');
-          return;
-        }
+        console.log('Intentando login con:', { usuario: usuario.trim(), password: password });
         
         // Consultar usuario en la base de datos
         const { data, error } = await supabase
@@ -382,6 +376,8 @@
           .eq('contraseña', password)
           .single();
         
+        console.log('Respuesta de Supabase:', { data, error });
+        
         if (error) {
           console.error('Error de Supabase:', error);
           
@@ -390,7 +386,7 @@
           } else if (error.message.includes('relation "usuarios" does not exist')) {
             showAlert('La tabla usuarios no existe. Por favor, crear la tabla en Supabase', 'info');
           } else {
-            showAlert('Error de conexión con la base de datos. Verifique la configuración.');
+            showAlert(`Error de conexión: ${error.message}`);
           }
           return;
         }
@@ -398,19 +394,23 @@
         if (data) {
           // Login exitoso
           showAlert('Login exitoso. Redirigiendo...', 'success');
+          console.log('Login exitoso para:', data);
           
-          // Guardar datos del usuario en localStorage
-          localStorage.setItem('loggedIn', 'true');
-          localStorage.setItem('currentUser', JSON.stringify({
+          // Guardar datos del usuario
+          const userData = {
             id: data.id,
             nombre: data.nombre,
             rol: data.rol,
             loginTime: new Date().toISOString()
-          }));
+          };
+          
+          // Simular guardado (ya que no podemos usar localStorage en artefactos)
+          console.log('Datos del usuario guardados:', userData);
           
           // Redirigir después de 1.5 segundos
           setTimeout(() => {
-            window.location.href = 'niveles.html';
+            showAlert('Redirección a niveles.html (simulada)', 'info');
+            // En un entorno real: window.location.href = 'niveles.html';
           }, 1500);
         } else {
           showAlert('Usuario o contraseña incorrectos');
@@ -418,7 +418,7 @@
         
       } catch (error) {
         console.error('Error inesperado:', error);
-        showAlert('Error inesperado. Por favor, intente nuevamente.');
+        showAlert(`Error inesperado: ${error.message}`);
       } finally {
         // Restaurar botón
         loginBtn.disabled = false;
@@ -450,20 +450,26 @@
       clearAlert();
     });
 
-    // Verificar si ya hay una sesión activa al cargar la página
-    document.addEventListener('DOMContentLoaded', () => {
-      const isLoggedIn = localStorage.getItem('loggedIn');
-      const currentUser = localStorage.getItem('currentUser');
-      
-      if (isLoggedIn === 'true' && currentUser) {
-        try {
-          const user = JSON.parse(currentUser);
-          showAlert(`Ya hay una sesión activa para ${user.nombre}`, 'info');
-        } catch (e) {
-          // Si hay error al parsear, limpiar localStorage
-          localStorage.removeItem('loggedIn');
-          localStorage.removeItem('currentUser');
+    // Verificar conexión al cargar
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        // Probar conexión con Supabase
+        const { data, error } = await supabase
+          .from('usuarios')
+          .select('count')
+          .limit(1);
+        
+        if (error) {
+          console.error('Error de conexión con Supabase:', error);
+          showAlert('Error de conexión con la base de datos. Verifique la configuración.', 'info');
+        } else {
+          console.log('Conexión con Supabase exitosa');
+          showAlert('Conexión con la base de datos establecida', 'success');
+          setTimeout(() => clearAlert(), 3000);
         }
+      } catch (error) {
+        console.error('Error al probar conexión:', error);
+        showAlert('Error al conectar con la base de datos', 'info');
       }
     });
   </script>
