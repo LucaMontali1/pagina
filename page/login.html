@@ -6,6 +6,7 @@
   <title>Login - Colegio Dante Alighieri</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body {
       background-color: white;
@@ -110,6 +111,11 @@
       outline: none;
     }
 
+    .login-box input.error {
+      border-color: #dc3545;
+      background-color: #fff5f5;
+    }
+
     .login-box button {
       margin-top: 30px;
       background-color: #04294e;
@@ -128,7 +134,61 @@
       background-color: #0a3e73;
     }
 
-    
+    .login-box button:disabled {
+      background-color: #6c757d;
+      cursor: not-allowed;
+    }
+
+    .alert {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+
+    .alert-danger {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .alert-success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .alert-info {
+      background-color: #cce7ff;
+      color: #004085;
+      border: 1px solid #b8daff;
+    }
+
+    .test-users {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #f0f8ff;
+      border-radius: 8px;
+      border: 1px solid #b8daff;
+    }
+
+    .test-users h4 {
+      color: #04294e;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+    }
+
+    .test-users ul {
+      margin: 0;
+      padding-left: 20px;
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    .test-users li {
+      margin-bottom: 5px;
+    }
+
     .info-section::-webkit-scrollbar {
       width: 6px;
     }
@@ -178,7 +238,7 @@
         <img src="descarga (4).jpg" alt="La Divina Comedia" />
         <div class="info-text">
           <h2>¿Qué hizo y qué escribió?</h2>
-          <p>Dante escribió principalmente “La Divina Comedia”, una épica obra que describe un viaje alegórico por el Infierno, el Purgatorio y el Paraíso. Esta obra es fundamental en la literatura universal y muestra profundas reflexiones filosóficas, teológicas y sociales.</p>
+          <p>Dante escribió principalmente "La Divina Comedia", una épica obra que describe un viaje alegórico por el Infierno, el Purgatorio y el Paraíso. Esta obra es fundamental en la literatura universal y muestra profundas reflexiones filosóficas, teológicas y sociales.</p>
         </div>
       </div>
 
@@ -191,26 +251,223 @@
       </div>
     </div>
 
-    
     <div class="login-box">
       <h2>Iniciar Sesión</h2>
       <label for="usuario">Usuario</label>
       <input type="text" id="usuario" name="usuario" placeholder="Ingrese su usuario" required />
       <label for="password">Contraseña</label>
       <input type="password" id="password" name="password" placeholder="Ingrese su contraseña" required />
-      <button type="button" onclick="login()">Entrar</button>
+      <button type="button" id="loginBtn" onclick="login()">Entrar</button>
+      
+      <!-- Mensajes de estado -->
+      <div id="alertMessage" style="display: none;"></div>
+      
+      <!-- Info de usuarios de prueba -->
+      <div class="test-users">
+        <h4>Usuarios de prueba:</h4>
+        <ul>
+          <li><strong>Alumno:</strong> luca montali / alumno123</li>
+          <li><strong>Profesor:</strong> Profesor1 / profesor123</li>
+          <li><strong>Preceptor:</strong> davide / preceptor123</li>
+        </ul>
+      </div>
     </div>
   </div>
 
   <script>
-    function login() {
+    // ¡IMPORTANTE! Reemplaza estos valores con los tuyos de Supabase
+    const supabaseUrl = https://zcuodmndmrrvamyvgczm.supabase.co
+    const supabaseKey = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpjdW9kbW5kbXJydmFteXZnY3ptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIzNTA1ODMsImV4cCI6MjA2NzkyNjU4M30.l0XJgelYCQQ8sQyhL3XsY_4FOLGu6DwyZQ7PiocyLEE
+    
+    // Crear cliente de Supabase
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+        detectSessionInUrl: false
+      }
+    })
+
+    // Elementos del DOM
+    const usuarioInput = document.getElementById('usuario');
+    const passwordInput = document.getElementById('password');
+    const loginBtn = document.getElementById('loginBtn');
+    const alertMessage = document.getElementById('alertMessage');
+
+    // Función para mostrar mensajes
+    function showAlert(message, type = 'danger') {
+      alertMessage.style.display = 'block';
+      alertMessage.className = `alert alert-${type}`;
+      alertMessage.textContent = message;
       
-      localStorage.setItem('loggedIn', 'true');
-      window.location.href = 'niveles.html';
+      // Ocultar después de 5 segundos si es error
+      if (type === 'danger') {
+        setTimeout(() => {
+          alertMessage.style.display = 'none';
+        }, 5000);
+      }
     }
+
+    // Función para limpiar mensajes
+    function clearAlert() {
+      alertMessage.style.display = 'none';
+    }
+
+    // Función para validar campos
+    function validateInputs(usuario, password) {
+      let isValid = true;
+      
+      // Limpiar estilos de error anteriores
+      usuarioInput.classList.remove('error');
+      passwordInput.classList.remove('error');
+      
+      if (!usuario.trim()) {
+        usuarioInput.classList.add('error');
+        showAlert('El campo usuario es obligatorio');
+        usuarioInput.focus();
+        return false;
+      }
+      
+      if (!password.trim()) {
+        passwordInput.classList.add('error');
+        showAlert('El campo contraseña es obligatorio');
+        passwordInput.focus();
+        return false;
+      }
+      
+      if (usuario.trim().length < 2) {
+        usuarioInput.classList.add('error');
+        showAlert('El usuario debe tener al menos 2 caracteres');
+        usuarioInput.focus();
+        return false;
+      }
+      
+      if (password.length < 6) {
+        passwordInput.classList.add('error');
+        showAlert('La contraseña debe tener al menos 6 caracteres');
+        passwordInput.focus();
+        return false;
+      }
+      
+      return true;
+    }
+
+    // Función principal de login
+    async function login() {
+      const usuario = usuarioInput.value;
+      const password = passwordInput.value;
+      
+      // Validar campos obligatorios
+      if (!validateInputs(usuario, password)) {
+        return;
+      }
+      
+      try {
+        // Deshabilitar botón y mostrar estado de carga
+        loginBtn.disabled = true;
+        loginBtn.textContent = 'Verificando...';
+        clearAlert();
+        
+        // Verificar si Supabase está configurado
+        if (supabaseUrl === 'TU_URL_DE_SUPABASE_AQUI' || supabaseKey === 'TU_ANON_KEY_AQUI') {
+          showAlert('Por favor, configure las credenciales de Supabase primero', 'info');
+          return;
+        }
+        
+        // Consultar usuario en la base de datos
+        const { data, error } = await supabase
+          .from('usuarios')
+          .select('*')
+          .eq('nombre', usuario.trim())
+          .eq('contraseña', password)
+          .single();
+        
+        if (error) {
+          console.error('Error de Supabase:', error);
+          
+          if (error.code === 'PGRST116') {
+            showAlert('Usuario o contraseña incorrectos');
+          } else if (error.message.includes('relation "usuarios" does not exist')) {
+            showAlert('La tabla usuarios no existe. Por favor, crear la tabla en Supabase', 'info');
+          } else {
+            showAlert('Error de conexión con la base de datos. Verifique la configuración.');
+          }
+          return;
+        }
+        
+        if (data) {
+          // Login exitoso
+          showAlert('Login exitoso. Redirigiendo...', 'success');
+          
+          // Guardar datos del usuario en localStorage
+          localStorage.setItem('loggedIn', 'true');
+          localStorage.setItem('currentUser', JSON.stringify({
+            id: data.id,
+            nombre: data.nombre,
+            rol: data.rol,
+            loginTime: new Date().toISOString()
+          }));
+          
+          // Redirigir después de 1.5 segundos
+          setTimeout(() => {
+            window.location.href = 'niveles.html';
+          }, 1500);
+        } else {
+          showAlert('Usuario o contraseña incorrectos');
+        }
+        
+      } catch (error) {
+        console.error('Error inesperado:', error);
+        showAlert('Error inesperado. Por favor, intente nuevamente.');
+      } finally {
+        // Restaurar botón
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Entrar';
+      }
+    }
+
+    // Manejar Enter en los campos
+    usuarioInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        passwordInput.focus();
+      }
+    });
+
+    passwordInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        login();
+      }
+    });
+
+    // Limpiar errores al escribir
+    usuarioInput.addEventListener('input', () => {
+      usuarioInput.classList.remove('error');
+      clearAlert();
+    });
+
+    passwordInput.addEventListener('input', () => {
+      passwordInput.classList.remove('error');
+      clearAlert();
+    });
+
+    // Verificar si ya hay una sesión activa al cargar la página
+    document.addEventListener('DOMContentLoaded', () => {
+      const isLoggedIn = localStorage.getItem('loggedIn');
+      const currentUser = localStorage.getItem('currentUser');
+      
+      if (isLoggedIn === 'true' && currentUser) {
+        try {
+          const user = JSON.parse(currentUser);
+          showAlert(`Ya hay una sesión activa para ${user.nombre}`, 'info');
+        } catch (e) {
+          // Si hay error al parsear, limpiar localStorage
+          localStorage.removeItem('loggedIn');
+          localStorage.removeItem('currentUser');
+        }
+      }
+    });
   </script>
 
-  
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
