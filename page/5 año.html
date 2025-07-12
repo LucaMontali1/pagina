@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>5° Año - Colegio Dante Alighieri</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      background-color: #e6f0ff;
+      font-family: 'Segoe UI', sans-serif;
+      padding-top: 80px;
+    }
+    .encabezado-gris {
+      position: fixed;
+      width: 100%;
+      background-color: #706e6e;
+      top: 0;
+      left: 0;
+      z-index: 1030;
+    }
+    .navbar .nav-link {
+      color: white !important;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    .navbar .nav-link:hover {
+      color: #dcdcdc !important;
+    }
+    .bienvenida-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2rem;
+      position: relative;
+      flex-wrap: wrap;
+    }
+    .bienvenida-texto {
+      font-size: 2.2rem;
+      font-weight: 700;
+      text-align: center;
+      color: #04294e;
+      margin: 1rem;
+      z-index: 2;
+    }
+    .bandera-embed {
+      width: 150px;
+      max-width: 100%;
+      margin: 0 10px;
+    }
+    .buscador-container {
+      text-align: center;
+      margin: 2rem auto;
+    }
+    .buscador-container input {
+      padding: 10px;
+      width: 300px;
+      max-width: 90%;
+      border: 2px solid #04294e;
+      border-radius: 10px;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <header class="encabezado-gris fixed-top">
+    <div class="container d-flex justify-content-between align-items-center py-3">
+      <img src="OX4SDh2IwP.png" alt="Logotipo" height="60" />
+      <nav class="navbar navbar-expand-lg navbar-dark">
+        <ul class="navbar-nav me-3">
+          <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="niveles.html">Niveles</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <div class="bienvenida-container">
+    <div class="bandera-embed">
+      <div class="tenor-gif-embed" data-postid="12368110057361654375" data-share-method="host" data-aspect-ratio="1.6" data-width="100%">
+        <a href="https://tenor.com/view/italy-flag-italian-gif-12368110057361654375">Italy Flag GIF</a>
+      </div>
+    </div>
+    <div class="bienvenida-texto">Bienvenido a 5° Año</div>
+    <div class="bandera-embed">
+      <div class="tenor-gif-embed" data-postid="23485617" data-share-method="host" data-aspect-ratio="1.77778" data-width="100%">
+        <a href="https://tenor.com/view/argentina-gif-23485617">Argentina GIF</a>
+      </div>
+    </div>
+  </div>
+  <div class="buscador-container">
+    <input type="text" id="buscador" placeholder="Buscar materia..." />
+  </div>
+  <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

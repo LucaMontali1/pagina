@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login - Colegio Dante Alighieri</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background-color: white;
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .login-container {
+      display: flex;
+      max-width: 1000px;
+      width: 100%;
+      height: 600px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      overflow: hidden;
+      background: white;
+    }
+
+    .info-section {
+      flex: 1;
+      padding: 30px 40px;
+      overflow-y: auto;
+      background: #f9f9f9;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .info-block {
+      display: flex;
+      gap: 25px;
+      align-items: center;
+    }
+
+    .info-block img {
+      width: 180px;
+      height: auto;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.15);
+      transition: box-shadow 0.5s ease, filter 0.5s ease;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .info-block img:hover {
+      filter: brightness(1.05);
+      box-shadow:
+        0 0 25px 6px rgba(0, 146, 70, 0.7),
+        0 0 35px 10px rgba(255, 255, 255, 0.6),
+        0 0 45px 14px rgba(206, 43, 55, 0.7);
+    }
+
+    .info-text {
+      flex: 1;
+      color: #04294e;
+      text-align: justify;
+    }
+
+    .info-text h2 {
+      margin-bottom: 10px;
+      font-weight: 700;
+      color: #04294e;
+    }
+
+    .login-box {
+      flex: 1;
+      max-width: 450px;
+      padding: 40px 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .login-box h2 {
+      margin-bottom: 25px;
+      color: #04294e;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .login-box label {
+      font-weight: 600;
+      margin-top: 15px;
+    }
+
+    .login-box input {
+      margin-top: 5px;
+      padding: 10px;
+      border: 1.5px solid #ccc;
+      border-radius: 6px;
+      width: 100%;
+      transition: border-color 0.3s ease;
+    }
+
+    .login-box input:focus {
+      border-color: #04294e;
+      outline: none;
+    }
+
+    .login-box button {
+      margin-top: 30px;
+      background-color: #04294e;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      width: 100%;
+      font-size: 1.1rem;
+    }
+
+    .login-box button:hover {
+      background-color: #0a3e73;
+    }
+
+    
+    .info-section::-webkit-scrollbar {
+      width: 6px;
+    }
+    .info-section::-webkit-scrollbar-thumb {
+      background-color: rgba(4, 41, 78, 0.3);
+      border-radius: 3px;
+    }
+
+    @media (max-width: 900px) {
+      .login-container {
+        flex-direction: column;
+        height: auto;
+      }
+      .info-section, .login-box {
+        max-width: 100%;
+        width: 100%;
+        padding: 20px;
+      }
+      .info-block {
+        flex-direction: column;
+        text-align: center;
+      }
+      .info-block img {
+        margin-bottom: 10px;
+        width: 60%;
+      }
+      .info-text {
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container" role="main" aria-label="Página de inicio de sesión y descripción de Dante Alighieri">
+    
+    <div class="info-section" aria-label="Información sobre Dante Alighieri">
+      <div class="info-block">
+        <img src="descarga (3).jpg" alt="Dante Alighieri Retrato" />
+        <div class="info-text">
+          <h2>¿Quién fue Dante Alighieri?</h2>
+          <p>Dante Alighieri (1265-1321) fue un poeta, escritor y filósofo florentino, conocido como el padre del idioma italiano. Su legado marcó la literatura mundial al escribir en italiano, en vez del latín, democratizando la cultura y el conocimiento.</p>
+        </div>
+      </div>
+
+      <div class="info-block">
+        <img src="descarga (4).jpg" alt="La Divina Comedia" />
+        <div class="info-text">
+          <h2>¿Qué hizo y qué escribió?</h2>
+          <p>Dante escribió principalmente “La Divina Comedia”, una épica obra que describe un viaje alegórico por el Infierno, el Purgatorio y el Paraíso. Esta obra es fundamental en la literatura universal y muestra profundas reflexiones filosóficas, teológicas y sociales.</p>
+        </div>
+      </div>
+
+      <div class="info-block">
+        <img src="kk.jpg" alt="Importancia de Dante" />
+        <div class="info-text">
+          <h2>Importancia de Dante</h2>
+          <p>Dante no solo influyó en la literatura italiana y mundial, sino que también ayudó a definir la identidad cultural italiana. Su uso del idioma vernáculo sentó las bases para la lengua italiana moderna, y su obra sigue siendo estudiada y admirada en todo el mundo.</p>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="login-box">
+      <h2>Iniciar Sesión</h2>
+      <label for="usuario">Usuario</label>
+      <input type="text" id="usuario" name="usuario" placeholder="Ingrese su usuario" required />
+      <label for="password">Contraseña</label>
+      <input type="password" id="password" name="password" placeholder="Ingrese su contraseña" required />
+      <button type="button" onclick="login()">Entrar</button>
+    </div>
+  </div>
+
+  <script>
+    function login() {
+      
+      localStorage.setItem('loggedIn', 'true');
+      window.location.href = 'niveles.html';
+    }
+  </script>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

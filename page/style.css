@@ -1,0 +1,97 @@
+/* GENERAL */
+body {
+    padding-top: 80px;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #9acb8a;
+}
+
+/* ENCABEZADO */
+.animated-header {
+    position: fixed;
+    width: 100%;
+    background-color: #706e6e; /* gris claro */
+    top: 0;
+    left: 0;
+    z-index: 1030;
+    transition: top 0.5s ease-in-out, opacity 0.5s ease-in-out;
+}
+
+.hide-header {
+    top: -100px;
+    opacity: 0;
+}
+
+.slide-down {
+    top: 0;
+    opacity: 1;
+}
+
+/* NAVBAR */
+.navbar .nav-link {
+    color: white !important;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.navbar .nav-link:hover {
+    color: #dcdcdc !important;
+}
+
+/* CARRUSEL */
+.carousel-item img {
+    transition: transform 0.8s ease-in-out, opacity 1s ease-in-out;
+}
+
+.carousel-item img:hover {
+    transform: scale(1.02);
+}
+
+/* BOTONES */
+.btn-danger {
+    background-color: #b20000;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-danger:hover {
+    background-color: #8c0000;
+}
+
+/* IMÁGENES INFORMATIVAS */
+.img-fluid {
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: transform 0.4s ease;
+}
+
+.img-fluid:hover {
+    transform: scale(1.03);
+}
+
+/* FOOTER */
+footer {
+    background-color: #343a40;
+    color: #fff;
+    text-align: center;
+}
+
+footer a {
+    color: white;
+    text-decoration: none;
+    margin: 0 5px;
+    transition: color 0.3s ease;
+}
+
+footer a:hover {
+    color: #ccc;
+}
+
+/* Transición suave entre imágenes del carrusel */
+.carousel-item {
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.carousel-item.active {
+    opacity: 1;
+}

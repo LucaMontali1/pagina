@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Niveles - Colegio Dante Alighieri</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Niveles educativos del Colegio Dante Alighieri - Educación bilingüe desde 1° hasta 5° año" />
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --primary-color: #1a365d;
+      --secondary-color: #2d3748;
+      --accent-color: #c53030;
+      --text-light: #f7fafc;
+      --text-dark: #2d3748;
+      --bg-light: #f8f9fa;
+      --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --shadow: 0 10px 25px rgba(0,0,0,0.1);
+      --shadow-hover: 0 15px 35px rgba(0,0,0,0.2);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: var(--text-dark);
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+      padding-top: 90px;
+    }
+
+    
+    .encabezado-profesional {
+      position: fixed;
+      width: 100%;
+      background: rgba(26, 54, 93, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      top: 0;
+      left: 0;
+      z-index: 1030;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow);
+    }
+
+    .hide-header {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+
+    .slide-down {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .navbar-brand-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo-img {
+      height: 65px;
+      width: auto;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+      transition: transform 0.3s ease;
+    }
+
+    .logo-img:hover {
+      transform: scale(1.05);
+    }
+
+    .navbar .nav-link {
+      color: var(--text-light) !important;
+      font-weight: 500;
+      font-size: 16px;
+      padding: 12px 20px !important;
+      border-radius: 8px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      text-decoration: none;
+      overflow: hidden;
+    }
+
+    .navbar .nav-link::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    .navbar .nav-link:hover::before {
+      width: 80%;
+    }
+
+    .navbar .nav-link:hover {
+      color: #ffffff !important;
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .cerrar-sesion-btn {
+      background: linear-gradient(135deg, #c53030, #e53e3e);
+      border: none;
+      padding: 10px 20px;
+      color: white;
+      border-radius: 25px;
+      font-weight: 600;
+      font-size: 14px;
+      margin-left: 20px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 15px rgba(197, 48, 48, 0.3);
+      cursor: pointer;
+    }
+
+    .cerrar-sesion-btn:hover {
+      background: linear-gradient(135deg, #e53e3e, #c53030);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(197, 48, 48, 0.4);
+    }
+
+    
+    .titulo-principal {
+      text-align: center;
+      margin: 60px 0 80px 0;
+      color: white;
+    }
+
+    .titulo-principal h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      position: relative;
+      display: inline-block;
+    }
+
+    .titulo-principal h1::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      width: 80px;
+      height: 4px;
+      background: white;
+      border-radius: 2px;
+      transform: translateX(-50%);
+    }
+
+    .titulo-principal p {
+      font-size: 1.3rem;
+      color: rgba(255, 255, 255, 0.9);
+      margin-top: 30px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    
+    .niveles-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      margin-bottom: 80px;
+    }
+
+    .niveles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    /* Botones de nivel profesionales */
+    .btn-nivel {
+      background: white;
+      color: var(--primary-color);
+      font-weight: 600;
+      border-radius: 20px;
+      padding: 40px 30px;
+      margin: 0;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 180px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-nivel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: var(--bg-gradient);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .btn-nivel:hover::before {
+      transform: scaleX(1);
+    }
+
+    .btn-nivel:hover {
+      background: white;
+      transform: translateY(-10px);
+      box-shadow: var(--shadow-hover);
+      color: var(--primary-color);
+    }
+
+    .btn-nivel-icon {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      color: var(--primary-color);
+      transition: all 0.3s ease;
+    }
+
+    .btn-nivel:hover .btn-nivel-icon {
+      transform: scale(1.1);
+      color: #667eea;
+    }
+
+    .btn-nivel-titulo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .btn-nivel-descripcion {
+      font-size: 0.95rem;
+      color: var(--secondary-color);
+      text-align: center;
+      opacity: 0.8;
+      line-height: 1.4;
+    }
+
+    
+    .btn-nivel:hover .btn-nivel-descripcion {
+      opacity: 1;
+    }
+
+    
+    .btn-nivel-preceptoria {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-nivel-preceptoria .btn-nivel-icon {
+      color: white;
+    }
+
+    .btn-nivel-preceptoria .btn-nivel-descripcion {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .btn-nivel-preceptoria:hover {
+      background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+      color: white;
+    }
+
+    .btn-nivel-preceptoria:hover .btn-nivel-icon {
+      color: white;
+    }
+
+    
+    .animate-on-scroll {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .animate-on-scroll.animate {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    
+    @media (max-width: 768px) {
+      .titulo-principal h1 {
+        font-size: 2.5rem;
+      }
+      
+      .titulo-principal p {
+        font-size: 1.1rem;
+      }
+      
+      .niveles-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      
+      .btn-nivel {
+        padding: 30px 20px;
+        min-height: 150px;
+      }
+      
+      .btn-nivel-titulo {
+        font-size: 1.3rem;
+      }
+      
+      .btn-nivel-icon {
+        font-size: 2rem;
+      }
+    }
+
+    
+    .background-particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .particle {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      animation: float 20s infinite linear;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+
+<div class="background-particles">
+  <div class="particle" style="left: 10%; width: 6px; height: 6px; animation-delay: 0s;"></div>
+  <div class="particle" style="left: 20%; width: 4px; height: 4px; animation-delay: 2s;"></div>
+  <div class="particle" style="left: 30%; width: 8px; height: 8px; animation-delay: 4s;"></div>
+  <div class="particle" style="left: 40%; width: 5px; height: 5px; animation-delay: 6s;"></div>
+  <div class="particle" style="left: 50%; width: 7px; height: 7px; animation-delay: 8s;"></div>
+  <div class="particle" style="left: 60%; width: 4px; height: 4px; animation-delay: 10s;"></div>
+  <div class="particle" style="left: 70%; width: 6px; height: 6px; animation-delay: 12s;"></div>
+  <div class="particle" style="left: 80%; width: 5px; height: 5px; animation-delay: 14s;"></div>
+  <div class="particle" style="left: 90%; width: 8px; height: 8px; animation-delay: 16s;"></div>
+</div>
+
+
+<header class="encabezado-profesional">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center py-3">
+      <div class="navbar-brand-container">
+        <img src="OX4SDh2IwP.png" alt="Logotipo del Colegio Dante Alighieri" class="logo-img" />
+      </div>
+      <nav class="navbar navbar-expand-lg navbar-dark">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+            <li class="nav-item"><a class="nav-link" href="niveles.html">Niveles</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Contacto</a></li>
+          </ul>
+          <button class="cerrar-sesion-btn" id="btnCerrarSesion">
+            <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+          </button>
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>
+
+
+<section class="titulo-principal animate-on-scroll">
+  <div class="container">
+    <h1>Niveles Educativos</h1>
+    <p>Bienvenido a los niveles del secundario Dante Alighieri.</p>
+  </div>
+</section>
+
+
+<div class="niveles-container">
+  <div class="niveles-grid">
+    <a href="1 año.html" class="btn-nivel animate-on-scroll" style="animation-delay: 0.1s;">
+      <div class="btn-nivel-icon">
+        <i class="fas fa-seedling"></i>
+      </div>
+      <div class="btn-nivel-titulo">1° Año</div>
+      <div class="btn-nivel-descripcion">
+        Introducción al mundo académico con bases sólidas en educación bilingüe
+      </div>
+    </a>
+
+    <a href="2 año.html" class="btn-nivel animate-on-scroll" style="animation-delay: 0.2s;">
+      <div class="btn-nivel-icon">
+        <i class="fas fa-leaf"></i>
+      </div>
+      <div class="btn-nivel-titulo">2° Año</div>
+      <div class="btn-nivel-descripcion">
+        Desarrollo de competencias fundamentales y fortalecimiento del aprendizaje
+      </div>
+    </a>
+
+    <a href="3 año.html" class="btn-nivel animate-on-scroll" style="animation-delay: 0.3s;">
+      <div class="btn-nivel-icon">
+        <i class="fas fa-tree"></i>
+      </div>
+      <div class="btn-nivel-titulo">3° Año</div>
+      <div class="btn-nivel-descripcion">
+        Consolidación de conocimientos y exploración de nuevas áreas académicas
+      </div>
+    </a>
+
+    <a href="4 año.html" class="btn-nivel animate-on-scroll" style="animation-delay: 0.4s;">
+      <div class="btn-nivel-icon">
+        <i class="fas fa-graduation-cap"></i>
+      </div>
+      <div class="btn-nivel-titulo">4° Año</div>
+      <div class="btn-nivel-descripcion">
+        Preparación avanzada con enfoque en especialización y proyectos integrales
+      </div>
+    </a>
+
+    <a href="5 año.html" class="btn-nivel animate-on-scroll" style="animation-delay: 0.5s;">
+      <div class="btn-nivel-icon">
+        <i class="fas fa-university"></i>
+      </div>
+      <div class="btn-nivel-titulo">5° Año</div>
+      <div class="btn-nivel-descripcion">
+        Culminación de la educación secundaria y preparación para la educación superior
+      </div>
+    </a>
+
+    <a href="preceptoria.html" class="btn-nivel btn-nivel-preceptoria animate-on-scroll" style="animation-delay: 0.6s;">
+      <div class="btn-nivel-icon">
+        <i class="fas fa-user-shield"></i>
+      </div>
+      <div class="btn-nivel-titulo">Preceptoría</div>
+      <div class="btn-nivel-descripcion">
+        Gestión administrativa y apoyo integral para estudiantes y familias
+      </div>
+    </a>
+  </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+let lastScrollTop = 0;
+const header = document.querySelector('.encabezado-profesional');
+
+window.addEventListener('scroll', function() {
+  const currentScroll = window.scrollY;
+  
+  if (currentScroll > lastScrollTop && currentScroll > 100) {
+    header.classList.add('hide-header');
+    header.classList.remove('slide-down');
+  } else {
+    header.classList.remove('hide-header');
+    header.classList.add('slide-down');
+  }
+  
+  lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+});
+
+
+const observerOptions = {
+  threshold: 0.1,
+  rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('animate');
+    }
+  });
+}, observerOptions);
+
+document.querySelectorAll('.animate-on-scroll').forEach(el => {
+  observer.observe(el);
+});
+
+
+document.getElementById('btnCerrarSesion').addEventListener('click', function() {
+  localStorage.removeItem('loggedIn');
+  window.location.href = 'login.html';
+});
+
+
+if (localStorage.getItem('loggedIn') !== 'true') {
+  
+  const currentPage = window.location.pathname.split('/').pop();
+  if (currentPage !== 'preceptoria.html') {
+    window.location.href = 'login.html';
+  }
+}
+
+
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  });
+});
+</script>
+
+</body>
+</html>

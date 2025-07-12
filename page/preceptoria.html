@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Panel Administrativo - Colegio Dante Alighieri</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --primary-color: #1a365d;
+      --secondary-color: #2d3748;
+      --accent-color: #c53030;
+      --success-color: #38a169;
+      --warning-color: #d69e2e;
+      --text-light: #f7fafc;
+      --text-dark: #2d3748;
+      --bg-light: #f8f9fa;
+      --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --shadow: 0 10px 25px rgba(0,0,0,0.1);
+      --shadow-hover: 0 15px 35px rgba(0,0,0,0.2);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      background: var(--bg-light);
+      color: var(--text-dark);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Header profesional */
+    .encabezado-profesional {
+      position: fixed;
+      width: 100%;
+      background: rgba(26, 54, 93, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      top: 0;
+      left: 0;
+      z-index: 1030;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow);
+    }
+
+    .navbar-brand-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo-img {
+      height: 65px;
+      width: auto;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+    }
+
+    .navbar .nav-link {
+      color: var(--text-light) !important;
+      font-weight: 500;
+      font-size: 16px;
+      padding: 12px 20px !important;
+      border-radius: 8px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      text-decoration: none;
+    }
+
+    .navbar .nav-link:hover {
+      color: #ffffff !important;
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--bg-gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+    }
+
+    .cerrar-sesion-btn {
+      background: linear-gradient(135deg, #c53030, #e53e3e);
+      border: none;
+      padding: 10px 20px;
+      color: white;
+      border-radius: 25px;
+      font-weight: 600;
+      font-size: 14px;
+      margin-left: 20px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 15px rgba(197, 48, 48, 0.3);
+      cursor: pointer;
+    }
+
+    .cerrar-sesion-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(197, 48, 48, 0.4);
+    }
+
+    /* Contenido principal */
+    .main-content {
+      padding-top: 120px;
+      min-height: 100vh;
+    }
+
+    .dashboard-header {
+      background: var(--bg-gradient);
+      padding: 40px 0;
+      margin-bottom: 40px;
+      border-radius: 0 0 30px 30px;
+      color: white;
+      text-align: center;
+    }
+
+    .dashboard-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .dashboard-subtitle {
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
+
+    /* Navegación por pestañas */
+    .nav-tabs-custom {
+      border: none;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+
+    .nav-tabs-custom .nav-link {
+      background: white;
+      border: 2px solid transparent;
+      border-radius: 15px;
+      padding: 15px 30px;
+      margin: 0 10px;
+      color: var(--text-dark);
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow);
+    }
+
+    .nav-tabs-custom .nav-link:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .nav-tabs-custom .nav-link.active {
+      background: var(--bg-gradient);
+      color: white;
+      border-color: transparent;
+    }
+
+    /* Cards profesionales */
+    .info-card {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+      margin-bottom: 30px;
+      border-left: 5px solid transparent;
+    }
+
+    .info-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .info-card.actividades {
+      border-left-color: var(--success-color);
+    }
+
+    .info-card.novedades {
+      border-left-color: var(--warning-color);
+    }
+
+    .info-card.reportes {
+      border-left-color: var(--accent-color);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .card-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: white;
+    }
+
+    .card-icon.actividades {
+      background: var(--success-color);
+    }
+
+    .card-icon.novedades {
+      background: var(--warning-color);
+    }
+
+    .card-icon.reportes {
+      background: var(--accent-color);
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    /* Formularios */
+    .form-container {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: var(--shadow);
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+    }
+
+    .form-control {
+      border-radius: 10px;
+      border: 2px solid #e2e8f0;
+      padding: 12px 16px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .btn-primary-custom {
+      background: var(--bg-gradient);
+      border: none;
+      padding: 12px 30px;
+      border-radius: 25px;
+      font-weight: 600;
+      color: white;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-primary-custom:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    /* Lista de elementos */
+    .item-list {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: var(--shadow);
+    }
+
+    .item {
+      padding: 20px;
+      border-bottom: 1px solid #e2e8f0;
+      transition: all 0.3s ease;
+    }
+
+    .item:last-child {
+      border-bottom: none;
+    }
+
+    .item:hover {
+      background: #f8fafc;
+      transform: translateX(5px);
+    }
+
+    .item-title {
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .item-date {
+      color: #718096;
+      font-size: 0.9rem;
+    }
+
+    .item-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .btn-small {
+      padding: 5px 15px;
+      font-size: 0.8rem;
+      border-radius: 15px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-edit {
+      background: var(--warning-color);
+      color: white;
+    }
+
+    .btn-delete {
+      background: var(--accent-color);
+      color: white;
+    }
+
+    .btn-small:hover {
+      transform: scale(1.05);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .dashboard-title {
+        font-size: 2rem;
+      }
+      
+      .nav-tabs-custom {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .nav-tabs-custom .nav-link {
+        margin: 5px 0;
+      }
+      
+      .form-container {
+        padding: 20px;
+      }
+      
+      .info-card {
+        padding: 20px;
+      }
+    }
+
+    /* Animaciones */
+    .animate-fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .success-message {
+      background: var(--success-color);
+      color: white;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="encabezado-profesional">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center py-3">
+      <div class="navbar-brand-container">
+        <img src="OX4SDh2IwP.png" alt="Logotipo del Colegio Dante Alighieri" class="logo-img" />
+      </div>
+      <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="d-flex align-items-center">
+          <div class="user-info">
+            <div class="user-avatar">
+              <i class="fas fa-user-tie"></i>
+            </div>
+            <span id="userName">Administrador</span>
+          </div>
+          <button class="cerrar-sesion-btn" id="btnCerrarSesion">
+            <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+          </button>
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>
+
+
+<div class="main-content">
+  <div class="dashboard-header">
+    <div class="container">
+      <h1 class="dashboard-title">Panel Administrativo</h1>
+      <p class="dashboard-subtitle">Gestión de actividades, novedades y reportes institucionales</p>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    <ul class="nav nav-tabs nav-tabs-custom" id="adminTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="actividades-tab" data-bs-toggle="tab" data-bs-target="#actividades" type="button" role="tab">
+          <i class="fas fa-calendar-alt me-2"></i>Actividades
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="novedades-tab" data-bs-toggle="tab" data-bs-target="#novedades" type="button" role="tab">
+          <i class="fas fa-newspaper me-2"></i>Novedades
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="reportes-tab" data-bs-toggle="tab" data-bs-target="#reportes" type="button" role="tab">
+          <i class="fas fa-chart-bar me-2"></i>Reportes
+        </button>
+      </li>
+    </ul>
+
+    
+    <div class="tab-content" id="adminTabsContent">
+      
+      
+      <div class="tab-pane fade show active" id="actividades" role="tabpanel">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="info-card actividades animate-fade-in">
+              <div class="card-header">
+                <div class="card-icon actividades">
+                  <i class="fas fa-plus"></i>
+                </div>
+                <h3 class="card-title">Nueva Actividad</h3>
+              </div>
+              <form id="actividadForm">
+                <div class="form-group">
+                  <label class="form-label">Título de la Actividad</label>
+                  <input type="text" class="form-control" id="actividadTitulo" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Descripción</label>
+                  <textarea class="form-control" id="actividadDescripcion" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Fecha</label>
+                  <input type="date" class="form-control" id="actividadFecha" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Nivel</label>
+                  <select class="form-control" id="actividadNivel" required>
+                    <option value="">Seleccionar nivel</option>
+                    <option value="1">1° Año</option>
+                    <option value="2">2° Año</option>
+                    <option value="3">3° Año</option>
+                    <option value="4">4° Año</option>
+                    <option value="5">5° Año</option>
+                    <option value="todos">Todos los niveles</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-primary-custom">
+                  <i class="fas fa-save me-2"></i>Guardar Actividad
+                </button>
+              </form>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="item-list animate-fade-in">
+              <h4 class="mb-3">Actividades Recientes</h4>
+              <div id="actividadesList">
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      
+      <div class="tab-pane fade" id="novedades" role="tabpanel">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="info-card novedades animate-fade-in">
+              <div class="card-header">
+                <div class="card-icon novedades">
+                  <i class="fas fa-bullhorn"></i>
+                </div>
+                <h3 class="card-title">Nueva Novedad</h3>
+              </div>
+              <form id="novedadForm">
+                <div class="form-group">
+                  <label class="form-label">Título de la Novedad</label>
+                  <input type="text" class="form-control" id="novedadTitulo" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Contenido</label>
+                  <textarea class="form-control" id="novedadContenido" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Prioridad</label>
+                  <select class="form-control" id="novedadPrioridad" required>
+                    <option value="normal">Normal</option>
+                    <option value="importante">Importante</option>
+                    <option value="urgente">Urgente</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Dirigido a</label>
+                  <select class="form-control" id="novedadDestino" required>
+                    <option value="estudiantes">Estudiantes</option>
+                    <option value="padres">Padres</option>
+                    <option value="docentes">Docentes</option>
+                    <option value="todos">Toda la comunidad</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-primary-custom">
+                  <i class="fas fa-paper-plane me-2"></i>Publicar Novedad
+                </button>
+              </form>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="item-list animate-fade-in">
+              <h4 class="mb-3">Novedades Publicadas</h4>
+              <div id="novedadesList">
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      
+      <div class="tab-pane fade" id="reportes" role="tabpanel">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="info-card reportes animate-fade-in">
+              <div class="card-header">
+                <div class="card-icon reportes">
+                  <i class="fas fa-chart-line"></i>
+                </div>
+                <h3 class="card-title">Reportes y Estadísticas</h3>
+              </div>
+              <div class="row text-center">
+                <div class="col-md-3">
+                  <div class="info-card">
+                    <h4 class="text-primary">45</h4>
+                    <p>Actividades Este Mes</p>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="info-card">
+                    <h4 class="text-success">23</h4>
+                    <p>Novedades Publicadas</p>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="info-card">
+                    <h4 class="text-warning">12</h4>
+                    <p>Eventos Próximos</p>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="info-card">
+                    <h4 class="text-info">567</h4>
+                    <p>Estudiantes Activos</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+  
+  cargarActividades();
+  cargarNovedades();
+  
+  
+  document.getElementById('userName').textContent = 'Administrador';
+});
+
+
+document.getElementById('actividadForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  const actividad = {
+    id: Date.now(),
+    titulo: document.getElementById('actividadTitulo').value,
+    descripcion: document.getElementById('actividadDescripcion').value,
+    fecha: document.getElementById('actividadFecha').value,
+    nivel: document.getElementById('actividadNivel').value,
+    fechaCreacion: new Date().toLocaleDateString()
+  };
+  
+  
+  let actividades = JSON.parse(sessionStorage.getItem('actividades') || '[]');
+  actividades.unshift(actividad);
+  sessionStorage.setItem('actividades', JSON.stringify(actividades));
+  
+  
+  mostrarMensaje('Actividad guardada exitosamente', 'success');
+  
+  
+  this.reset();
+  cargarActividades();
+});
+
+
+document.getElementById('novedadForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  const novedad = {
+    id: Date.now(),
+    titulo: document.getElementById('novedadTitulo').value,
+    contenido: document.getElementById('novedadContenido').value,
+    prioridad: document.getElementById('novedadPrioridad').value,
+    destino: document.getElementById('novedadDestino').value,
+    fechaCreacion: new Date().toLocaleDateString()
+  };
+  
+  
+  let novedades = JSON.parse(sessionStorage.getItem('novedades') || '[]');
+  novedades.unshift(novedad);
+  sessionStorage.setItem('novedades', JSON.stringify(novedades));
+  
+  
+  mostrarMensaje('Novedad publicada exitosamente', 'success');
+  
+  
+  this.reset();
+  cargarNovedades();
+});
+
+
+function cargarActividades() {
+  
+  const actividadesEjemplo = [
+    {
+      id: 1,
+      titulo: "Feria de Ciencias",
+      descripcion: "Exhibición de proyectos científicos de todos los niveles",
+      fecha: "2024-07-15",
+      nivel: "todos",
+      fechaCreacion: "05/07/2024"
+    },
+    {
+      id: 2,
+      titulo: "Jornada Cultural",
+      descripcion: "Presentaciones artísticas y culturales",
+      fecha: "2024-07-20",
+      nivel: "4",
+      fechaCreacion: "03/07/2024"
+    }
+  ];
+  
+  const actividadesSesion = JSON.parse(sessionStorage.getItem('actividades') || '[]');
+  const actividades = [...actividadesSesion, ...actividadesEjemplo];
+  const container = document.getElementById('actividadesList');
+  
+  if (actividades.length === 0) {
+    container.innerHTML = '<p class="text-muted">No hay actividades registradas.</p>';
+    return;
+  }
+  
+  container.innerHTML = actividades.map(actividad => `
+    <div class="item">
+      <div class="item-title">${actividad.titulo}</div>
+      <div class="item-date">
+        <i class="fas fa-calendar me-2"></i>${actividad.fecha} | 
+        <i class="fas fa-users me-2"></i>${actividad.nivel === 'todos' ? 'Todos los niveles' : actividad.nivel + '° Año'}
+      </div>
+      <p class="mt-2">${actividad.descripcion}</p>
+      <div class="item-actions">
+        <button class="btn-small btn-edit" onclick="editarActividad(${actividad.id})">
+          <i class="fas fa-edit"></i> Editar
+        </button>
+        <button class="btn-small btn-delete" onclick="eliminarActividad(${actividad.id})">
+          <i class="fas fa-trash"></i> Eliminar
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+
+function cargarNovedades() {
+  
+  const novedadesEjemplo = [
+    {
+      id: 1,
+      titulo: "Inicio del segundo semestre",
+      contenido: "Recordamos que el segundo semestre académico inicia el 15 de julio",
+      prioridad: "importante",
+      destino: "todos",
+      fechaCreacion: "01/07/2024"
+    },
+    {
+      id: 2,
+      titulo: "Reunión de padres",
+      contenido: "Se convoca a reunión de padres para el 10 de julio a las 18:00 hs",
+      prioridad: "normal",
+      destino: "padres",
+      fechaCreacion: "28/06/2024"
+    }
+  ];
+  
+  const novedadesSesion = JSON.parse(sessionStorage.getItem('novedades') || '[]');
+  const novedades = [...novedadesSesion, ...novedadesEjemplo];
+  const container = document.getElementById('novedadesList');
+  
+  if (novedades.length === 0) {
+    container.innerHTML = '<p class="text-muted">No hay novedades publicadas.</p>';
+    return;
+  }
+  
+  container.innerHTML = novedades.map(novedad => `
+    <div class="item">
+      <div class="item-title">${novedad.titulo}</div>
+      <div class="item-date">
+        <i class="fas fa-clock me-2"></i>${novedad.fechaCreacion} | 
+        <i class="fas fa-flag me-2"></i>${novedad.prioridad.toUpperCase()} | 
+        <i class="fas fa-users me-2"></i>${novedad.destino}
+      </div>
+      <p class="mt-2">${novedad.contenido}</p>
+      <div class="item-actions">
+        <button class="btn-small btn-edit" onclick="editarNovedad(${novedad.id})">
+          <i class="fas fa-edit"></i> Editar
+        </button>
+        <button class="btn-small btn-delete" onclick="eliminarNovedad(${novedad.id})">
+          <i class="fas fa-trash"></i> Eliminar
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+
+function eliminarActividad(id) {
+  if (confirm('¿Estás seguro de que deseas eliminar esta actividad?')) {
+    let actividades = JSON.parse(sessionStorage.getItem('actividades') || '[]');
+    actividades = actividades.filter(a => a.id !== id);
+    sessionStorage.setItem('actividades', JSON.stringify(actividades));
+    cargarActividades();
+    mostrarMensaje('Actividad eliminada exitosamente', 'success');
+  }
+}
+
+function eliminarNovedad(id) {
+  if (confirm('¿Estás seguro de que deseas eliminar esta novedad?')) {
+    let novedades = JSON.parse(sessionStorage.getItem('novedades') || '[]');
+    novedades = novedades.filter(n => n.id !== id);
+    sessionStorage.setItem('novedades', JSON.stringify(novedades));
+    cargarNovedades();
+    mostrarMensaje('Novedad eliminada exitosamente', 'success');
+  }
+}
+
+function editarActividad(id) {
+ 
+  alert('Función de edición en desarrollo');
+}
+
+function editarNovedad(id) {
+  
+  alert('Función de edición en desarrollo');
+}
+
+
+function mostrarMensaje(mensaje, tipo) {
+  const alertDiv = document.createElement('div');
+  alertDiv.className = `alert alert-${tipo} alert-dismissible fade show`;
+  alertDiv.innerHTML = `
+    ${mensaje}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  `;
+  
+  const container = document.querySelector('.container');
+  container.insertBefore(alertDiv, container.firstChild);
+  
+  setTimeout(() => {
+    alertDiv.remove();
+  }, 5000);
+}
+
+
+document.getElementById('btnCerrarSesion').addEventListener('click', function() {
+  session
