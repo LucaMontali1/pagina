@@ -396,7 +396,7 @@
           showAlert('Login exitoso. Redirigiendo...', 'success');
           console.log('Login exitoso para:', data);
           
-          // Guardar datos del usuario
+          // Guardar datos del usuario en localStorage
           const userData = {
             id: data.id,
             nombre: data.nombre,
@@ -404,13 +404,15 @@
             loginTime: new Date().toISOString()
           };
           
-          // Simular guardado (ya que no podemos usar localStorage en artefactos)
+          // CORRECCIÓN: Guardar estado de login y datos del usuario
+          localStorage.setItem('loggedIn', 'true');
+          localStorage.setItem('userData', JSON.stringify(userData));
+          
           console.log('Datos del usuario guardados:', userData);
           
-          // Redirigir después de 1.5 segundos
+          // CORRECCIÓN: Redirigir a niveles.html después de 1.5 segundos
           setTimeout(() => {
-            showAlert('Redirección a niveles.html (simulada)', 'info');
-            // En un entorno real: window.location.href = 'niveles.html';
+            window.location.href = 'niveles.html';
           }, 1500);
         } else {
           showAlert('Usuario o contraseña incorrectos');
