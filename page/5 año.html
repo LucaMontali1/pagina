@@ -5,94 +5,670 @@
   <title>5° Año - Colegio Dante Alighieri</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
+    :root {
+      --primary-color: #1a365d;
+      --secondary-color: #2c5282;
+      --accent-color: #3182ce;
+      --light-blue: #e6f3ff;
+      --success-color: #38a169;
+      --warning-color: #d69e2e;
+      --text-primary: #2d3748;
+      --text-secondary: #4a5568;
+      --border-color: #e2e8f0;
+      --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     html, body {
       height: 100%;
       margin: 0;
-      background-color: #e6f0ff;
-      font-family: 'Segoe UI', sans-serif;
-      padding-top: 80px;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #f7fafc 0%, var(--light-blue) 100%);
+      color: var(--text-primary);
+      line-height: 1.6;
     }
-    .encabezado-gris {
+
+    /* Header mejorado */
+    .header {
       position: fixed;
-      width: 100%;
-      background-color: #706e6e;
       top: 0;
       left: 0;
-      z-index: 1030;
+      right: 0;
+      z-index: 1000;
+      background: rgba(26, 54, 93, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: var(--shadow-md);
     }
-    .navbar .nav-link {
-      color: white !important;
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      height: 50px;
+      width: auto;
+      transition: transform 0.3s ease;
+    }
+
+    .logo:hover {
+      transform: scale(1.05);
+    }
+
+    .nav-menu {
+      display: flex;
+      gap: 2rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .nav-link {
+      color: white;
+      text-decoration: none;
       font-weight: 500;
-      transition: color 0.3s ease;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      position: relative;
     }
-    .navbar .nav-link:hover {
-      color: #dcdcdc !important;
+
+    .nav-link:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #e6f3ff;
+      transform: translateY(-1px);
     }
-    .bienvenida-container {
+
+    /* Contenido principal */
+    .main-content {
+      margin-top: 80px;
+      min-height: calc(100vh - 80px);
+    }
+
+    /* Hero section mejorado */
+    .hero-section {
+      padding: 3rem 2rem;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(26, 54, 93, 0.03) 0%, rgba(49, 130, 206, 0.08) 100%);
+    }
+
+    .hero-container {
+      max-width: 1200px;
+      margin: 0 auto;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-top: 2rem;
-      position: relative;
+      gap: 2rem;
       flex-wrap: wrap;
     }
-    .bienvenida-texto {
-      font-size: 2.2rem;
+
+    .flag-container {
+      width: 120px;
+      height: 80px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      transition: transform 0.3s ease;
+    }
+
+    .flag-container:hover {
+      transform: translateY(-3px) scale(1.05);
+    }
+
+    .hero-title {
+      font-size: clamp(2rem, 5vw, 3.5rem);
       font-weight: 700;
-      text-align: center;
-      color: #04294e;
-      margin: 1rem;
-      z-index: 2;
+      color: var(--primary-color);
+      margin: 0;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
-    .bandera-embed {
-      width: 150px;
-      max-width: 100%;
-      margin: 0 10px;
+
+    .hero-subtitle {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      margin-top: 1rem;
+      font-weight: 400;
     }
-    .buscador-container {
-      text-align: center;
-      margin: 2rem auto;
+
+    /* Buscador mejorado */
+    .search-section {
+      padding: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
     }
-    .buscador-container input {
-      padding: 10px;
-      width: 300px;
-      max-width: 90%;
-      border: 2px solid #04294e;
-      border-radius: 10px;
+
+    .search-container {
+      position: relative;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 1rem 1rem 1rem 3rem;
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
       font-size: 1rem;
+      background: white;
+      color: var(--text-primary);
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+
+    /* Grid de materias mejorado */
+    .subjects-section {
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .subjects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      padding: 1rem 0;
+    }
+
+    .subject-card {
+      background: white;
+      border: none;
+      border-radius: 16px;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .subject-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .subject-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--accent-color);
+    }
+
+    .subject-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .subject-card:active {
+      transform: translateY(-2px);
+    }
+
+    .subject-content {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .subject-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--light-blue), rgba(49, 130, 206, 0.1));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-color);
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+
+    .subject-info {
+      flex: 1;
+    }
+
+    .subject-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0 0 0.25rem 0;
+      line-height: 1.4;
+    }
+
+    .subject-description {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    /* Materia especial para asistencia */
+    .subject-card.attendance {
+      background: linear-gradient(135deg, #f0fff4, #e6fffa);
+      border-color: var(--success-color);
+    }
+
+    .subject-card.attendance .subject-icon {
+      background: linear-gradient(135deg, #c6f6d5, #9ae6b4);
+      color: var(--success-color);
+    }
+
+    /* Estados de filtrado */
+    .subject-card.hidden {
+      display: none;
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 3rem 2rem;
+      color: var(--text-secondary);
+    }
+
+    .no-results i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header-content {
+        padding: 1rem;
+      }
+
+      .nav-menu {
+        gap: 1rem;
+      }
+
+      .hero-container {
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .subjects-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .search-section {
+        padding: 1.5rem 1rem;
+      }
+
+      .subjects-section {
+        padding: 1.5rem 1rem;
+      }
+    }
+
+    /* Animaciones */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .subject-card {
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    .subject-card:nth-child(n) {
+      animation-delay: calc(0.1s * var(--index, 0));
     }
   </style>
 </head>
 <body>
-  <header class="encabezado-gris fixed-top">
-    <div class="container d-flex justify-content-between align-items-center py-3">
-      <img src="OX4SDh2IwP.png" alt="Logotipo" height="60" />
-      <nav class="navbar navbar-expand-lg navbar-dark">
-        <ul class="navbar-nav me-3">
-          <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
-          <li class="nav-item"><a class="nav-link" href="niveles.html">Niveles</a></li>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <img src="OX4SDh2IwP.png" alt="Colegio Dante Alighieri" class="logo" />
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="index.html" class="nav-link">
+            <i class="fas fa-home"></i> Inicio
+          </a></li>
+          <li><a href="niveles.html" class="nav-link">
+            <i class="fas fa-graduation-cap"></i> Niveles
+          </a></li>
         </ul>
       </nav>
     </div>
   </header>
-  <div class="bienvenida-container">
-    <div class="bandera-embed">
-      <div class="tenor-gif-embed" data-postid="12368110057361654375" data-share-method="host" data-aspect-ratio="1.6" data-width="100%">
-        <a href="https://tenor.com/view/italy-flag-italian-gif-12368110057361654375">Italy Flag GIF</a>
+
+  <!-- Contenido principal -->
+  <main class="main-content">
+    <!-- Hero section -->
+    <section class="hero-section">
+      <div class="hero-container">
+        <div class="flag-container">
+          <div class="tenor-gif-embed" data-postid="12368110057361654375" data-share-method="host" data-aspect-ratio="1.6" data-width="100%">
+            <a href="https://tenor.com/view/italy-flag-italian-gif-12368110057361654375">Italy Flag GIF</a>
+          </div>
+        </div>
+
+        <div>
+          <h1 class="hero-title">5° Año</h1>
+          <p class="hero-subtitle">Bienvenido a 5° año</p>
+        </div>
+
+        <div class="flag-container">
+          <div class="tenor-gif-embed" data-postid="23485617" data-share-method="host" data-aspect-ratio="1.77778" data-width="100%">
+            <a href="https://tenor.com/view/argentina-gif-23485617">Argentina GIF</a>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="bienvenida-texto">Bienvenido a 5° Año</div>
-    <div class="bandera-embed">
-      <div class="tenor-gif-embed" data-postid="23485617" data-share-method="host" data-aspect-ratio="1.77778" data-width="100%">
-        <a href="https://tenor.com/view/argentina-gif-23485617">Argentina GIF</a>
+    </section>
+
+    <!-- Buscador -->
+    <section class="search-section">
+      <div class="search-container">
+        <i class="fas fa-search search-icon"></i>
+        <input 
+          type="text" 
+          id="searchInput" 
+          class="search-input" 
+          placeholder="Buscar materia..." 
+          autocomplete="off"
+        />
       </div>
-    </div>
-  </div>
-  <div class="buscador-container">
-    <input type="text" id="buscador" placeholder="Buscar materia..." />
-  </div>
+    </section>
+
+    <!-- Grid de materias -->
+    <section class="subjects-section">
+      <div class="subjects-grid" id="subjectsGrid">
+        <div class="subject-card" style="--index: 0">
+          <div class="subject-content">
+            <div class="subject-icon">
+              <i class="fas fa-book"></i>
+            </div>
+            <div class="subject-info">
+              <h3 class="subject-name">Lengua y Literatura</h3>
+              <p class="subject-description">Desarrollo de competencias comunicativas</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subject-card" style="--index: 1">
+          <div class="subject-content">
+            <div class="subject-icon">
+              <i class="fas fa-calculator"></i>
+            </div>
+            <div class="subject-info">
+              <h3 class="subject-name">Matemática</h3>
+              <p class="subject-description">Fundamentos del pensamiento lógico</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subject-card" style="--index: 2">
+          <div class="subject-content">
+            <div class="subject-icon">
+              <i class="fas fa-landmark"></i>
+            </div>
+            <div class="subject-info">
+              <h3 class="subject-name">Quimica</h3>
+              <p class="subject-description"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subject-card" style="--index: 3">
+          <div class="subject-content">
+            <div class="subject-icon">
+              <i class="fas fa-globe-americas"></i>
+            </div>
+            <div class="subject-info">
+              <h3 class="subject-name">psicologia</h3>
+              <p class="subject-description"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subject-card" style="--index: 4">
+          <div class="subject-content">
+            <div class="subject-icon">
+              <i class="fas fa-balance-scale"></i>
+            </div>
+            <div class="subject-info">
+              <h3 class="subject-name">Formación Ética y Ciudadana</h3>
+              <p class="subject-description">Valores y responsabilidad social</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subject-card" style="--index: 5">
+          <div class="subject-content">
+            <div class="subject-icon">
+              <i class="fas fa-leaf"></i>
+            </div>
+            <div class="subject-info">
+              <h3 class="subject-name">Economia</h3>
+              <p class="subject-description"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subject-card" style="--index: 6">
+          <div class="subject-content">
+            <div class="subject-icon">
+              <i class="fas fa-cogs"></i>
+            </div>
+            <div class="subject-info">
+              <h3 class="subject-name">Programacion orientada a objetos</h3>
+              <p class="subject-description">Tecnología aplicada e innovación</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subject-card" style="--index: 7">
+          <div class="subject-content">
+            <div class="subject-icon">
+              <i class="fas fa-language"></i>
+            </div>
+            <div class="subject-info">
+              <h3 class="subject-name">Lengua Extranjera (Inglés)</h3>
+              <p class="subject-description">Comunicación en idioma extranjero</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subject-card" style="--index: 8">
+          <div class="subject-content">
+            <div class="subject-icon">
+              <i class="fas fa-atom"></i>
+            </div>
+            <div class="subject-info">
+              <h3 class="subject-name">Sistema de gestion base de datos</h3>
+              <p class="subject-description"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subject-card" style="--index: 9">
+          <div class="subject-content">
+            <div class="subject-icon">
+              
+            </div>
+            <div class="subject-info">
+              <h3 class="subject-name">Proyecto de Investigación en Informática</h3>
+              <p class="subject-description"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subject-card" style="--index: 11">
+          <div class="subject-content">
+            <div class="subject-icon">
+              <i class="fas fa-running"></i>
+            </div>
+            <div class="subject-info">
+              <h3 class="subject-name">Educación Física</h3>
+              <p class="subject-description">Desarrollo corporal y deportivo</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subject-card attendance" style="--index: 12">
+          <div class="subject-content">
+            <div class="subject-icon">
+              <i class="fas fa-clipboard-check"></i>
+            </div>
+            <div class="subject-info">
+              <h3 class="subject-name">ASISTENCIA</h3>
+              <p class="subject-description">Control y seguimiento estudiantil</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="no-results" id="noResults" style="display: none;">
+        <i class="fas fa-search"></i>
+        <h3>No se encontraron materias</h3>
+        <p>Intenta con otros términos de búsqueda</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Scripts -->
   <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    // Sistema de búsqueda mejorado
+    class SubjectSearch {
+      constructor() {
+        this.searchInput = document.getElementById('searchInput');
+        this.subjectsGrid = document.getElementById('subjectsGrid');
+        this.noResults = document.getElementById('noResults');
+        this.subjects = document.querySelectorAll('.subject-card');
+        this.init();
+      }
+
+      init() {
+        this.searchInput.addEventListener('input', this.handleSearch.bind(this));
+        this.searchInput.addEventListener('keydown', this.handleKeydown.bind(this));
+        
+        // Agregar evento de click a las tarjetas
+        this.subjects.forEach(card => {
+          card.addEventListener('click', this.handleCardClick.bind(this));
+        });
+      }
+
+      handleSearch(event) {
+        const query = event.target.value.toLowerCase().trim();
+        let visibleCount = 0;
+
+        this.subjects.forEach(subject => {
+          const subjectName = subject.querySelector('.subject-name').textContent.toLowerCase();
+          const subjectDesc = subject.querySelector('.subject-description').textContent.toLowerCase();
+          
+          const isVisible = subjectName.includes(query) || subjectDesc.includes(query);
+          
+          if (isVisible) {
+            subject.classList.remove('hidden');
+            subject.style.display = 'block';
+            visibleCount++;
+          } else {
+            subject.classList.add('hidden');
+            subject.style.display = 'none';
+          }
+        });
+
+        // Mostrar/ocultar mensaje de "no resultados"
+        if (visibleCount === 0 && query !== '') {
+          this.noResults.style.display = 'block';
+          this.subjectsGrid.style.display = 'none';
+        } else {
+          this.noResults.style.display = 'none';
+          this.subjectsGrid.style.display = 'grid';
+        }
+      }
+
+      handleKeydown(event) {
+        if (event.key === 'Escape') {
+          this.clearSearch();
+        }
+      }
+
+      handleCardClick(event) {
+        const card = event.currentTarget;
+        const subjectName = card.querySelector('.subject-name').textContent;
+        
+        // Efecto visual de click
+        card.style.transform = 'translateY(-2px) scale(0.98)';
+        setTimeout(() => {
+          card.style.transform = '';
+        }, 150);
+
+        // Aquí puedes agregar la navegación a la página específica de la materia
+        console.log('Navegando a:', subjectName);
+        
+        // Ejemplo: window.location.href = `materia.html?subject=${encodeURIComponent(subjectName)}`;
+      }
+
+      clearSearch() {
+        this.searchInput.value = '';
+        this.subjects.forEach(subject => {
+          subject.classList.remove('hidden');
+          subject.style.display = 'block';
+        });
+        this.noResults.style.display = 'none';
+        this.subjectsGrid.style.display = 'grid';
+      }
+    }
+
+    // Inicializar cuando el DOM esté listo
+    document.addEventListener('DOMContentLoaded', () => {
+      new SubjectSearch();
+    });
+
+    // Efectos adicionales para mejorar la experiencia
+    window.addEventListener('load', () => {
+      // Animar las tarjetas al cargar
+      const cards = document.querySelectorAll('.subject-card');
+      cards.forEach((card, index) => {
+        card.style.setProperty('--index', index);
+      });
+    });
+  </script>
 </body>
 </html>
