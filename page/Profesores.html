@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Profesores - Colegio Dante Alighieri</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary-color: #1a365d;
+      --secondary-color: #2c5282;
+      --accent-color: #3182ce;
+      --light-blue: #e6f3ff;
+      --success-color: #38a169;
+      --warning-color: #d69e2e;
+      --danger-color: #e53e3e;
+      --text-primary: #2d3748;
+      --text-secondary: #4a5568;
+      --border-color: #e2e8f0;
+      --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #f7fafc 0%, var(--light-blue) 100%);
+      color: var(--text-primary);
+      margin: 0;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      background: rgba(26, 54, 93, 0.95);
+      backdrop-filter: blur(10px);
+      color: white;
+      padding: 1rem 0;
+      box-shadow: var(--shadow-md);
+    }
+
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .nav-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      transform: translateY(-1px);
+    }
+
+    /* Container principal */
+    .main-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* Navegación de niveles */
+    .levels-nav {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .level-btn {
+      background: white;
+      border: 2px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .level-btn:hover {
+      border-color: var(--accent-color);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .level-btn.active {
+      background: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+
+    /* Grid de materias */
+    .subjects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .subject-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .subject-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .subject-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--accent-color);
+    }
+
+    .subject-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .subject-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .subject-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--light-blue), rgba(49, 130, 206, 0.1));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-color);
+      font-size: 1.4rem;
+    }
+
+    .subject-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    .subject-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    /* Modal de estudiantes */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 1200px;
+      max-height: 90vh;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+    }
+
+    .modal-header {
+      background: var(--primary-color);
+      color: white;
+      padding: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 8px;
+      transition: background 0.3s ease;
+    }
+
+    .close-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .modal-body {
+      padding: 2rem;
+      overflow-y: auto;
+      max-height: calc(90vh - 140px);
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      border-bottom: 2px solid var(--border-color);
+      margin-bottom: 2rem;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .tab-btn.active {
+      color: var(--primary-color);
+      border-bottom-color: var(--primary-color);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Lista de estudiantes */
+    .students-list {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .student-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 1rem;
+      align-items: center;
+      padding: 1rem;
+      background: #f8fafc;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+    }
+
+    .student-name {
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .attendance-controls {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .attendance-btn {
+      width: 40px;
+      height: 40px;
+      border: 2px solid;
+      border-radius: 8px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    .attendance-btn.present {
+      border-color: var(--success-color);
+      color: var(--success-color);
+    }
+
+    .attendance-btn.present.active {
+      background: var(--success-color);
+      color: white;
+    }
+
+    .attendance-btn.absent {
+      border-color: var(--danger-color);
+      color: var(--danger-color);
+    }
+
+    .attendance-btn.absent.active {
+      background: var(--danger-color);
+      color: white;
+    }
+
+    .date-selector {
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .date-input {
+      padding: 0.5rem 1rem;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    .save-attendance {
+      background: var(--success-color);
+      color: white;
+      border: none;
+      padding: 0.75rem 2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .save-attendance:hover {
+      background: #2f855a;
+      transform: translateY(-2px);
+    }
+
+    /* Sistema de notas */
+    .grades-container {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .student-grades-row {
+      display: grid;
+      grid-template-columns: 2fr 3fr 1fr;
+      gap: 1rem;
+      align-items: center;
+      padding: 1rem;
+      background: #f8fafc;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+    }
+
+    .grades-input-section {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .grade-input {
+      width: 60px;
+      padding: 0.5rem;
+      border: 2px solid var(--border-color);
+      border-radius: 6px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .grade-input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+    }
+
+    .add-grade-btn {
+      width: 30px;
+      height: 30px;
+      background: var(--accent-color);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .add-grade-btn:hover {
+      background: var(--secondary-color);
+    }
+
+    .remove-grade-btn {
+      width: 30px;
+      height: 30px;
+      background: var(--danger-color);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .remove-grade-btn:hover {
+      background: #c53030;
+    }
+
+    .average-display {
+      font-weight: 600;
+      color: var(--primary-color);
+      min-width: 60px;
+      text-align: center;
+      padding: 0.5rem;
+      background: white;
+      border-radius: 6px;
+      border: 2px solid var(--border-color);
+    }
+
+    .save-grades {
+      background: var(--warning-color);
+      color: white;
+      border: none;
+      padding: 0.75rem 2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+    }
+
+    .save-grades:hover {
+      background: #b7791f;
+      transform: translateY(-2px);
+    }
+
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 1rem 2rem;
+      background: var(--success-color);
+      color: white;
+      border-radius: 8px;
+      font-weight: 600;
+      z-index: 9999;
+      transform: translateX(400px);
+      transition: transform 0.3s ease;
+    }
+
+    .notification.show {
+      transform: translateX(0);
+    }
+
+    .notification.error {
+      background: var(--danger-color);
+    }
+
+    /* Estados ocultos */
+    .hidden {
+      display: none !important;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .main-container {
+        padding: 1rem;
+      }
+
+      .subjects-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .student-row,
+      .student-grades-row {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+        text-align: center;
+      }
+
+      .modal-content {
+        margin: 1rem;
+      }
+
+      .modal-body {
+        padding: 1rem;
+      }
+
+      .levels-nav {
+        justify-content: center;
+      }
+
+      .level-btn {
+        flex: 1;
+        min-width: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">
+        <i class="fas fa-graduation-cap"></i>
+        Portal Profesores - Dante Alighieri
+      </div>
+      <div class="nav-buttons">
+        <a href="index.html" class="nav-btn">
+          <i class="fas fa-home"></i> Inicio
+        </a>
+        <a href="niveles.html" class="nav-btn">
+          <i class="fas fa-users"></i> Estudiantes
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenido Principal -->
+  <div class="main-container">
+    <h1 style="text-align: center; margin-bottom: 2rem; color: var(--primary-color);">
+      <i class="fas fa-chalkboard-teacher"></i>
+      Sistema de Gestión Docente
+    </h1>
+
+    <!-- Navegación por niveles -->
+    <div class="levels-nav">
+      <button class="level-btn active" onclick="showLevel(1)">
+        <i class="fas fa-baby"></i> 1° Año
+      </button>
+      <button class="level-btn" onclick="showLevel(2)">
+        <i class="fas fa-child"></i> 2° Año
+      </button>
+      <button class="level-btn" onclick="showLevel(3)">
+        <i class="fas fa-user-graduate"></i> 3° Año
+      </button>
+      <button class="level-btn" onclick="showLevel(4)">
+        <i class="fas fa-user-tie"></i> 4° Año
+      </button>
+      <button class="level-btn" onclick="showLevel(5)">
+        <i class="fas fa-trophy"></i> 5° Año
+      </button>
+    </div>
+
+    <!-- Materias por nivel -->
+    <div id="level-1" class="level-content">
+      <div class="subjects-grid" id="subjects-1"></div>
+    </div>
+    <div id="level-2" class="level-content hidden">
+      <div class="subjects-grid" id="subjects-2"></div>
+    </div>
+    <div id="level-3" class="level-content hidden">
+      <div class="subjects-grid" id="subjects-3"></div>
+    </div>
+    <div id="level-4" class="level-content hidden">
+      <div class="subjects-grid" id="subjects-4"></div>
+    </div>
+    <div id="level-5" class="level-content hidden">
+      <div class="subjects-grid" id="subjects-5"></div>
+    </div>
+  </div>
+
+  <!-- Modal para gestión de estudiantes -->
+  <div class="modal-overlay" id="studentModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">Gestión de Estudiantes</h2>
+        <button class="close-btn" onclick="closeModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Tabs -->
+        <div class="tabs">
+          <button class="tab-btn active" onclick="showTab('attendance')">
+            <i class="fas fa-clipboard-check"></i> Asistencia
+          </button>
+          <button class="tab-btn" onclick="showTab('grades')">
+            <i class="fas fa-star"></i> Calificaciones
+          </button>
+        </div>
+
+        <!-- Tab de Asistencia -->
+        <div id="attendance-tab" class="tab-content active">
+          <div class="date-selector">
+            <label><strong>Fecha:</strong></label>
+            <input type="date" class="date-input" id="attendanceDate" onchange="loadAttendanceTab()">
+            <button class="save-attendance" onclick="saveAttendance()">
+              <i class="fas fa-save"></i> Guardar Asistencia
+            </button>
+          </div>
+          <div class="students-list" id="attendanceList"></div>
+        </div>
+
+        <!-- Tab de Calificaciones -->
+        <div id="grades-tab" class="tab-content">
+          <div class="grades-container" id="gradesList"></div>
+          <button class="save-grades" onclick="saveGrades()">
+            <i class="fas fa-save"></i> Guardar Calificaciones
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Configuración de materias por nivel
+    const subjectsByLevel = {
+      1: [
+        { name: 'Lengua y Literatura', icon: 'fas fa-book' },
+        { name: 'Matemática', icon: 'fas fa-calculator' },
+        { name: 'Historia', icon: 'fas fa-landmark' },
+        { name: 'Geografía', icon: 'fas fa-globe-americas' },
+        { name: 'Formación Ética y Ciudadana', icon: 'fas fa-balance-scale' },
+        { name: 'Biología', icon: 'fas fa-leaf' },
+        { name: 'Educación Tecnológica', icon: 'fas fa-cogs' },
+        { name: 'Lengua Extranjera (Inglés)', icon: 'fas fa-language' },
+        { name: 'Física', icon: 'fas fa-atom' },
+        { name: 'Educación Artística (Plástica)', icon: 'fas fa-palette' },
+        { name: 'Educación Artística (Teatro)', icon: 'fas fa-theater-masks' },
+        { name: 'Educación Física', icon: 'fas fa-running' }
+      ],
+      2: [
+        { name: 'Lengua y Literatura', icon: 'fas fa-book' },
+        { name: 'Matemática', icon: 'fas fa-calculator' },
+        { name: 'Historia', icon: 'fas fa-landmark' },
+        { name: 'Geografía', icon: 'fas fa-globe-americas' },
+        { name: 'Formación Ética y Ciudadana', icon: 'fas fa-balance-scale' },
+        { name: 'Biología', icon: 'fas fa-leaf' },
+        { name: 'Educación Tecnológica', icon: 'fas fa-cogs' },
+        { name: 'Lengua Extranjera (Inglés)', icon: 'fas fa-language' },
+        { name: 'Química', icon: 'fas fa-flask' },
+        { name: 'Educación Artística (Plástica)', icon: 'fas fa-palette' },
+        { name: 'Educación Artística (Teatro)', icon: 'fas fa-theater-masks' },
+        { name: 'Educación Física', icon: 'fas fa-running' }
+      ],
+      3: [
+        { name: 'Lengua y Literatura', icon: 'fas fa-book' },
+        { name: 'Matemática', icon: 'fas fa-calculator' },
+        { name: 'Historia', icon: 'fas fa-landmark' },
+        { name: 'Geografía', icon: 'fas fa-globe-americas' },
+        { name: 'Biología', icon: 'fas fa-leaf' },
+        { name: 'Lengua Extranjera (Inglés)', icon: 'fas fa-language' },
+        { name: 'Educación Física', icon: 'fas fa-running' },
+        { name: 'Educación Artística (Plástica)', icon: 'fas fa-palette' },
+        { name: 'Educación Artística (Teatro)', icon: 'fas fa-theater-masks' },
+        { name: 'Aplicaciones para la Gestión de Oficinas', icon: 'fas fa-desktop' },
+        { name: 'Tecnologías Informáticas de Comunicación', icon: 'fas fa-wifi' },
+        { name: 'Diseño Multimedial', icon: 'fas fa-paint-brush' }
+      ],
+      4: [
+        { name: 'Lengua y Literatura', icon: 'fas fa-book' },
+        { name: 'Matemática', icon: 'fas fa-calculator' },
+        { name: 'Historia', icon: 'fas fa-landmark' },
+        { name: 'Geografía', icon: 'fas fa-globe-americas' },
+        { name: 'Física', icon: 'fas fa-atom' },
+        { name: 'Lengua Extranjera (Inglés)', icon: 'fas fa-language' },
+        { name: 'Educación Física', icon: 'fas fa-running' },
+        { name: 'Filosofía', icon: 'fas fa-brain' },
+        { name: 'Aplicaciones para la Gestión de Oficinas II', icon: 'fas fa-desktop' },
+        { name: 'Programación Imperativa', icon: 'fas fa-code' },
+        { name: 'Sistemas de Procesamiento de Datos', icon: 'fas fa-database' },
+        { name: 'Laboratorio Informático', icon: 'fas fa-laptop' }
+      ],
+      5: [
+        { name: 'Lengua y Literatura', icon: 'fas fa-book' },
+        { name: 'Formación Ética y Ciudadana', icon: 'fas fa-balance-scale' },
+        { name: 'Matemática', icon: 'fas fa-calculator' },
+        { name: 'Educación Física', icon: 'fas fa-running' },
+        { name: 'Lengua Extranjera (Inglés)', icon: 'fas fa-language' },
+        { name: 'Química', icon: 'fas fa-flask' },
+        { name: 'Psicología', icon: 'fas fa-head-side-virus' },
+        { name: 'Economía', icon: 'fas fa-chart-line' },
+        { name: 'Programación Orientada a Objetos', icon: 'fas fa-code' },
+        { name: 'Sistemas de Gestión de Bases de Datos', icon: 'fas fa-database' },
+        { name: 'Proyecto de Investigación en Informática', icon: 'fas fa-search' }
+      ]
+    };
+
+    // Lista de estudiantes (25 alumnos por materia)
+    const students = [];
+    for (let i = 1; i <= 25; i++) {
+      students.push({
+        id: i,
+        name: `Alumno ${i}`,
+        attendance: {},
+        grades: {}
+      });
+    }
+
+    // Variables globales
+    let currentLevel = 1;
+    let currentSubject = null;
+    let currentYear = null;
+
+    // Inicialización
+    document.addEventListener('DOMContentLoaded', function() {
+      showLevel(1);
+      document.getElementById('attendanceDate').value = new Date().toISOString().split('T')[0];
+    });
+
+    // Función para mostrar nivel
+    function showLevel(level) {
+      currentLevel = level;
+      
+      // Actualizar botones activos
+      document.querySelectorAll('.level-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.level-btn')[level - 1].classList.add('active');
+
+      // Ocultar todos los niveles
+      document.querySelectorAll('.level-content').forEach(content => content.classList.add('hidden'));
+      
+      // Mostrar nivel seleccionado
+      document.getElementById(`level-${level}`).classList.remove('hidden');
+
+      // Cargar materias
+      loadSubjects(level);
+    }
+
+    // Función para cargar materias
+    function loadSubjects(level) {
+      const container = document.getElementById(`subjects-${level}`);
+      const subjects = subjectsByLevel[level] || [];
+      
+      container.innerHTML = '';
+      
+      subjects.forEach(subject => {
+        const card = document.createElement('div');
+        card.className = 'subject-card';
+        card.innerHTML = `
+          <div class="subject-header">
+            <div class="subject-icon">
+              <i class="${subject.icon}"></i>
+            </div>
+            <h3 class="subject-name">${subject.name}</h3>
+          </div>
+          <div class="subject-info">
+            <span><i class="fas fa-users"></i> 25 estudiantes</span>
+            <span><i class="fas fa-calendar"></i> ${level}° Año</span>
+          </div>
+        `;
+        
+        card.addEventListener('click', () => openSubjectModal(subject.name, level));
+        container.appendChild(card);
+      });
+    }
+
+    // Función para abrir modal de materia
+    function openSubjectModal(subjectName, year) {
+      currentSubject = subjectName;
+      currentYear = year;
+      
+      document.getElementById('modalTitle').innerHTML = `
+        <i class="fas fa-chalkboard-teacher"></i>
+        ${subjectName} - ${year}° Año
+      `;
+      
+      loadAttendanceTab();
+      loadGradesTab();
+      
+      document.getElementById('studentModal').style.display = 'flex';
+    }
+
+    // Función para cerrar modal
+    function closeModal() {
+      document.getElementById('studentModal').style.display = 'none';
+    }
+
+    // Función para cambiar tabs
+    function showTab(tabName) {
+      // Actualizar botones de tabs
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      // Ocultar todos los tabs
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      
+      // Mostrar tab seleccionado
+      document.getElementById(`${tabName}-tab`).classList.
+      add('active');
+
+      // Mostrar tab seleccionado
+      document.getElementById(`${tabName}-tab`).classList.add('active');
+    }
+
+    // Función para cargar tab de asistencia
+    function loadAttendanceTab() {
+      const container = document.getElementById('attendanceList');
+      const date = document.getElementById('attendanceDate').value;
+      
+      container.innerHTML = '';
+      
+      students.forEach(student => {
+        const row = document.createElement('div');
+        row.className = 'student-row';
+        
+        const attendanceKey = `${currentSubject}-${currentYear}-${date}`;
+        const currentAttendance = student.attendance[attendanceKey] || null;
+        
+        row.innerHTML = `
+          <div class="student-name">${student.name}</div>
+          <div class="attendance-controls">
+            <button class="attendance-btn present ${currentAttendance === true ? 'active' : ''}" 
+                    onclick="setAttendance(${student.id}, true)">
+              <i class="fas fa-check"></i>
+            </button>
+            <button class="attendance-btn absent ${currentAttendance === false ? 'active' : ''}" 
+                    onclick="setAttendance(${student.id}, false)">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        `;
+        
+        container.appendChild(row);
+      });
+    }
+
+    // Función para cargar tab de calificaciones
+    function loadGradesTab() {
+      const container = document.getElementById('gradesList');
+      container.innerHTML = '';
+      
+      students.forEach(student => {
+        const gradesKey = `${currentSubject}-${currentYear}`;
+        const studentGrades = student.grades[gradesKey] || [];
+        
+        const row = document.createElement('div');
+        row.className = 'student-grades-row';
+        row.setAttribute('data-student-id', student.id);
+        
+        row.innerHTML = `
+          <div class="student-name">${student.name}</div>
+          <div class="grades-input-section" id="grades-${student.id}">
+            ${generateGradeInputs(studentGrades, student.id)}
+            <button class="add-grade-btn" onclick="addGradeInput(${student.id})">
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+          <div class="average-display" id="average-${student.id}">
+            ${calculateAverage(studentGrades)}
+          </div>
+        `;
+        
+        container.appendChild(row);
+      });
+    }
+
+    // Función para generar inputs de notas
+    function generateGradeInputs(grades, studentId) {
+      let html = '';
+      
+      // Mostrar al menos 2 inputs
+      const minInputs = Math.max(2, grades.length);
+      
+      for (let i = 0; i < minInputs; i++) {
+        const value = grades[i] || '';
+        html += `
+          <input type="number" class="grade-input" min="1" max="10" 
+                 value="${value}" onchange="updateGrade(${studentId}, ${i}, this.value)"
+                 placeholder="Nota">
+        `;
+        
+        // Agregar botón de eliminar si hay más de 2 inputs y hay valor
+        if (i >= 2 && grades[i] !== undefined) {
+          html += `
+            <button class="remove-grade-btn" onclick="removeGradeInput(${studentId}, ${i})">
+              <i class="fas fa-minus"></i>
+            </button>
+          `;
+        }
+      }
+      
+      return html;
+    }
+
+    // Función para calcular promedio
+    function calculateAverage(grades) {
+      if (!grades || grades.length === 0) return '--';
+      
+      const validGrades = grades.filter(grade => grade !== '' && grade !== null && grade !== undefined);
+      if (validGrades.length === 0) return '--';
+      
+      const sum = validGrades.reduce((acc, grade) => acc + parseFloat(grade), 0);
+      return (sum / validGrades.length).toFixed(2);
+    }
+
+    // Función para establecer asistencia
+    function setAttendance(studentId, isPresent) {
+      const date = document.getElementById('attendanceDate').value;
+      const attendanceKey = `${currentSubject}-${currentYear}-${date}`;
+      
+      const student = students.find(s => s.id === studentId);
+      if (student) {
+        student.attendance[attendanceKey] = isPresent;
+      }
+      
+      // Actualizar UI
+      loadAttendanceTab();
+    }
+
+    // Función para actualizar nota
+    function updateGrade(studentId, gradeIndex, value) {
+      const gradesKey = `${currentSubject}-${currentYear}`;
+      const student = students.find(s => s.id === studentId);
+      
+      if (student) {
+        if (!student.grades[gradesKey]) {
+          student.grades[gradesKey] = [];
+        }
+        
+        student.grades[gradesKey][gradeIndex] = value === '' ? null : parseFloat(value);
+        
+        // Actualizar promedio
+        const average = calculateAverage(student.grades[gradesKey]);
+        document.getElementById(`average-${studentId}`).textContent = average;
+      }
+    }
+
+    // Función para agregar input de nota
+    function addGradeInput(studentId) {
+      const gradesKey = `${currentSubject}-${currentYear}`;
+      const student = students.find(s => s.id === studentId);
+      
+      if (student) {
+        if (!student.grades[gradesKey]) {
+          student.grades[gradesKey] = [];
+        }
+        
+        student.grades[gradesKey].push('');
+        
+        // Regenerar los inputs
+        const container = document.getElementById(`grades-${studentId}`);
+        container.innerHTML = `
+          ${generateGradeInputs(student.grades[gradesKey], studentId)}
+          <button class="add-grade-btn" onclick="addGradeInput(${studentId})">
+            <i class="fas fa-plus"></i>
+          </button>
+        `;
+      }
+    }
+
+    // Función para eliminar input de nota
+    function removeGradeInput(studentId, gradeIndex) {
+      const gradesKey = `${currentSubject}-${currentYear}`;
+      const student = students.find(s => s.id === studentId);
+      
+      if (student && student.grades[gradesKey]) {
+        student.grades[gradesKey].splice(gradeIndex, 1);
+        
+        // Regenerar los inputs
+        const container = document.getElementById(`grades-${studentId}`);
+        container.innerHTML = `
+          ${generateGradeInputs(student.grades[gradesKey], studentId)}
+          <button class="add-grade-btn" onclick="addGradeInput(${studentId})">
+            <i class="fas fa-plus"></i>
+          </button>
+        `;
+        
+        // Actualizar promedio
+        const average = calculateAverage(student.grades[gradesKey]);
+        document.getElementById(`average-${studentId}`).textContent = average;
+      }
+    }
+
+    // Función para guardar asistencia
+    function saveAttendance() {
+      showNotification('Asistencia guardada exitosamente', 'success');
+      console.log('Asistencia guardada:', students.map(s => ({
+        id: s.id,
+        name: s.name,
+        attendance: s.attendance
+      })));
+    }
+
+    // Función para guardar calificaciones
+    function saveGrades() {
+      showNotification('Calificaciones guardadas exitosamente', 'success');
+      console.log('Calificaciones guardadas:', students.map(s => ({
+        id: s.id,
+        name: s.name,
+        grades: s.grades
+      })));
+    }
+
+    // Función para mostrar notificaciones
+    function showNotification(message, type = 'success') {
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      notification.textContent = message;
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.classList.add('show');
+      }, 100);
+      
+      setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+          document.body.removeChild(notification);
+        }, 300);
+      }, 3000);
+    }
+
+    // Event listeners
+    document.addEventListener('click', function(e) {
+      if (e.target === document.getElementById('studentModal')) {
+        closeModal();
+      }
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    });
+  </script>
+</body>
+</html>
