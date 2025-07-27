@@ -97,21 +97,25 @@
       margin-top: 15px;
     }
 
-    .login-box input {
+    .login-box input,
+    .login-box select {
       margin-top: 5px;
       padding: 10px;
       border: 1.5px solid #ccc;
       border-radius: 6px;
       width: 100%;
       transition: border-color 0.3s ease;
+      background-color: white;
     }
 
-    .login-box input:focus {
+    .login-box input:focus,
+    .login-box select:focus {
       border-color: #04294e;
       outline: none;
     }
 
-    .login-box input.error {
+    .login-box input.error,
+    .login-box select.error {
       border-color: #dc3545;
       background-color: #fff5f5;
     }
@@ -253,10 +257,21 @@
 
     <div class="login-box">
       <h2>Iniciar Sesión</h2>
+      
+      <label for="rol">Tipo de Usuario</label>
+      <select id="rol" name="rol" required>
+        <option value="">Seleccione su rol</option>
+        <option value="estudiante">Estudiante</option>
+        <option value="profesor">Profesor</option>
+        <option value="preceptor">Preceptor</option>
+      </select>
+      
       <label for="usuario">Usuario</label>
       <input type="text" id="usuario" name="usuario" placeholder="Ingrese su usuario" required />
+      
       <label for="password">Contraseña</label>
       <input type="password" id="password" name="password" placeholder="Ingrese su contraseña" required />
+      
       <button type="button" id="loginBtn" onclick="login()">Entrar</button>
       
       <!-- Mensajes de estado -->
@@ -266,20 +281,24 @@
       <div class="test-users">
         <h4>Usuarios de prueba:</h4>
         <ul>
-          <li><strong>Alumno:</strong> luca montali / alumno123</li>
-          <li><strong>Profesor:</strong> Profesor1 / profesor123</li>
-          <li><strong>Preceptor:</strong> davide / preceptor123</li>
+          <li><strong>Estudiantes:</strong></li>
+          <li>año1 / año1</li>
+          <li>año2 / año2</li>
+          <li>año3 / año3</li>
+          <li>año4 / año4</li>
+          <li>año5 / año5</li>
+          <li><strong>Profesor:</strong> profesores / profesores123</li>
+          <li><strong>Preceptor:</strong> preceptores / preceptores123</li>
         </ul>
       </div>
     </div>
   </div>
 
   <script>
-    // ¡IMPORTANTE! Configurar estas variables con tus credenciales de Supabase
+    // Configuración de Supabase
     const supabaseUrl = 'https://zcuodmndmrrvamyvgczm.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpjdW9kbW5kbXJydmFteXZnY3ptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIzNTA1ODMsImV4cCI6MjA2NzkyNjU4M30.l0XJgelYCQQ8sQyhL3XsY_4FOLGu6DwyZQ7PiocyLEE';
     
-    // Crear cliente de Supabase
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey, {
       auth: {
         autoRefreshToken: false,
@@ -289,10 +308,28 @@
     });
 
     // Elementos del DOM
+    const rolSelect = document.getElementById('rol');
     const usuarioInput = document.getElementById('usuario');
     const passwordInput = document.getElementById('password');
     const loginBtn = document.getElementById('loginBtn');
     const alertMessage = document.getElementById('alertMessage');
+
+    // Usuarios locales para roles específicos
+    const localUsers = {
+      estudiante: {
+        año1: { password: 'año1', year: '1' },
+        año2: { password: 'año2', year: '2' },
+        año3: { password: 'año3', year: '3' },
+        año4: { password: 'año4', year: '4' },
+        año5: { password: 'año5', year: '5' }
+      },
+      profesor: {
+        profesores: { password: 'profesores123' }
+      },
+      preceptor: {
+        preceptores: { password: 'preceptores123' }
+      }
+    };
 
     // Función para mostrar mensajes
     function showAlert(message, type = 'danger') {
@@ -300,7 +337,6 @@
       alertMessage.className = `alert alert-${type}`;
       alertMessage.textContent = message;
       
-      // Ocultar después de 5 segundos si es error
       if (type === 'danger') {
         setTimeout(() => {
           alertMessage.style.display = 'none';
@@ -314,10 +350,18 @@
     }
 
     // Función para validar campos
-    function validateInputs(usuario, password) {
+    function validateInputs(rol, usuario, password) {
       // Limpiar estilos de error anteriores
+      rolSelect.classList.remove('error');
       usuarioInput.classList.remove('error');
       passwordInput.classList.remove('error');
+      
+      if (!rol) {
+        rolSelect.classList.add('error');
+        showAlert('Debe seleccionar un tipo de usuario');
+        rolSelect.focus();
+        return false;
+      }
       
       if (!usuario.trim()) {
         usuarioInput.classList.add('error');
@@ -333,30 +377,82 @@
         return false;
       }
       
-      if (usuario.trim().length < 2) {
-        usuarioInput.classList.add('error');
-        showAlert('El usuario debe tener al menos 2 caracteres');
-        usuarioInput.focus();
-        return false;
-      }
-      
-      if (password.length < 6) {
-        passwordInput.classList.add('error');
-        showAlert('La contraseña debe tener al menos 6 caracteres');
-        passwordInput.focus();
-        return false;
-      }
-      
       return true;
+    }
+
+    // Función para validar credenciales locales
+    function validateLocalCredentials(rol, usuario, password) {
+      if (!localUsers[rol]) {
+        return null;
+      }
+      
+      if (!localUsers[rol][usuario]) {
+        return null;
+      }
+      
+      if (localUsers[rol][usuario].password !== password) {
+        return null;
+      }
+      
+      return localUsers[rol][usuario];
+    }
+
+    // Función para redirigir según el rol
+    function redirectUser(rol, userData) {
+      const baseUserData = {
+        nombre: usuarioInput.value.trim(),
+        rol: rol,
+        loginTime: new Date().toISOString()
+      };
+
+      // Guardar estado de login
+      localStorage.setItem('loggedIn', 'true');
+      localStorage.setItem('userRole', rol);
+      localStorage.setItem('userName', baseUserData.nombre);
+
+      switch (rol) {
+        case 'estudiante':
+          const year = userData.year;
+          localStorage.setItem('userYear', year);
+          localStorage.setItem('userData', JSON.stringify({
+            ...baseUserData,
+            year: year
+          }));
+          
+          // Redirigir al año específico
+          setTimeout(() => {
+            window.location.href = `${year} año.html`;
+          }, 1500);
+          break;
+
+        case 'profesor':
+          localStorage.setItem('userData', JSON.stringify(baseUserData));
+          setTimeout(() => {
+            window.location.href = 'niveles.html';
+          }, 1500);
+          break;
+
+        case 'preceptor':
+          localStorage.setItem('userData', JSON.stringify(baseUserData));
+          setTimeout(() => {
+            window.location.href = 'niveles.html';
+          }, 1500);
+          break;
+
+        default:
+          showAlert('Rol no reconocido');
+          return;
+      }
     }
 
     // Función principal de login
     async function login() {
-      const usuario = usuarioInput.value;
+      const rol = rolSelect.value;
+      const usuario = usuarioInput.value.trim();
       const password = passwordInput.value;
       
       // Validar campos obligatorios
-      if (!validateInputs(usuario, password)) {
+      if (!validateInputs(rol, usuario, password)) {
         return;
       }
       
@@ -366,61 +462,48 @@
         loginBtn.textContent = 'Verificando...';
         clearAlert();
         
-        console.log('Intentando login con:', { usuario: usuario.trim(), password: password });
+        console.log('Intentando login con:', { rol, usuario, password });
         
-        // Consultar usuario en la base de datos
+        // Primero intentar validación local
+        const localValidation = validateLocalCredentials(rol, usuario, password);
+        
+        if (localValidation) {
+          // Login exitoso con credenciales locales
+          showAlert('Login exitoso. Redirigiendo...', 'success');
+          console.log('Login exitoso (local) para:', { rol, usuario });
+          
+          redirectUser(rol, localValidation);
+          return;
+        }
+        
+        // Si no es local, intentar con Supabase (para compatibilidad con usuarios existentes)
         const { data, error } = await supabase
           .from('usuarios')
           .select('*')
-          .eq('nombre', usuario.trim())
+          .eq('nombre', usuario)
           .eq('contraseña', password)
           .single();
         
-        console.log('Respuesta de Supabase:', { data, error });
-        
         if (error) {
           console.error('Error de Supabase:', error);
-          
-          if (error.code === 'PGRST116') {
-            showAlert('Usuario o contraseña incorrectos');
-          } else if (error.message.includes('relation "usuarios" does not exist')) {
-            showAlert('La tabla usuarios no existe. Por favor, crear la tabla en Supabase', 'info');
-          } else {
-            showAlert(`Error de conexión: ${error.message}`);
-          }
+          showAlert('Usuario o contraseña incorrectos');
           return;
         }
         
         if (data) {
-          // Login exitoso
+          // Login exitoso con Supabase
           showAlert('Login exitoso. Redirigiendo...', 'success');
-          console.log('Login exitoso para:', data);
+          console.log('Login exitoso (Supabase) para:', data);
           
-          // Guardar datos del usuario en localStorage
-          const userData = {
-            id: data.id,
-            nombre: data.nombre,
-            rol: data.rol,
-            loginTime: new Date().toISOString()
-          };
-          
-          // CORRECCIÓN: Guardar estado de login y datos del usuario
-          localStorage.setItem('loggedIn', 'true');
-          localStorage.setItem('userData', JSON.stringify(userData));
-          
-          console.log('Datos del usuario guardados:', userData);
-          
-          // CORRECCIÓN: Redirigir a niveles.html después de 1.5 segundos
-          setTimeout(() => {
-            window.location.href = 'niveles.html';
-          }, 1500);
+          // Usar el rol seleccionado por el usuario, no el de la base de datos
+          redirectUser(rol, { year: data.year || '1' });
         } else {
           showAlert('Usuario o contraseña incorrectos');
         }
         
       } catch (error) {
         console.error('Error inesperado:', error);
-        showAlert(`Error inesperado: ${error.message}`);
+        showAlert('Usuario o contraseña incorrectos');
       } finally {
         // Restaurar botón
         loginBtn.disabled = false;
@@ -428,7 +511,13 @@
       }
     }
 
-    // Manejar Enter en los campos
+    // Event listeners para navegación con teclado
+    rolSelect.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        usuarioInput.focus();
+      }
+    });
+
     usuarioInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {
         passwordInput.focus();
@@ -441,7 +530,12 @@
       }
     });
 
-    // Limpiar errores al escribir
+    // Limpiar errores al cambiar valores
+    rolSelect.addEventListener('change', () => {
+      rolSelect.classList.remove('error');
+      clearAlert();
+    });
+
     usuarioInput.addEventListener('input', () => {
       usuarioInput.classList.remove('error');
       clearAlert();
@@ -452,26 +546,25 @@
       clearAlert();
     });
 
-    // Verificar conexión al cargar
-    document.addEventListener('DOMContentLoaded', async () => {
-      try {
-        // Probar conexión con Supabase
-        const { data, error } = await supabase
-          .from('usuarios')
-          .select('count')
-          .limit(1);
-        
-        if (error) {
-          console.error('Error de conexión con Supabase:', error);
-          showAlert('Error de conexión con la base de datos. Verifique la configuración.', 'info');
-        } else {
-          console.log('Conexión con Supabase exitosa');
-          showAlert('Conexión con la base de datos establecida', 'success');
-          setTimeout(() => clearAlert(), 3000);
+    // Verificar si ya está logueado al cargar la página
+    document.addEventListener('DOMContentLoaded', () => {
+      const isLoggedIn = localStorage.getItem('loggedIn');
+      const userRole = localStorage.getItem('userRole');
+      const userYear = localStorage.getItem('userYear');
+
+      if (isLoggedIn === 'true' && userRole) {
+        // Ya está logueado, redirigir según el rol
+        switch (userRole) {
+          case 'estudiante':
+            if (userYear) {
+              window.location.href = `${userYear} año.html`;
+            }
+            break;
+          case 'profesor':
+          case 'preceptor':
+            window.location.href = 'niveles.html';
+            break;
         }
-      } catch (error) {
-        console.error('Error al probar conexión:', error);
-        showAlert('Error al conectar con la base de datos', 'info');
       }
     });
   </script>
