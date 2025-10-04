@@ -348,6 +348,68 @@
       transform: scale(1.05);
     }
 
+    /* Loading y Security */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    .loading-content {
+      text-align: center;
+      color: white;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255,255,255,0.3);
+      border-left: 4px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .security-warning {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      color: white;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .warning-content {
+      background: var(--accent-color);
+      padding: 2rem;
+      border-radius: 16px;
+      max-width: 400px;
+    }
+
+    .warning-content i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
       .dashboard-title {
@@ -398,6 +460,24 @@
 </head>
 <body>
 
+<!-- Loading Screen -->
+<div class="loading-screen" id="loadingScreen">
+  <div class="loading-content">
+    <div class="loading-spinner"></div>
+    <h3>Verificando acceso...</h3>
+    <p>Panel Administrativo</p>
+  </div>
+</div>
+
+<!-- Security Warning Overlay -->
+<div class="security-warning" id="securityWarning">
+  <div class="warning-content">
+    <i class="fas fa-exclamation-triangle"></i>
+    <h3>¡Acceso Restringido!</h3>
+    <p>Este panel es exclusivo para preceptores. Serás redirigido.</p>
+  </div>
+</div>
+
 <!-- Header -->
 <header class="encabezado-profesional">
   <div class="container">
@@ -411,7 +491,7 @@
             <div class="user-avatar">
               <i class="fas fa-user-tie"></i>
             </div>
-            <span id="userName">Administrador</span>
+            <span id="userName">Preceptor</span>
           </div>
           <button class="cerrar-sesion-btn" id="btnCerrarSesion">
             <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
@@ -421,7 +501,6 @@
     </div>
   </div>
 </header>
-
 
 <div class="main-content">
   <div class="dashboard-header">
@@ -454,7 +533,7 @@
     
     <div class="tab-content" id="adminTabsContent">
       
-      
+      <!-- Tab Actividades -->
       <div class="tab-pane fade show active" id="actividades" role="tabpanel">
         <div class="row">
           <div class="col-lg-6">
@@ -499,15 +578,13 @@
           <div class="col-lg-6">
             <div class="item-list animate-fade-in">
               <h4 class="mb-3">Actividades Recientes</h4>
-              <div id="actividadesList">
-                
-              </div>
+              <div id="actividadesList"></div>
             </div>
           </div>
         </div>
       </div>
 
-      
+      <!-- Tab Novedades -->
       <div class="tab-pane fade" id="novedades" role="tabpanel">
         <div class="row">
           <div class="col-lg-6">
@@ -553,15 +630,13 @@
           <div class="col-lg-6">
             <div class="item-list animate-fade-in">
               <h4 class="mb-3">Novedades Publicadas</h4>
-              <div id="novedadesList">
-                
-              </div>
+              <div id="novedadesList"></div>
             </div>
           </div>
         </div>
       </div>
 
-      
+      <!-- Tab Reportes -->
       <div class="tab-pane fade" id="reportes" role="tabpanel">
         <div class="row">
           <div class="col-lg-12">
@@ -606,20 +681,90 @@
   </div>
 </div>
 
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
 
+// ===== SISTEMA DE VERIFICACIÓN DE ACCESO =====
+
 document.addEventListener('DOMContentLoaded', function() {
-  
-  cargarActividades();
-  cargarNovedades();
-  
-  
-  document.getElementById('userName').textContent = 'Administrador';
+  checkAccess();
 });
 
+function checkAccess() {
+  const isLoggedIn = localStorage.getItem('loggedIn');
+  const userRole = localStorage.getItem('userRole');
+  const userName = localStorage.getItem('userName');
+
+  console.log('Verificando acceso:', { isLoggedIn, userRole, userName });
+
+  // Verificar si está logueado
+  if (isLoggedIn !== 'true') {
+    console.log('Usuario no logueado, redirigiendo a login');
+    redirectToLogin('No has iniciado sesión');
+    return;
+  }
+
+  // Verificar que sea preceptor
+  if (userRole !== 'preceptor') {
+    console.log('Usuario no es preceptor, acceso denegado');
+    redirectToLogin('Acceso restringido solo para preceptores');
+    return;
+  }
+
+  // Si pasa todas las verificaciones, inicializar
+  console.log('Acceso autorizado para preceptor');
+  initializePage(userName);
+}
+
+function redirectToLogin(message = 'Acceso no autorizado') {
+  showSecurityWarning(message);
+  setTimeout(() => {
+    localStorage.clear();
+    window.location.href = 'login.html';
+  }, 3000);
+}
+
+function showSecurityWarning(message) {
+  const warningOverlay = document.getElementById('securityWarning');
+  warningOverlay.style.display = 'flex';
+  
+  if (message) {
+    const warningContent = warningOverlay.querySelector('.warning-content p');
+    warningContent.textContent = message;
+  }
+}
+
+function initializePage(userName) {
+  // Actualizar nombre de usuario
+  if (userName) {
+    document.getElementById('userName').textContent = userName;
+  }
+
+  // Cargar datos
+  cargarActividades();
+  cargarNovedades();
+
+  // Ocultar loading screen
+  setTimeout(() => {
+    const loadingScreen = document.getElementById('loadingScreen');
+    loadingScreen.style.opacity = '0';
+    setTimeout(() => {
+      loadingScreen.style.display = 'none';
+    }, 500);
+  }, 1000);
+
+  console.log('Panel inicializado correctamente para:', userName);
+}
+
+// Prevenir navegación con botones del navegador
+window.addEventListener('popstate', function(event) {
+  history.pushState(null, null, location.href);
+});
+
+history.pushState(null, null, location.href);
+
+// ===== FUNCIONALIDAD DEL PANEL =====
 
 document.getElementById('actividadForm').addEventListener('submit', function(e) {
   e.preventDefault();
@@ -633,19 +778,14 @@ document.getElementById('actividadForm').addEventListener('submit', function(e) 
     fechaCreacion: new Date().toLocaleDateString()
   };
   
-  
-  let actividades = JSON.parse(sessionStorage.getItem('actividades') || '[]');
+  let actividades = JSON.parse(localStorage.getItem('actividades') || '[]');
   actividades.unshift(actividad);
-  sessionStorage.setItem('actividades', JSON.stringify(actividades));
-  
+  localStorage.setItem('actividades', JSON.stringify(actividades));
   
   mostrarMensaje('Actividad guardada exitosamente', 'success');
-  
-  
   this.reset();
   cargarActividades();
 });
-
 
 document.getElementById('novedadForm').addEventListener('submit', function(e) {
   e.preventDefault();
@@ -656,46 +796,23 @@ document.getElementById('novedadForm').addEventListener('submit', function(e) {
     contenido: document.getElementById('novedadContenido').value,
     prioridad: document.getElementById('novedadPrioridad').value,
     destino: document.getElementById('novedadDestino').value,
+    autor: localStorage.getItem('userName') || 'Preceptor',
+    año: 'todos',
+    fecha: new Date().toISOString(),
     fechaCreacion: new Date().toLocaleDateString()
   };
   
-  
-  let novedades = JSON.parse(sessionStorage.getItem('novedades') || '[]');
+  let novedades = JSON.parse(localStorage.getItem('noticias') || '[]');
   novedades.unshift(novedad);
-  sessionStorage.setItem('novedades', JSON.stringify(novedades));
-  
+  localStorage.setItem('noticias', JSON.stringify(novedades));
   
   mostrarMensaje('Novedad publicada exitosamente', 'success');
-  
-  
   this.reset();
   cargarNovedades();
 });
 
-
 function cargarActividades() {
-  
-  const actividadesEjemplo = [
-    {
-      id: 1,
-      titulo: "Feria de Ciencias",
-      descripcion: "Exhibición de proyectos científicos de todos los niveles",
-      fecha: "2024-07-15",
-      nivel: "todos",
-      fechaCreacion: "05/07/2024"
-    },
-    {
-      id: 2,
-      titulo: "Jornada Cultural",
-      descripcion: "Presentaciones artísticas y culturales",
-      fecha: "2024-07-20",
-      nivel: "4",
-      fechaCreacion: "03/07/2024"
-    }
-  ];
-  
-  const actividadesSesion = JSON.parse(sessionStorage.getItem('actividades') || '[]');
-  const actividades = [...actividadesSesion, ...actividadesEjemplo];
+  const actividades = JSON.parse(localStorage.getItem('actividades') || '[]');
   const container = document.getElementById('actividadesList');
   
   if (actividades.length === 0) {
@@ -712,9 +829,6 @@ function cargarActividades() {
       </div>
       <p class="mt-2">${actividad.descripcion}</p>
       <div class="item-actions">
-        <button class="btn-small btn-edit" onclick="editarActividad(${actividad.id})">
-          <i class="fas fa-edit"></i> Editar
-        </button>
         <button class="btn-small btn-delete" onclick="eliminarActividad(${actividad.id})">
           <i class="fas fa-trash"></i> Eliminar
         </button>
@@ -723,30 +837,8 @@ function cargarActividades() {
   `).join('');
 }
 
-
 function cargarNovedades() {
-  
-  const novedadesEjemplo = [
-    {
-      id: 1,
-      titulo: "Inicio del segundo semestre",
-      contenido: "Recordamos que el segundo semestre académico inicia el 15 de julio",
-      prioridad: "importante",
-      destino: "todos",
-      fechaCreacion: "01/07/2024"
-    },
-    {
-      id: 2,
-      titulo: "Reunión de padres",
-      contenido: "Se convoca a reunión de padres para el 10 de julio a las 18:00 hs",
-      prioridad: "normal",
-      destino: "padres",
-      fechaCreacion: "28/06/2024"
-    }
-  ];
-  
-  const novedadesSesion = JSON.parse(sessionStorage.getItem('novedades') || '[]');
-  const novedades = [...novedadesSesion, ...novedadesEjemplo];
+  const novedades = JSON.parse(localStorage.getItem('noticias') || '[]');
   const container = document.getElementById('novedadesList');
   
   if (novedades.length === 0) {
@@ -758,15 +850,11 @@ function cargarNovedades() {
     <div class="item">
       <div class="item-title">${novedad.titulo}</div>
       <div class="item-date">
-        <i class="fas fa-clock me-2"></i>${novedad.fechaCreacion} | 
-        <i class="fas fa-flag me-2"></i>${novedad.prioridad.toUpperCase()} | 
-        <i class="fas fa-users me-2"></i>${novedad.destino}
+        <i class="fas fa-clock me-2"></i>${novedad.fechaCreacion || new Date(novedad.fecha).toLocaleDateString()} | 
+        <i class="fas fa-user me-2"></i>${novedad.autor}
       </div>
       <p class="mt-2">${novedad.contenido}</p>
       <div class="item-actions">
-        <button class="btn-small btn-edit" onclick="editarNovedad(${novedad.id})">
-          <i class="fas fa-edit"></i> Editar
-        </button>
         <button class="btn-small btn-delete" onclick="eliminarNovedad(${novedad.id})">
           <i class="fas fa-trash"></i> Eliminar
         </button>
@@ -775,12 +863,11 @@ function cargarNovedades() {
   `).join('');
 }
 
-
 function eliminarActividad(id) {
   if (confirm('¿Estás seguro de que deseas eliminar esta actividad?')) {
-    let actividades = JSON.parse(sessionStorage.getItem('actividades') || '[]');
+    let actividades = JSON.parse(localStorage.getItem('actividades') || '[]');
     actividades = actividades.filter(a => a.id !== id);
-    sessionStorage.setItem('actividades', JSON.stringify(actividades));
+    localStorage.setItem('actividades', JSON.stringify(actividades));
     cargarActividades();
     mostrarMensaje('Actividad eliminada exitosamente', 'success');
   }
@@ -788,24 +875,13 @@ function eliminarActividad(id) {
 
 function eliminarNovedad(id) {
   if (confirm('¿Estás seguro de que deseas eliminar esta novedad?')) {
-    let novedades = JSON.parse(sessionStorage.getItem('novedades') || '[]');
+    let novedades = JSON.parse(localStorage.getItem('noticias') || '[]');
     novedades = novedades.filter(n => n.id !== id);
-    sessionStorage.setItem('novedades', JSON.stringify(novedades));
+    localStorage.setItem('noticias', JSON.stringify(novedades));
     cargarNovedades();
     mostrarMensaje('Novedad eliminada exitosamente', 'success');
   }
 }
-
-function editarActividad(id) {
- 
-  alert('Función de edición en desarrollo');
-}
-
-function editarNovedad(id) {
-  
-  alert('Función de edición en desarrollo');
-}
-
 
 function mostrarMensaje(mensaje, tipo) {
   const alertDiv = document.createElement('div');
@@ -823,6 +899,69 @@ function mostrarMensaje(mensaje, tipo) {
   }, 5000);
 }
 
-
+// Cerrar sesión
 document.getElementById('btnCerrarSesion').addEventListener('click', function() {
-  session
+  if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+    console.log('Cerrando sesión...');
+    localStorage.clear();
+    window.location.href = 'login.html';
+  }
+});
+
+// Bloquear teclas de desarrollador
+document.addEventListener('keydown', function(event) {
+  const blockedKeys = [
+    { key: 'F12' },
+    { key: 'I', ctrl: true, shift: true },
+    { key: 'C', ctrl: true, shift: true },
+    { key: 'J', ctrl: true, shift: true },
+    { key: 'U', ctrl: true }
+  ];
+
+  const currentKey = {
+    key: event.key,
+    ctrl: event.ctrlKey,
+    shift: event.shiftKey
+  };
+
+  const isBlocked = blockedKeys.some(blocked => {
+    return blocked.key === currentKey.key &&
+           (blocked.ctrl === undefined || blocked.ctrl === currentKey.ctrl) &&
+           (blocked.shift === undefined || blocked.shift === currentKey.shift);
+  });
+
+  if (isBlocked) {
+    event.preventDefault();
+    console.log('Tecla bloqueada');
+    return false;
+  }
+});
+
+// Bloquear clic derecho
+document.addEventListener('contextmenu', function(event) {
+  event.preventDefault();
+  return false;
+});
+
+// Verificación periódica de sesión
+setInterval(() => {
+  const isLoggedIn = localStorage.getItem('loggedIn');
+  const userRole = localStorage.getItem('userRole');
+
+  if (isLoggedIn !== 'true' || userRole !== 'preceptor') {
+    console.log('Sesión inválida detectada');
+    redirectToLogin('Sesión expirada');
+  }
+}, 30000); // Cada 30 segundos
+
+// Detectar cambios de ventana
+document.addEventListener('visibilitychange', function() {
+  if (!document.hidden) {
+    checkAccess();
+  }
+});
+
+console.log('%c🔒 PANEL ADMINISTRATIVO SEGURO', 
+  'color: #c53030; font-size: 20px; font-weight: bold;');
+console.log('%cAcceso restringido solo para preceptores autorizados.', 
+  'color: #d69e2e; font-size: 14px;');
