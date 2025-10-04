@@ -481,7 +481,7 @@
     <div class="loading-content">
       <div class="loading-spinner"></div>
       <h3>Verificando acceso...</h3>
-      <p>Cargando 5° Año</p>
+      <p>Cargando 1° Año</p>
     </div>
   </div>
 
@@ -498,9 +498,9 @@
   <header class="restricted-header">
     <div class="header-content">
       <div class="student-info">
-        <div class="student-avatar" id="studentAvatar">5</div>
+        <div class="student-avatar" id="studentAvatar">1</div>
         <div class="student-details">
-          <h3 id="studentName">Estudiante de 5° Año</h3>
+          <h3 id="studentName">Estudiante de 1° Año</h3>
           <p>Colegio Dante Alighieri</p>
         </div>
       </div>
@@ -532,9 +532,9 @@
 
     <!-- Hero Section -->
     <section class="hero-section">
-      <span class="year-badge">5° Año</span>
-      <h1>Quinto Año</h1>
-      <p>..</p>
+      <span class="year-badge">1° Año</span>
+      <h1>Primer Año</h1>
+      <p>Inicio de la educación secundaria y desarrollo de competencias básicas</p>
     </section>
 
     <!-- Buscador -->
@@ -719,7 +719,7 @@
     </section>
   </main>
 
-   <script>
+  <script>
     // ===== SISTEMA DE RESTRICCIONES Y SEGURIDAD =====
     
     // Verificar acceso al cargar la página
@@ -958,13 +958,9 @@
           
           // Navegación específica por materia
           if (subjectName === 'ASISTENCIA') {
-            // Redirigir a página de asistencia
             window.location.href = 'asistencia.html';
           } else {
-            // Para otras materias, mostrar mensaje informativo
             alert(`Accediendo a: ${subjectName}`);
-            // Aquí puedes agregar navegación a páginas específicas de materias
-            // window.location.href = `materia.html?subject=${encodeURIComponent(subjectName)}`;
           }
         });
       });
@@ -994,10 +990,7 @@
       resetActivityTimer();
 
       // Detectar si las herramientas de desarrollador están abiertas
-      let devtools = {
-        open: false,
-        orientation: null
-      };
+      let devtools = { open: false, orientation: null };
 
       setInterval(() => {
         if (window.outerHeight - window.innerHeight > 200 || 
@@ -1021,11 +1014,11 @@
         const userRole = localStorage.getItem('userRole');
         const userYear = localStorage.getItem('userYear');
 
-        if (isLoggedIn !== 'true' || userRole !== 'estudiante' || userYear !== '5') {
+        if (isLoggedIn !== 'true' || userRole !== 'estudiante' || userYear !== '1') {
           console.log('Sesión comprometida, cerrando...');
           redirectToLogin('Sesión inválida detectada');
         }
-      }, 10000); // Verificar cada 10 segundos
+      }, 10000);
 
       // Prevenir selección de texto
       document.addEventListener('selectstart', function(e) {
@@ -1039,50 +1032,26 @@
 
       // Detectar cambios de ventana/pestaña
       document.addEventListener('visibilitychange', function() {
-        if (document.hidden) {
-          console.log('Usuario cambió de pestaña');
-        } else {
-          console.log('Usuario regresó a la pestaña');
-          // Verificar sesión al regresar
+        if (!document.hidden) {
           checkAccess();
-        }
-      });
-
-      // Prevenir zoom excesivo
-      document.addEventListener('wheel', function(e) {
-        if (e.ctrlKey) {
-          e.preventDefault();
-        }
-      });
-
-      // Detectar cambios de tamaño de ventana sospechosos
-      window.addEventListener('resize', function() {
-        const minWidth = 320;
-        const minHeight = 240;
-        
-        if (window.innerWidth < minWidth || window.innerHeight < minHeight) {
-          console.log('Tamaño de ventana sospechoso detectado');
         }
       });
     }
 
     // Bloquear teclas de desarrollador y atajos peligrosos
     document.addEventListener('keydown', function(event) {
-      // Lista de combinaciones bloqueadas
       const blockedKeys = [
-        // Herramientas de desarrollador
         { key: 'F12' },
         { key: 'I', ctrl: true, shift: true },
         { key: 'C', ctrl: true, shift: true },
         { key: 'J', ctrl: true, shift: true },
         { key: 'U', ctrl: true },
-        // Otras combinaciones
-        { key: 'S', ctrl: true }, // Guardar
-        { key: 'A', ctrl: true }, // Seleccionar todo
-        { key: 'P', ctrl: true }, // Imprimir
-        { key: 'F', ctrl: true }, // Buscar
-        { key: 'R', ctrl: true }, // Recargar
-        { key: 'F5' }, // Recargar
+        { key: 'S', ctrl: true },
+        { key: 'A', ctrl: true },
+        { key: 'P', ctrl: true },
+        { key: 'F', ctrl: true },
+        { key: 'R', ctrl: true },
+        { key: 'F5' },
       ];
 
       const currentKey = {
@@ -1104,7 +1073,6 @@
         event.stopPropagation();
         console.log('Tecla bloqueada:', currentKey);
         
-        // Mostrar advertencia para F12 y herramientas de desarrollador
         if (event.key === 'F12' || 
             (event.ctrlKey && event.shiftKey && ['I', 'C', 'J'].includes(event.key))) {
           showSecurityWarning('Acceso a herramientas de desarrollador bloqueado');
@@ -1122,7 +1090,6 @@
       event.preventDefault();
       console.log('Clic derecho bloqueado');
       
-      // Mostrar advertencia ocasional
       if (Math.random() < 0.3) {
         showSecurityWarning('Clic derecho deshabilitado por seguridad');
         setTimeout(() => {
@@ -1137,10 +1104,8 @@
     const observer = new MutationObserver(function(mutations) {
       mutations.forEach(function(mutation) {
         if (mutation.type === 'childList') {
-          // Verificar si se agregaron elementos sospechosos
           mutation.addedNodes.forEach(function(node) {
             if (node.nodeType === Node.ELEMENT_NODE) {
-              // Detectar scripts inyectados
               if (node.tagName === 'SCRIPT' && !node.hasAttribute('data-allowed')) {
                 console.log('Script no autorizado detectado');
                 node.remove();
@@ -1151,7 +1116,6 @@
       });
     });
 
-    // Observar cambios en el documento
     observer.observe(document, {
       childList: true,
       subtree: true
@@ -1161,7 +1125,6 @@
     window.addEventListener('error', function(event) {
       if (event.error && event.error.stack) {
         console.log('Error detectado:', event.error.message);
-        // No mostrar errores al usuario por seguridad
         event.preventDefault();
       }
     });
@@ -1171,7 +1134,7 @@
       if (typeof console !== 'undefined' && console.clear) {
         console.clear();
       }
-    }, 30000); // Cada 30 segundos
+    }, 30000);
 
     // Verificación de integridad de elementos críticos
     function verifyPageIntegrity() {
@@ -1186,19 +1149,16 @@
         const element = document.querySelector(selector);
         if (!element) {
           console.log('Elemento crítico faltante:', selector);
-          // Recargar página si falta un elemento crítico
           location.reload();
         }
       });
     }
 
-    // Verificar integridad cada minuto
     setInterval(verifyPageIntegrity, 60000);
 
-    // Protección final: Verificar que el script no ha sido modificado
+    // Protección final
     const originalConsoleLog = console.log;
     console.log = function(...args) {
-      // Filtrar logs sensibles
       const sensitivePatterns = ['password', 'token', 'session', 'auth'];
       const logString = args.join(' ').toLowerCase();
       
@@ -1213,43 +1173,8 @@
     console.log('%cEste sistema está protegido. El acceso no autorizado está prohibido.', 
       'color: #d69e2e; font-size: 14px;');
     
-    // ===== FUNCIONES UTILITARIAS =====
-    
-    // Función para formatear fechas en español
-    function formatDateSpanish(date) {
-      const months = [
-        'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
-        'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
-      ];
-      
-      const day = date.getDate();
-      const month = months[date.getMonth()];
-      const year = date.getFullYear();
-      
-      return `${day} de ${month} de ${year}`;
-    }
-
-    // Función para generar IDs únicos
-    function generateUniqueId() {
-      return 'id_' + Math.random().toString(36).substr(2, 16);
-    }
-
-    // Función para sanitizar texto
-    function sanitizeText(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    }
-
-    // Logging seguro para debugging
-    function secureLog(message, data = null) {
-      if (localStorage.getItem('debugMode') === 'true') {
-        console.log(`[${new Date().toISOString()}] ${message}`, data);
-      }
-    }
-
     // Inicialización final
-    secureLog('Sistema de 1° Año inicializado correctamente');
+    console.log('Sistema de 1° Año inicializado correctamente');
     
   </script>
 </body>
