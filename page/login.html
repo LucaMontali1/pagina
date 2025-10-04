@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -161,6 +162,12 @@
       border: 1px solid #c3e6cb;
     }
 
+    .alert-info {
+      background-color: #cce7ff;
+      color: #004085;
+      border: 1px solid #b8daff;
+    }
+
     .test-users {
       margin-top: 20px;
       padding: 15px;
@@ -267,8 +274,10 @@
       
       <button type="button" id="loginBtn" onclick="login()">Entrar</button>
       
+      <!-- Mensajes de estado -->
       <div id="alertMessage" style="display: none;"></div>
       
+      <!-- Info de usuarios de prueba -->
       <div class="test-users">
         <h4>Usuarios de prueba:</h4>
         <ul>
@@ -298,29 +307,31 @@
       }
     });
 
+    // Elementos del DOM
     const rolSelect = document.getElementById('rol');
     const usuarioInput = document.getElementById('usuario');
     const passwordInput = document.getElementById('password');
     const loginBtn = document.getElementById('loginBtn');
     const alertMessage = document.getElementById('alertMessage');
 
-    // Usuarios locales
+    // Usuarios locales para roles específicos
     const localUsers = {
       estudiante: {
-        año1: { password: 'año1', year: '1', nombre: 'Estudiante 1° Año' },
-        año2: { password: 'año2', year: '2', nombre: 'Estudiante 2° Año' },
-        año3: { password: 'año3', year: '3', nombre: 'Estudiante 3° Año' },
-        año4: { password: 'año4', year: '4', nombre: 'Estudiante 4° Año' },
-        año5: { password: 'año5', year: '5', nombre: 'Estudiante 5° Año' }
+        año1: { password: 'año1', year: '1' },
+        año2: { password: 'año2', year: '2' },
+        año3: { password: 'año3', year: '3' },
+        año4: { password: 'año4', year: '4' },
+        año5: { password: 'año5', year: '5' }
       },
       profesor: {
-        profesores: { password: 'profesores123', nombre: 'Profesor' }
+        profesores: { password: 'profesores123' }
       },
       preceptor: {
-        preceptores: { password: 'preceptores123', nombre: 'Preceptor' }
+        preceptores: { password: 'preceptores123' }
       }
     };
 
+    // Función para mostrar mensajes
     function showAlert(message, type = 'danger') {
       alertMessage.style.display = 'block';
       alertMessage.className = `alert alert-${type}`;
@@ -333,11 +344,14 @@
       }
     }
 
+    // Función para limpiar mensajes
     function clearAlert() {
       alertMessage.style.display = 'none';
     }
 
+    // Función para validar campos
     function validateInputs(rol, usuario, password) {
+      // Limpiar estilos de error anteriores
       rolSelect.classList.remove('error');
       usuarioInput.classList.remove('error');
       passwordInput.classList.remove('error');
@@ -366,6 +380,7 @@
       return true;
     }
 
+    // Función para validar credenciales locales
     function validateLocalCredentials(rol, usuario, password) {
       if (!localUsers[rol]) {
         return null;
@@ -382,49 +397,43 @@
       return localUsers[rol][usuario];
     }
 
+    // Función para redirigir según el rol
     function redirectUser(rol, userData) {
-      const userName = userData.nombre || usuarioInput.value.trim();
+      const baseUserData = {
+        nombre: usuarioInput.value.trim(),
+        rol: rol,
+        loginTime: new Date().toISOString()
+      };
 
       // Guardar estado de login
       localStorage.setItem('loggedIn', 'true');
       localStorage.setItem('userRole', rol);
-      localStorage.setItem('userName', userName);
-
-      console.log('Redirigiendo usuario:', { rol, userName, userData });
+      localStorage.setItem('userName', baseUserData.nombre);
 
       switch (rol) {
         case 'estudiante':
           const year = userData.year;
           localStorage.setItem('userYear', year);
           localStorage.setItem('userData', JSON.stringify({
-            nombre: userName,
-            rol: rol,
-            year: year,
-            loginTime: new Date().toISOString()
+            ...baseUserData,
+            year: year
           }));
           
+          // Redirigir al año específico
           setTimeout(() => {
             window.location.href = `${year} año.html`;
           }, 1500);
           break;
 
         case 'profesor':
-          localStorage.setItem('userData', JSON.stringify({
-            nombre: userName,
-            rol: rol,
-            loginTime: new Date().toISOString()
-          }));
+          localStorage.setItem('userData', JSON.stringify(baseUserData));
           setTimeout(() => {
             window.location.href = 'niveles.html';
           }, 1500);
           break;
 
         case 'preceptor':
-          localStorage.setItem('userData', JSON.stringify({
-            nombre: userName,
-            rol: rol,
-            loginTime: new Date().toISOString()
-          }));
+          localStorage.setItem('userData', JSON.stringify(baseUserData));
           setTimeout(() => {
             window.location.href = 'niveles.html';
           }, 1500);
@@ -436,26 +445,30 @@
       }
     }
 
+    // Función principal de login
     async function login() {
       const rol = rolSelect.value;
       const usuario = usuarioInput.value.trim();
       const password = passwordInput.value;
       
+      // Validar campos obligatorios
       if (!validateInputs(rol, usuario, password)) {
         return;
       }
       
       try {
+        // Deshabilitar botón y mostrar estado de carga
         loginBtn.disabled = true;
         loginBtn.textContent = 'Verificando...';
         clearAlert();
         
-        console.log('Intentando login con:', { rol, usuario });
+        console.log('Intentando login con:', { rol, usuario, password });
         
-        // Validación local
+        // Primero intentar validación local
         const localValidation = validateLocalCredentials(rol, usuario, password);
         
         if (localValidation) {
+          // Login exitoso con credenciales locales
           showAlert('Login exitoso. Redirigiendo...', 'success');
           console.log('Login exitoso (local) para:', { rol, usuario });
           
@@ -463,7 +476,7 @@
           return;
         }
         
-        // Si no es local, intentar con Supabase
+        // Si no es local, intentar con Supabase (para compatibilidad con usuarios existentes)
         const { data, error } = await supabase
           .from('usuarios')
           .select('*')
@@ -478,13 +491,12 @@
         }
         
         if (data) {
+          // Login exitoso con Supabase
           showAlert('Login exitoso. Redirigiendo...', 'success');
           console.log('Login exitoso (Supabase) para:', data);
           
-          redirectUser(rol, { 
-            year: data.year || '1',
-            nombre: data.nombre
-          });
+          // Usar el rol seleccionado por el usuario, no el de la base de datos
+          redirectUser(rol, { year: data.year || '1' });
         } else {
           showAlert('Usuario o contraseña incorrectos');
         }
@@ -493,24 +505,32 @@
         console.error('Error inesperado:', error);
         showAlert('Usuario o contraseña incorrectos');
       } finally {
+        // Restaurar botón
         loginBtn.disabled = false;
         loginBtn.textContent = 'Entrar';
       }
     }
 
-    // Event listeners
+    // Event listeners para navegación con teclado
     rolSelect.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') usuarioInput.focus();
+      if (e.key === 'Enter') {
+        usuarioInput.focus();
+      }
     });
 
     usuarioInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') passwordInput.focus();
+      if (e.key === 'Enter') {
+        passwordInput.focus();
+      }
     });
 
     passwordInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') login();
+      if (e.key === 'Enter') {
+        login();
+      }
     });
 
+    // Limpiar errores al cambiar valores
     rolSelect.addEventListener('change', () => {
       rolSelect.classList.remove('error');
       clearAlert();
@@ -526,13 +546,14 @@
       clearAlert();
     });
 
-    // Verificar si ya está logueado
+    // Verificar si ya está logueado al cargar la página
     document.addEventListener('DOMContentLoaded', () => {
       const isLoggedIn = localStorage.getItem('loggedIn');
       const userRole = localStorage.getItem('userRole');
       const userYear = localStorage.getItem('userYear');
 
       if (isLoggedIn === 'true' && userRole) {
+        // Ya está logueado, redirigir según el rol
         switch (userRole) {
           case 'estudiante':
             if (userYear) {
@@ -540,8 +561,6 @@
             }
             break;
           case 'profesor':
-            window.location.href = 'Profesores.html';
-            break;
           case 'preceptor':
             window.location.href = 'niveles.html';
             break;
@@ -554,5 +573,6 @@
 
 </body>
 </html>
+
 
 
