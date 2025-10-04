@@ -5,94 +5,1177 @@
   <title>4° Año - Colegio Dante Alighieri</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
   <style>
-    html, body {
-      height: 100%;
+    :root {
+      --primary-color: #1a365d;
+      --secondary-color: #2c5282;
+      --accent-color: #3182ce;
+      --light-blue: #e6f3ff;
+      --success-color: #38a169;
+      --warning-color: #d69e2e;
+      --danger-color: #e53e3e;
+      --text-primary: #2d3748;
+      --text-secondary: #4a5568;
+      --border-color: #e2e8f0;
+    }
+
+    * {
       margin: 0;
-      background-color: #e6f0ff;
-      font-family: 'Segoe UI', sans-serif;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: var(--text-primary);
+      min-height: 100vh;
       padding-top: 80px;
     }
-    .encabezado-gris {
+
+    /* Header restringido - solo logout */
+    .restricted-header {
       position: fixed;
-      width: 100%;
-      background-color: #706e6e;
       top: 0;
       left: 0;
-      z-index: 1030;
+      right: 0;
+      background: rgba(26, 54, 93, 0.95);
+      backdrop-filter: blur(10px);
+      color: white;
+      padding: 1rem 0;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      z-index: 1000;
     }
-    .navbar .nav-link {
-      color: white !important;
-      font-weight: 500;
-      transition: color 0.3s ease;
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    .navbar .nav-link:hover {
-      color: #dcdcdc !important;
+
+    .student-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
     }
-    .bienvenida-container {
+
+    .student-avatar {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-top: 2rem;
-      position: relative;
-      flex-wrap: wrap;
+      color: white;
+      font-weight: bold;
     }
-    .bienvenida-texto {
-      font-size: 2.2rem;
-      font-weight: 700;
-      text-align: center;
-      color: #04294e;
-      margin: 1rem;
-      z-index: 2;
+
+    .student-details h3 {
+      font-size: 1.1rem;
+      margin: 0;
     }
-    .bandera-embed {
-      width: 150px;
-      max-width: 100%;
-      margin: 0 10px;
+
+    .student-details p {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin: 0;
     }
-    .buscador-container {
-      text-align: center;
+
+    .logout-btn {
+      background: linear-gradient(135deg, #e53e3e, #c53030);
+      border: none;
+      padding: 0.75rem 1.5rem;
+      color: white;
+      border-radius: 25px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logout-btn:hover {
+      background: linear-gradient(135deg, #c53030, #e53e3e);
+      transform: translateY(-2px);
+    }
+
+    /* Sección de noticias */
+    .news-section {
+      max-width: 1200px;
       margin: 2rem auto;
+      padding: 0 2rem;
     }
-    .buscador-container input {
-      padding: 10px;
-      width: 300px;
-      max-width: 90%;
-      border: 2px solid #04294e;
-      border-radius: 10px;
-      font-size: 1rem;
+
+    .news-container {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+
+    .news-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    .news-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, var(--warning-color), #b7791f);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+    }
+
+    .news-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+
+    .news-item {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      border-left: 4px solid var(--accent-color);
+      transition: all 0.3s ease;
+    }
+
+    .news-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .news-item h4 {
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .news-meta {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.75rem;
+    }
+
+    .news-content {
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .no-news {
+      text-align: center;
+      color: var(--text-secondary);
+      font-style: italic;
+      padding: 2rem;
+    }
+
+    /* Hero section */
+    .hero-section {
+      text-align: center;
+      padding: 3rem 2rem;
+      color: white;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .hero-section h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+
+    .hero-section p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto 2rem auto;
+    }
+
+    .year-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      padding: 0.5rem 1.5rem;
+      border-radius: 25px;
+      font-weight: 600;
+      backdrop-filter: blur(10px);
+    }
+
+    /* Buscador */
+    .search-section {
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+    }
+
+    .search-container {
+      position: relative;
+      background: white;
+      border-radius: 25px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+      font-size: 1.2rem;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 1rem 1rem 1rem 4rem;
+      border: none;
+      font-size: 1.1rem;
+      outline: none;
+      background: transparent;
+    }
+
+    /* Grid de materias */
+    .subjects-section {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+    }
+
+    .subjects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .subject-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      animation: slideInUp 0.6s ease forwards;
+      animation-delay: calc(var(--index) * 0.1s);
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    @keyframes slideInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .subject-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .subject-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .subject-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+
+    .subject-card.attendance {
+      background: linear-gradient(135deg, var(--success-color), #2f855a);
+      color: white;
+    }
+
+    .subject-card.attendance .subject-icon {
+      background: rgba(255,255,255,0.2);
+      color: white;
+    }
+
+    .subject-content {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.5rem;
+    }
+
+    .subject-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, var(--light-blue), rgba(49, 130, 206, 0.1));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-color);
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .subject-info {
+      flex: 1;
+    }
+
+    .subject-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .subject-card.attendance .subject-name {
+      color: white;
+    }
+
+    .subject-description {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.4;
+      margin: 0;
+    }
+
+    .subject-card.attendance .subject-description {
+      color: rgba(255,255,255,0.9);
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: white;
+    }
+
+    .no-results i {
+      font-size: 4rem;
+      opacity: 0.5;
+      margin-bottom: 1rem;
+    }
+
+    .no-results h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Security warning overlay */
+    .security-warning {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      color: white;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .warning-content {
+      background: var(--danger-color);
+      padding: 2rem;
+      border-radius: 16px;
+      max-width: 400px;
+    }
+
+    .warning-content i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero-section h1 {
+        font-size: 2rem;
+      }
+      
+      .hero-section p {
+        font-size: 1rem;
+      }
+      
+      .subjects-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      
+      .subject-content {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .header-content {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+
+    /* Loading screen */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    .loading-content {
+      text-align: center;
+      color: white;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255,255,255,0.3);
+      border-left: 4px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem auto;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
     }
   </style>
 </head>
 <body>
-  <header class="encabezado-gris fixed-top">
-    <div class="container d-flex justify-content-between align-items-center py-3">
-      <img src="OX4SDh2IwP.png" alt="Logotipo" height="60" />
-      <nav class="navbar navbar-expand-lg navbar-dark">
-        <ul class="navbar-nav me-3">
-          <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
-          <li class="nav-item"><a class="nav-link" href="niveles.html">Niveles</a></li>
-        </ul>
-      </nav>
+  <!-- Loading Screen -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <h3>Verificando acceso...</h3>
+      <p>Cargando 4° Año</p>
+    </div>
+  </div>
+
+  <!-- Security Warning Overlay -->
+  <div class="security-warning" id="securityWarning">
+    <div class="warning-content">
+      <i class="fas fa-exclamation-triangle"></i>
+      <h3>¡Acceso Restringido!</h3>
+      <p>Se ha detectado un intento de acceso no autorizado. La sesión será cerrada por seguridad.</p>
+    </div>
+  </div>
+
+  <!-- Header Restringido -->
+  <header class="restricted-header">
+    <div class="header-content">
+      <div class="student-info">
+        <div class="student-avatar" id="studentAvatar">4</div>
+        <div class="student-details">
+          <h3 id="studentName">Estudiante de 4° Año</h3>
+          <p>Colegio Dante Alighieri</p>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i>
+        Cerrar Sesión
+      </button>
     </div>
   </header>
-  <div class="bienvenida-container">
-    <div class="bandera-embed">
-      <div class="tenor-gif-embed" data-postid="12368110057361654375" data-share-method="host" data-aspect-ratio="1.6" data-width="100%">
-        <a href="https://tenor.com/view/italy-flag-italian-gif-12368110057361654375">Italy Flag GIF</a>
+
+  <main>
+    <!-- Sección de Noticias -->
+    <section class="news-section">
+      <div class="news-container" id="newsContainer">
+        <div class="news-header">
+          <div class="news-icon">
+            <i class="fas fa-bullhorn"></i>
+          </div>
+          <h2 class="news-title">Noticias y Anuncios</h2>
+        </div>
+        <div id="newsList">
+          <div class="no-news">
+            <i class="fas fa-newspaper"></i>
+            <p>No hay noticias disponibles en este momento</p>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="bienvenida-texto">Bienvenido a 4° Año</div>
-    <div class="bandera-embed">
-      <div class="tenor-gif-embed" data-postid="23485617" data-share-method="host" data-aspect-ratio="1.77778" data-width="100%">
-        <a href="https://tenor.com/view/argentina-gif-23485617">Argentina GIF</a>
+    </section>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <span class="year-badge">4° Año</span>
+      <h1>Cuarto Año</h1>
+<p>Preparación para la especialización y orientación vocacional</p>
+    </section>
+
+    <!-- Buscador -->
+    <section class="search-section">
+      <div class="search-container">
+        <i class="fas fa-search search-icon"></i>
+        <input 
+          type="text" 
+          id="searchInput" 
+          class="search-input" 
+          placeholder="Buscar materia..." 
+          autocomplete="off"
+        />
       </div>
-    </div>
-  </div>
-  <div class="buscador-container">
-    <input type="text" id="buscador" placeholder="Buscar materia..." />
-  </div>
-  <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </section>
+
+    <!-- Grid de materias -->
+    <section class="subjects-section">
+      <div class="subjects-grid" id="subjectsGrid">
+        <div class="subject-card" style="--index: 0">
+          <div class="subject-content">
+            <div class="subject-icon">
+              <i class="fas fa-book"></i>
+            </div>
+            <div class="subject-info">
+              <h3 class="subject-name">Lengua y Literatura</h3>
+              <p class="subject-description">Desarrollo de competencias comunicativas</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subject-card" style="--index: 1">
+          <div class="subject-content">
+            <div class="subject-icon">
+              <i class="fas fa-calculator"></i>
+            </div>
+            <div class="subject-info">
+              <h3 class="subject-name">Matemática</h3>
+              <p class="subject-description">Fundamentos del pensamiento lógico</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subject-card" style="--index: 2">
+          <div class="subject-content">
+            <div class="subject-icon">
+              <i class="fas fa-landmark"></i>
+            </div>
+            <div class="subject-info">
+              <h3 class="subject-name">Historia</h3>
+              <p class="subject-description">Comprensión del pasado y presente</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subject-card" style="--index: 3">
+          <div class="subject-content">
+            <div class="subject-icon">
+              <i class="fas fa-globe-americas"></i>
+            </div>
+            <div class="subject-info">
+              <h3 class="subject-name">Geografía</h3>
+              <p class="subject-description">Estudio del espacio y territorio</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subject-card" style="--index: 4">
+          <div class="subject-content">
+            <div class="subject-icon">
+              <i class="fas fa-balance-scale"></i>
+            </div>
+            <div class="subject-info">
+              <h3 class="subject-name">Formación Ética y Ciudadana</h3>
+              <p class="subject-description">Valores y responsabilidad social</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subject-card" style="--index: 5">
+          <div class="subject-content">
+            <div class="subject-icon">
+              <i class="fas fa-leaf"></i>
+            </div>
+            <div class="subject-info">
+              <h3 class="subject-name">Biología</h3>
+              <p class="subject-description">Ciencias de la vida y naturaleza</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subject-card" style="--index: 6">
+          <div class="subject-content">
+            <div class="subject-icon">
+              <i class="fas fa-cogs"></i>
+            </div>
+            <div class="subject-info">
+              <h3 class="subject-name">Educación Tecnológica</h3>
+              <p class="subject-description">Tecnología aplicada e innovación</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subject-card" style="--index: 7">
+          <div class="subject-content">
+            <div class="subject-icon">
+              <i class="fas fa-language"></i>
+            </div>
+            <div class="subject-info">
+              <h3 class="subject-name">Lengua Extranjera (Inglés)</h3>
+              <p class="subject-description">Comunicación en idioma extranjero</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subject-card" style="--index: 8">
+          <div class="subject-content">
+            <div class="subject-icon">
+              <i class="fas fa-atom"></i>
+            </div>
+            <div class="subject-info">
+              <h3 class="subject-name">Física</h3>
+              <p class="subject-description">Principios fundamentales del universo</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subject-card" style="--index: 9">
+          <div class="subject-content">
+            <div class="subject-icon">
+              <i class="fas fa-palette"></i>
+            </div>
+            <div class="subject-info">
+              <h3 class="subject-name">Educación Artística (Plástica)</h3>
+              <p class="subject-description">Expresión visual y creatividad</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subject-card" style="--index: 10">
+          <div class="subject-content">
+            <div class="subject-icon">
+              <i class="fas fa-theater-masks"></i>
+            </div>
+            <div class="subject-info">
+              <h3 class="subject-name">Educación Artística (Teatro)</h3>
+              <p class="subject-description">Expresión dramática y actuación</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subject-card" style="--index: 11">
+          <div class="subject-content">
+            <div class="subject-icon">
+              <i class="fas fa-running"></i>
+            </div>
+            <div class="subject-info">
+              <h3 class="subject-name">Educación Física</h3>
+              <p class="subject-description">Desarrollo corporal y deportivo</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subject-card attendance" style="--index: 12">
+          <div class="subject-content">
+            <div class="subject-icon">
+              <i class="fas fa-clipboard-check"></i>
+            </div>
+            <div class="subject-info">
+              <h3 class="subject-name">ASISTENCIA</h3>
+              <p class="subject-description">Control y seguimiento estudiantil</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="no-results" id="noResults" style="display: none;">
+        <i class="fas fa-search"></i>
+        <h3>No se encontraron materias</h3>
+        <p>Intenta con otros términos de búsqueda</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // ===== SISTEMA DE RESTRICCIONES Y SEGURIDAD =====
+    
+    // Verificar acceso al cargar la página
+    document.addEventListener('DOMContentLoaded', function() {
+      checkAccess();
+    });
+
+    // Función principal de verificación de acceso
+    function checkAccess() {
+      const isLoggedIn = localStorage.getItem('loggedIn');
+      const userRole = localStorage.getItem('userRole');
+      const userYear = localStorage.getItem('userYear');
+      const userName = localStorage.getItem('userName');
+
+      console.log('Verificando acceso:', { isLoggedIn, userRole, userYear, userName });
+
+      // Verificar si está logueado
+      if (isLoggedIn !== 'true') {
+        console.log('Usuario no logueado, redirigiendo a login');
+        redirectToLogin('No has iniciado sesión');
+        return;
+      }
+
+      // Verificar que sea estudiante
+      if (userRole !== 'estudiante') {
+        console.log('Usuario no es estudiante, redirigiendo a login');
+        redirectToLogin('Acceso restringido a estudiantes');
+        return;
+      }
+
+      // Verificar que corresponda a 1° año
+      if (userYear !== '4') {
+        console.log('Usuario no es de 4° año, redirigiendo a su año correspondiente');
+        redirectToCorrectYear(userYear);
+        return;
+      }
+
+      // Si pasa todas las verificaciones, inicializar la página
+      console.log('Acceso autorizado para 4° año');
+      initializePage(userName);
+    }
+
+    // Redirigir a login con mensaje
+    function redirectToLogin(message = 'Acceso no autorizado') {
+      showSecurityWarning(message);
+      setTimeout(() => {
+        localStorage.clear(); // Limpiar toda la sesión
+        window.location.href = 'login.html';
+      }, 3000);
+    }
+
+    // Redirigir al año correspondiente
+    function redirectToCorrectYear(year) {
+      if (year && year >= '1' && year <= '5') {
+        alert(`Serás redirigido a tu año correspondiente: ${year}° Año`);
+        window.location.href = `${year} año.html`;
+      } else {
+        redirectToLogin('Año no válido');
+      }
+    }
+
+    // Mostrar advertencia de seguridad
+    function showSecurityWarning(message) {
+      const warningOverlay = document.getElementById('securityWarning');
+      warningOverlay.style.display = 'flex';
+      
+      // Actualizar mensaje si se proporciona
+      if (message) {
+        const warningContent = warningOverlay.querySelector('.warning-content p');
+        warningContent.textContent = message;
+      }
+    }
+
+    // Prevenir navegación con botones del navegador
+    window.addEventListener('popstate', function(event) {
+      console.log('Intento de navegación bloqueado');
+      history.pushState(null, null, location.href);
+      showSecurityWarning('No puedes salir de tu año asignado');
+      setTimeout(() => {
+        document.getElementById('securityWarning').style.display = 'none';
+      }, 2000);
+    });
+
+    // Bloquear navegación inicial
+    history.pushState(null, null, location.href);
+
+    // Función de logout seguro
+    function logout() {
+      if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+        console.log('Cerrando sesión...');
+        localStorage.clear();
+        window.location.href = 'login.html';
+      }
+    }
+
+    // Inicializar página después de verificaciones
+    function initializePage(userName) {
+      // Actualizar información del estudiante
+      const studentNameElement = document.getElementById('studentName');
+      const studentAvatar = document.getElementById('studentAvatar');
+      
+      if (userName) {
+        studentNameElement.textContent = userName;
+        studentAvatar.textContent = userName.charAt(0).toUpperCase();
+      }
+
+      // Cargar noticias
+      loadNews();
+
+      // Inicializar búsqueda
+      initializeSearch();
+
+      // Inicializar protecciones de seguridad
+      initializeSecurityProtections();
+
+      // Ocultar loading screen
+      setTimeout(() => {
+        const loadingScreen = document.getElementById('loadingScreen');
+        loadingScreen.style.opacity = '0';
+        setTimeout(() => {
+          loadingScreen.style.display = 'none';
+        }, 500);
+      }, 1500);
+
+      console.log('Página inicializada correctamente para:', userName);
+    }
+
+    // ===== SISTEMA DE NOTICIAS =====
+    
+    function loadNews() {
+      const newsList = document.getElementById('newsList');
+      
+      // Obtener noticias del localStorage
+      const allNews = JSON.parse(localStorage.getItem('noticias') || '[]');
+      
+      // Filtrar noticias para 1° año o para todos
+      const filteredNews = allNews.filter(noticia => 
+        noticia.año === '4' || noticia.año === 'todos'
+      );
+
+      if (filteredNews.length === 0) {
+        newsList.innerHTML = `
+          <div class="no-news">
+            <i class="fas fa-newspaper"></i>
+            <p>No hay noticias disponibles en este momento</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Mostrar noticias
+      newsList.innerHTML = filteredNews.map(noticia => `
+        <div class="news-item">
+          <h4>${noticia.titulo}</h4>
+          <div class="news-meta">
+            <i class="fas fa-calendar"></i> ${formatDate(noticia.fecha)} - 
+            <i class="fas fa-user"></i> ${noticia.autor}
+          </div>
+          <div class="news-content">${noticia.contenido}</div>
+        </div>
+      `).join('');
+    }
+
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('es-AR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    }
+
+    // ===== SISTEMA DE BÚSQUEDA =====
+    
+    function initializeSearch() {
+      const searchInput = document.getElementById('searchInput');
+      const subjectsGrid = document.getElementById('subjectsGrid');
+      const noResults = document.getElementById('noResults');
+      const subjects = document.querySelectorAll('.subject-card');
+
+      searchInput.addEventListener('input', function(event) {
+        const query = event.target.value.toLowerCase().trim();
+        let visibleCount = 0;
+
+        subjects.forEach(subject => {
+          const subjectName = subject.querySelector('.subject-name').textContent.toLowerCase();
+          const subjectDesc = subject.querySelector('.subject-description').textContent.toLowerCase();
+          
+          const isVisible = subjectName.includes(query) || subjectDesc.includes(query);
+          
+          if (isVisible) {
+            subject.classList.remove('hidden');
+            subject.style.display = 'block';
+            visibleCount++;
+          } else {
+            subject.classList.add('hidden');
+            subject.style.display = 'none';
+          }
+        });
+
+        // Mostrar/ocultar mensaje de "no resultados"
+        if (visibleCount === 0 && query !== '') {
+          noResults.style.display = 'block';
+          subjectsGrid.style.display = 'none';
+        } else {
+          noResults.style.display = 'none';
+          subjectsGrid.style.display = 'grid';
+        }
+      });
+
+      // Limpiar búsqueda con Escape
+      searchInput.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+          searchInput.value = '';
+          subjects.forEach(subject => {
+            subject.classList.remove('hidden');
+            subject.style.display = 'block';
+          });
+          noResults.style.display = 'none';
+          subjectsGrid.style.display = 'grid';
+        }
+      });
+
+      // Agregar efectos de click a las tarjetas
+      subjects.forEach(card => {
+        card.addEventListener('click', function() {
+          const subjectName = this.querySelector('.subject-name').textContent;
+          
+          // Efecto visual
+          this.style.transform = 'translateY(-2px) scale(0.98)';
+          setTimeout(() => {
+            this.style.transform = '';
+          }, 150);
+
+          console.log('Materia seleccionada:', subjectName);
+          
+          // Navegación específica por materia
+          if (subjectName === 'ASISTENCIA') {
+            window.location.href = 'asistencia.html';
+          } else {
+            alert(`Accediendo a: ${subjectName}`);
+          }
+        });
+      });
+    }
+
+    // ===== PREVENCIÓN DE ACCESOS NO AUTORIZADOS =====
+    
+    function initializeSecurityProtections() {
+      // Monitor de actividad del usuario
+      let activityTimer;
+      const INACTIVITY_TIMEOUT = 30 * 60 * 1000; // 30 minutos
+
+      function resetActivityTimer() {
+        clearTimeout(activityTimer);
+        activityTimer = setTimeout(() => {
+          alert('Sesión cerrada por inactividad');
+          logout();
+        }, INACTIVITY_TIMEOUT);
+      }
+
+      // Eventos de actividad del usuario
+      ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(event => {
+        document.addEventListener(event, resetActivityTimer, true);
+      });
+
+      // Inicializar timer
+      resetActivityTimer();
+
+      // Detectar si las herramientas de desarrollador están abiertas
+      let devtools = { open: false, orientation: null };
+
+      setInterval(() => {
+        if (window.outerHeight - window.innerHeight > 200 || 
+            window.outerWidth - window.innerWidth > 200) {
+          if (!devtools.open) {
+            devtools.open = true;
+            console.clear();
+            showSecurityWarning('Herramientas de desarrollador detectadas. Acceso restringido.');
+            setTimeout(() => {
+              document.getElementById('securityWarning').style.display = 'none';
+            }, 3000);
+          }
+        } else {
+          devtools.open = false;
+        }
+      }, 500);
+
+      // Verificación periódica de sesión
+      setInterval(() => {
+        const isLoggedIn = localStorage.getItem('loggedIn');
+        const userRole = localStorage.getItem('userRole');
+        const userYear = localStorage.getItem('userYear');
+
+        if (isLoggedIn !== 'true' || userRole !== 'estudiante' || userYear !== '4') {
+          console.log('Sesión comprometida, cerrando...');
+          redirectToLogin('Sesión inválida detectada');
+        }
+      }, 10000);
+
+      // Prevenir selección de texto
+      document.addEventListener('selectstart', function(e) {
+        e.preventDefault();
+      });
+
+      // Prevenir arrastrar elementos
+      document.addEventListener('dragstart', function(e) {
+        e.preventDefault();
+      });
+
+      // Detectar cambios de ventana/pestaña
+      document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+          checkAccess();
+        }
+      });
+    }
+
+    // Bloquear teclas de desarrollador y atajos peligrosos
+    document.addEventListener('keydown', function(event) {
+      const blockedKeys = [
+        { key: 'F12' },
+        { key: 'I', ctrl: true, shift: true },
+        { key: 'C', ctrl: true, shift: true },
+        { key: 'J', ctrl: true, shift: true },
+        { key: 'U', ctrl: true },
+        { key: 'S', ctrl: true },
+        { key: 'A', ctrl: true },
+        { key: 'P', ctrl: true },
+        { key: 'F', ctrl: true },
+        { key: 'R', ctrl: true },
+        { key: 'F5' },
+      ];
+
+      const currentKey = {
+        key: event.key,
+        ctrl: event.ctrlKey,
+        shift: event.shiftKey,
+        alt: event.altKey
+      };
+
+      const isBlocked = blockedKeys.some(blocked => {
+        return blocked.key === currentKey.key &&
+               (blocked.ctrl === undefined || blocked.ctrl === currentKey.ctrl) &&
+               (blocked.shift === undefined || blocked.shift === currentKey.shift) &&
+               (blocked.alt === undefined || blocked.alt === currentKey.alt);
+      });
+
+      if (isBlocked) {
+        event.preventDefault();
+        event.stopPropagation();
+        console.log('Tecla bloqueada:', currentKey);
+        
+        if (event.key === 'F12' || 
+            (event.ctrlKey && event.shiftKey && ['I', 'C', 'J'].includes(event.key))) {
+          showSecurityWarning('Acceso a herramientas de desarrollador bloqueado');
+          setTimeout(() => {
+            document.getElementById('securityWarning').style.display = 'none';
+          }, 2000);
+        }
+        
+        return false;
+      }
+    });
+
+    // Bloquear clic derecho
+    document.addEventListener('contextmenu', function(event) {
+      event.preventDefault();
+      console.log('Clic derecho bloqueado');
+      
+      if (Math.random() < 0.3) {
+        showSecurityWarning('Clic derecho deshabilitado por seguridad');
+        setTimeout(() => {
+          document.getElementById('securityWarning').style.display = 'none';
+        }, 1500);
+      }
+      
+      return false;
+    });
+
+    // Detectar intentos de manipulación del DOM
+    const observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        if (mutation.type === 'childList') {
+          mutation.addedNodes.forEach(function(node) {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+              if (node.tagName === 'SCRIPT' && !node.hasAttribute('data-allowed')) {
+                console.log('Script no autorizado detectado');
+                node.remove();
+              }
+            }
+          });
+        }
+      });
+    });
+
+    observer.observe(document, {
+      childList: true,
+      subtree: true
+    });
+
+    // Protección contra inyección de código
+    window.addEventListener('error', function(event) {
+      if (event.error && event.error.stack) {
+        console.log('Error detectado:', event.error.message);
+        event.preventDefault();
+      }
+    });
+
+    // Limpiar consola periódicamente
+    setInterval(() => {
+      if (typeof console !== 'undefined' && console.clear) {
+        console.clear();
+      }
+    }, 30000);
+
+    // Verificación de integridad de elementos críticos
+    function verifyPageIntegrity() {
+      const criticalElements = [
+        '#studentName',
+        '#studentAvatar',
+        '.logout-btn',
+        '#subjectsGrid'
+      ];
+
+      criticalElements.forEach(selector => {
+        const element = document.querySelector(selector);
+        if (!element) {
+          console.log('Elemento crítico faltante:', selector);
+          location.reload();
+        }
+      });
+    }
+
+    setInterval(verifyPageIntegrity, 60000);
+
+    // Protección final
+    const originalConsoleLog = console.log;
+    console.log = function(...args) {
+      const sensitivePatterns = ['password', 'token', 'session', 'auth'];
+      const logString = args.join(' ').toLowerCase();
+      
+      if (!sensitivePatterns.some(pattern => logString.includes(pattern))) {
+        originalConsoleLog.apply(console, args);
+      }
+    };
+
+    // Mensaje de seguridad en consola
+    console.log('%c🔒 SISTEMA EDUCATIVO SEGURO', 
+      'color: #e53e3e; font-size: 20px; font-weight: bold;');
+    console.log('%cEste sistema está protegido. El acceso no autorizado está prohibido.', 
+      'color: #d69e2e; font-size: 14px;');
+    
+    // Inicialización final
+    console.log('Sistema de 4° Año inicializado correctamente');
+    
+  </script>
 </body>
 </html>
