@@ -35,7 +35,6 @@
       overflow-x: hidden;
     }
 
-    /* Header profesional */
     .encabezado-profesional {
       position: fixed;
       width: 100%;
@@ -118,7 +117,6 @@
       box-shadow: 0 6px 20px rgba(197, 48, 48, 0.4);
     }
 
-    /* Contenido principal */
     .main-content {
       padding-top: 120px;
       min-height: 100vh;
@@ -144,7 +142,6 @@
       opacity: 0.9;
     }
 
-    /* Navegación por pestañas */
     .nav-tabs-custom {
       border: none;
       justify-content: center;
@@ -174,7 +171,6 @@
       border-color: transparent;
     }
 
-    /* Cards profesionales */
     .info-card {
       background: white;
       border-radius: 20px;
@@ -200,6 +196,14 @@
 
     .info-card.reportes {
       border-left-color: var(--accent-color);
+    }
+
+    .info-card.asistencias {
+      border-left-color: #3182ce;
+    }
+
+    .info-card.calificaciones {
+      border-left-color: #9333ea;
     }
 
     .card-header {
@@ -232,13 +236,20 @@
       background: var(--accent-color);
     }
 
+    .card-icon.asistencias {
+      background: #3182ce;
+    }
+
+    .card-icon.calificaciones {
+      background: #9333ea;
+    }
+
     .card-title {
       font-size: 1.5rem;
       font-weight: 700;
       margin: 0;
     }
 
-    /* Formularios */
     .form-container {
       background: white;
       border-radius: 20px;
@@ -286,7 +297,6 @@
       box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
     }
 
-    /* Lista de elementos */
     .item-list {
       background: white;
       border-radius: 20px;
@@ -344,11 +354,154 @@
       color: white;
     }
 
+    .btn-view {
+      background: #3182ce;
+      color: white;
+    }
+
     .btn-small:hover {
       transform: scale(1.05);
     }
 
-    /* Responsive */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    .loading-content {
+      text-align: center;
+      color: white;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255,255,255,0.3);
+      border-left: 4px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .security-warning {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      color: white;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .warning-content {
+      background: var(--accent-color);
+      padding: 2rem;
+      border-radius: 16px;
+      max-width: 400px;
+    }
+
+    .warning-content i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .grade-image-preview {
+      max-width: 100%;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      margin-top: 15px;
+    }
+
+    .badge-new {
+      background: #ef4444;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-left: 10px;
+    }
+
+    .attendance-table {
+      width: 100%;
+      margin-top: 15px;
+      border-collapse: collapse;
+    }
+
+    .attendance-table th,
+    .attendance-table td {
+      padding: 8px 12px;
+      border: 1px solid #e2e8f0;
+      text-align: left;
+    }
+
+    .attendance-table th {
+      background: #f7fafc;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    .attendance-table tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .status-presente {
+      background: #c6f6d5;
+      color: #22543d;
+    }
+
+    .status-ausente {
+      background: #fed7d7;
+      color: #742a2a;
+    }
+
+    .status-sin-registrar {
+      background: #e2e8f0;
+      color: #4a5568;
+    }
+
+    .attendance-summary {
+      display: flex;
+      gap: 15px;
+      margin: 15px 0;
+      padding: 15px;
+      background: #f7fafc;
+      border-radius: 8px;
+    }
+
+    .summary-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
     @media (max-width: 768px) {
       .dashboard-title {
         font-size: 2rem;
@@ -370,9 +523,12 @@
       .info-card {
         padding: 20px;
       }
+
+      .attendance-table {
+        font-size: 0.85rem;
+      }
     }
 
-    /* Animaciones */
     .animate-fade-in {
       opacity: 0;
       transform: translateY(20px);
@@ -394,11 +550,72 @@
       margin-bottom: 20px;
       display: none;
     }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .modal-content-custom {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 800px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-hover);
+    }
+
+    .modal-header-custom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #718096;
+    }
+
+    .modal-close:hover {
+      color: var(--accent-color);
+    }
   </style>
 </head>
 <body>
 
-<!-- Header -->
+<div class="loading-screen" id="loadingScreen">
+  <div class="loading-content">
+    <div class="loading-spinner"></div>
+    <h3>Verificando acceso...</h3>
+    <p>Panel Administrativo</p>
+  </div>
+</div>
+
+<div class="security-warning" id="securityWarning">
+  <div class="warning-content">
+    <i class="fas fa-exclamation-triangle"></i>
+    <h3>¡Acceso Restringido!</h3>
+    <p>Este panel es exclusivo para preceptores. Serás redirigido.</p>
+  </div>
+</div>
+
 <header class="encabezado-profesional">
   <div class="container">
     <div class="d-flex justify-content-between align-items-center py-3">
@@ -411,7 +628,7 @@
             <div class="user-avatar">
               <i class="fas fa-user-tie"></i>
             </div>
-            <span id="userName">Administrador</span>
+            <span id="userName">Preceptor</span>
           </div>
           <button class="cerrar-sesion-btn" id="btnCerrarSesion">
             <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
@@ -422,12 +639,11 @@
   </div>
 </header>
 
-
 <div class="main-content">
   <div class="dashboard-header">
     <div class="container">
       <h1 class="dashboard-title">Panel Administrativo</h1>
-      <p class="dashboard-subtitle">Gestión de actividades, novedades y reportes institucionales</p>
+      <p class="dashboard-subtitle">Gestión de actividades, novedades, asistencias y calificaciones</p>
     </div>
   </div>
 
@@ -445,6 +661,18 @@
         </button>
       </li>
       <li class="nav-item" role="presentation">
+        <button class="nav-link" id="asistencias-tab" data-bs-toggle="tab" data-bs-target="#asistencias" type="button" role="tab">
+          <i class="fas fa-clipboard-check me-2"></i>Asistencias
+          <span class="badge-new" id="attendanceBadge" style="display:none;">Nuevo</span>
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="calificaciones-tab" data-bs-toggle="tab" data-bs-target="#calificaciones" type="button" role="tab">
+          <i class="fas fa-star me-2"></i>Calificaciones
+          <span class="badge-new" id="gradesBadge" style="display:none;">Nuevo</span>
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
         <button class="nav-link" id="reportes-tab" data-bs-toggle="tab" data-bs-target="#reportes" type="button" role="tab">
           <i class="fas fa-chart-bar me-2"></i>Reportes
         </button>
@@ -453,7 +681,6 @@
 
     
     <div class="tab-content" id="adminTabsContent">
-      
       
       <div class="tab-pane fade show active" id="actividades" role="tabpanel">
         <div class="row">
@@ -499,15 +726,12 @@
           <div class="col-lg-6">
             <div class="item-list animate-fade-in">
               <h4 class="mb-3">Actividades Recientes</h4>
-              <div id="actividadesList">
-                
-              </div>
+              <div id="actividadesList"></div>
             </div>
           </div>
         </div>
       </div>
 
-      
       <div class="tab-pane fade" id="novedades" role="tabpanel">
         <div class="row">
           <div class="col-lg-6">
@@ -553,15 +777,36 @@
           <div class="col-lg-6">
             <div class="item-list animate-fade-in">
               <h4 class="mb-3">Novedades Publicadas</h4>
-              <div id="novedadesList">
-                
-              </div>
+              <div id="novedadesList"></div>
             </div>
           </div>
         </div>
       </div>
 
-      
+      <div class="tab-pane fade" id="asistencias" role="tabpanel">
+        <div class="info-card asistencias animate-fade-in">
+          <div class="card-header">
+            <div class="card-icon asistencias">
+              <i class="fas fa-clipboard-check"></i>
+            </div>
+            <h3 class="card-title">Registros de Asistencia Recibidos</h3>
+          </div>
+          <div id="asistenciasList"></div>
+        </div>
+      </div>
+
+      <div class="tab-pane fade" id="calificaciones" role="tabpanel">
+        <div class="info-card calificaciones animate-fade-in">
+          <div class="card-header">
+            <div class="card-icon calificaciones">
+              <i class="fas fa-star"></i>
+            </div>
+            <h3 class="card-title">Registros de Calificaciones Recibidos</h3>
+          </div>
+          <div id="calificacionesList"></div>
+        </div>
+      </div>
+
       <div class="tab-pane fade" id="reportes" role="tabpanel">
         <div class="row">
           <div class="col-lg-12">
@@ -575,26 +820,26 @@
               <div class="row text-center">
                 <div class="col-md-3">
                   <div class="info-card">
-                    <h4 class="text-primary">45</h4>
+                    <h4 class="text-primary" id="statsActividades">0</h4>
                     <p>Actividades Este Mes</p>
                   </div>
                 </div>
                 <div class="col-md-3">
                   <div class="info-card">
-                    <h4 class="text-success">23</h4>
+                    <h4 class="text-success" id="statsNovedades">0</h4>
                     <p>Novedades Publicadas</p>
                   </div>
                 </div>
                 <div class="col-md-3">
                   <div class="info-card">
-                    <h4 class="text-warning">12</h4>
-                    <p>Eventos Próximos</p>
+                    <h4 class="text-info" id="statsAsistencias">0</h4>
+                    <p>Registros de Asistencia</p>
                   </div>
                 </div>
                 <div class="col-md-3">
                   <div class="info-card">
-                    <h4 class="text-info">567</h4>
-                    <p>Estudiantes Activos</p>
+                    <h4 class="text-warning" id="statsCalificaciones">0</h4>
+                    <p>Registros de Calificaciones</p>
                   </div>
                 </div>
               </div>
@@ -606,20 +851,101 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="imageModal">
+  <div class="modal-content-custom">
+    <div class="modal-header-custom">
+      <h3 id="modalImageTitle">Visualizar Calificaciones</h3>
+      <button class="modal-close" onclick="closeImageModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div id="modalImageContent"></div>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
 
 document.addEventListener('DOMContentLoaded', function() {
-  
-  cargarActividades();
-  cargarNovedades();
-  
-  
-  document.getElementById('userName').textContent = 'Administrador';
+  checkAccess();
+  checkForNewData();
 });
 
+function checkAccess() {
+  const isLoggedIn = localStorage.getItem('loggedIn');
+  const userRole = localStorage.getItem('userRole');
+  const userName = localStorage.getItem('userName');
+
+  if (isLoggedIn !== 'true') {
+    redirectToLogin('No has iniciado sesión');
+    return;
+  }
+
+  if (userRole !== 'preceptor') {
+    redirectToLogin('Acceso restringido solo para preceptores');
+    return;
+}
+
+  initializePage(userName);
+}
+
+function redirectToLogin(message = 'Acceso no autorizado') {
+  showSecurityWarning(message);
+  setTimeout(() => {
+    localStorage.clear();
+    window.location.href = 'login.html';
+  }, 3000);
+}
+
+function showSecurityWarning(message) {
+  const warningOverlay = document.getElementById('securityWarning');
+  warningOverlay.style.display = 'flex';
+  
+  if (message) {
+    const warningContent = warningOverlay.querySelector('.warning-content p');
+    warningContent.textContent = message;
+  }
+}
+
+function initializePage(userName) {
+  if (userName) {
+    document.getElementById('userName').textContent = userName;
+  }
+
+  cargarActividades();
+  cargarNovedades();
+  cargarAsistencias();
+  cargarCalificaciones();
+  actualizarEstadisticas();
+
+  setTimeout(() => {
+    const loadingScreen = document.getElementById('loadingScreen');
+    loadingScreen.style.opacity = '0';
+    setTimeout(() => {
+      loadingScreen.style.display = 'none';
+    }, 500);
+  }, 1000);
+}
+
+function checkForNewData() {
+  const attendanceRecords = JSON.parse(localStorage.getItem('attendanceRecords') || '[]');
+  const gradesRecords = JSON.parse(localStorage.getItem('gradesRecords') || '[]');
+  
+  if (attendanceRecords.length > 0) {
+    document.getElementById('attendanceBadge').style.display = 'inline-block';
+  }
+  
+  if (gradesRecords.length > 0) {
+    document.getElementById('gradesBadge').style.display = 'inline-block';
+  }
+}
+
+window.addEventListener('popstate', function(event) {
+  history.pushState(null, null, location.href);
+});
+
+history.pushState(null, null, location.href);
 
 document.getElementById('actividadForm').addEventListener('submit', function(e) {
   e.preventDefault();
@@ -633,19 +959,15 @@ document.getElementById('actividadForm').addEventListener('submit', function(e) 
     fechaCreacion: new Date().toLocaleDateString()
   };
   
-  
-  let actividades = JSON.parse(sessionStorage.getItem('actividades') || '[]');
+  let actividades = JSON.parse(localStorage.getItem('actividades') || '[]');
   actividades.unshift(actividad);
-  sessionStorage.setItem('actividades', JSON.stringify(actividades));
-  
+  localStorage.setItem('actividades', JSON.stringify(actividades));
   
   mostrarMensaje('Actividad guardada exitosamente', 'success');
-  
-  
   this.reset();
   cargarActividades();
+  actualizarEstadisticas();
 });
-
 
 document.getElementById('novedadForm').addEventListener('submit', function(e) {
   e.preventDefault();
@@ -656,46 +978,24 @@ document.getElementById('novedadForm').addEventListener('submit', function(e) {
     contenido: document.getElementById('novedadContenido').value,
     prioridad: document.getElementById('novedadPrioridad').value,
     destino: document.getElementById('novedadDestino').value,
+    autor: localStorage.getItem('userName') || 'Preceptor',
+    año: 'todos',
+    fecha: new Date().toISOString(),
     fechaCreacion: new Date().toLocaleDateString()
   };
   
-  
-  let novedades = JSON.parse(sessionStorage.getItem('novedades') || '[]');
+  let novedades = JSON.parse(localStorage.getItem('noticias') || '[]');
   novedades.unshift(novedad);
-  sessionStorage.setItem('novedades', JSON.stringify(novedades));
-  
+  localStorage.setItem('noticias', JSON.stringify(novedades));
   
   mostrarMensaje('Novedad publicada exitosamente', 'success');
-  
-  
   this.reset();
   cargarNovedades();
+  actualizarEstadisticas();
 });
 
-
 function cargarActividades() {
-  
-  const actividadesEjemplo = [
-    {
-      id: 1,
-      titulo: "Feria de Ciencias",
-      descripcion: "Exhibición de proyectos científicos de todos los niveles",
-      fecha: "2024-07-15",
-      nivel: "todos",
-      fechaCreacion: "05/07/2024"
-    },
-    {
-      id: 2,
-      titulo: "Jornada Cultural",
-      descripcion: "Presentaciones artísticas y culturales",
-      fecha: "2024-07-20",
-      nivel: "4",
-      fechaCreacion: "03/07/2024"
-    }
-  ];
-  
-  const actividadesSesion = JSON.parse(sessionStorage.getItem('actividades') || '[]');
-  const actividades = [...actividadesSesion, ...actividadesEjemplo];
+  const actividades = JSON.parse(localStorage.getItem('actividades') || '[]');
   const container = document.getElementById('actividadesList');
   
   if (actividades.length === 0) {
@@ -712,9 +1012,6 @@ function cargarActividades() {
       </div>
       <p class="mt-2">${actividad.descripcion}</p>
       <div class="item-actions">
-        <button class="btn-small btn-edit" onclick="editarActividad(${actividad.id})">
-          <i class="fas fa-edit"></i> Editar
-        </button>
         <button class="btn-small btn-delete" onclick="eliminarActividad(${actividad.id})">
           <i class="fas fa-trash"></i> Eliminar
         </button>
@@ -723,30 +1020,8 @@ function cargarActividades() {
   `).join('');
 }
 
-
 function cargarNovedades() {
-  
-  const novedadesEjemplo = [
-    {
-      id: 1,
-      titulo: "Inicio del segundo semestre",
-      contenido: "Recordamos que el segundo semestre académico inicia el 15 de julio",
-      prioridad: "importante",
-      destino: "todos",
-      fechaCreacion: "01/07/2024"
-    },
-    {
-      id: 2,
-      titulo: "Reunión de padres",
-      contenido: "Se convoca a reunión de padres para el 10 de julio a las 18:00 hs",
-      prioridad: "normal",
-      destino: "padres",
-      fechaCreacion: "28/06/2024"
-    }
-  ];
-  
-  const novedadesSesion = JSON.parse(sessionStorage.getItem('novedades') || '[]');
-  const novedades = [...novedadesSesion, ...novedadesEjemplo];
+  const novedades = JSON.parse(localStorage.getItem('noticias') || '[]');
   const container = document.getElementById('novedadesList');
   
   if (novedades.length === 0) {
@@ -758,15 +1033,11 @@ function cargarNovedades() {
     <div class="item">
       <div class="item-title">${novedad.titulo}</div>
       <div class="item-date">
-        <i class="fas fa-clock me-2"></i>${novedad.fechaCreacion} | 
-        <i class="fas fa-flag me-2"></i>${novedad.prioridad.toUpperCase()} | 
-        <i class="fas fa-users me-2"></i>${novedad.destino}
+        <i class="fas fa-clock me-2"></i>${novedad.fechaCreacion || new Date(novedad.fecha).toLocaleDateString()} | 
+        <i class="fas fa-user me-2"></i>${novedad.autor}
       </div>
       <p class="mt-2">${novedad.contenido}</p>
       <div class="item-actions">
-        <button class="btn-small btn-edit" onclick="editarNovedad(${novedad.id})">
-          <i class="fas fa-edit"></i> Editar
-        </button>
         <button class="btn-small btn-delete" onclick="eliminarNovedad(${novedad.id})">
           <i class="fas fa-trash"></i> Eliminar
         </button>
@@ -775,37 +1046,202 @@ function cargarNovedades() {
   `).join('');
 }
 
+function cargarAsistencias() {
+  const asistencias = JSON.parse(localStorage.getItem('attendanceRecords') || '[]');
+  const container = document.getElementById('asistenciasList');
+  
+  if (asistencias.length === 0) {
+    container.innerHTML = '<p class="text-muted">No hay registros de asistencia recibidos.</p>';
+    return;
+  }
+  
+  container.innerHTML = asistencias.map((registro, index) => {
+    const presentes = registro.students.filter(s => s.status === 'Presente').length;
+    const ausentes = registro.students.filter(s => s.status === 'Ausente').length;
+    const sinRegistrar = 25 - presentes - ausentes;
+    
+    let tablaEstudiantes = `
+      <div class="attendance-summary">
+        <div class="summary-item">
+          <span class="status-badge status-presente">${presentes} Presentes</span>
+        </div>
+        <div class="summary-item">
+          <span class="status-badge status-ausente">${ausentes} Ausentes</span>
+        </div>
+        <div class="summary-item">
+          <span class="status-badge status-sin-registrar">${sinRegistrar} Sin registrar</span>
+        </div>
+      </div>
+      <table class="attendance-table">
+        <thead>
+          <tr>
+            <th style="width: 50px;">N°</th>
+            <th>Estudiante</th>
+            <th style="width: 150px;">Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+    
+    registro.students.forEach((student, i) => {
+      const statusClass = student.status === 'Presente' ? 'status-presente' : 
+                         student.status === 'Ausente' ? 'status-ausente' : 'status-sin-registrar';
+      tablaEstudiantes += `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${student.name}</td>
+          <td><span class="status-badge ${statusClass}">${student.status}</span></td>
+        </tr>
+      `;
+    });
+    
+    tablaEstudiantes += `
+        </tbody>
+      </table>
+    `;
+    
+    return `
+      <div class="item">
+        <div class="item-title">
+          <i class="fas fa-clipboard-check me-2"></i>${registro.subject} - ${registro.year}° Año
+        </div>
+        <div class="item-date">
+          <i class="fas fa-calendar me-2"></i>${registro.date} | 
+          <i class="fas fa-clock me-2"></i>${new Date(registro.timestamp).toLocaleString()}
+        </div>
+        ${tablaEstudiantes}
+        <div class="item-actions" style="margin-top: 15px;">
+          <button class="btn-small btn-delete" onclick="eliminarAsistencia(${index})">
+            <i class="fas fa-trash"></i> Eliminar
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function cargarCalificaciones() {
+  const calificaciones = JSON.parse(localStorage.getItem('gradesRecords') || '[]');
+  const container = document.getElementById('calificacionesList');
+  
+  if (calificaciones.length === 0) {
+    container.innerHTML = '<p class="text-muted">No hay registros de calificaciones recibidos.</p>';
+    return;
+  }
+  
+  container.innerHTML = calificaciones.map((registro, index) => `
+    <div class="item">
+      <div class="item-title">
+        <i class="fas fa-star me-2"></i>${registro.subject} - ${registro.year}° Año
+      </div>
+      <div class="item-date">
+        <i class="fas fa-clock me-2"></i>${new Date(registro.timestamp).toLocaleString()}
+      </div>
+      <p class="mt-2">Registro de calificaciones enviado como imagen</p>
+      <div class="item-actions">
+        <button class="btn-small btn-view" onclick="verImagenCalificacion(${index})">
+          <i class="fas fa-image"></i> Ver Imagen
+        </button>
+        <button class="btn-small btn-delete" onclick="eliminarCalificacion(${index})">
+          <i class="fas fa-trash"></i> Eliminar
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function verImagenCalificacion(index) {
+  const calificaciones = JSON.parse(localStorage.getItem('gradesRecords') || '[]');
+  const registro = calificaciones[index];
+  
+  if (!registro || !registro.imageData) return;
+  
+  document.getElementById('modalImageTitle').textContent = 
+    `Calificaciones - ${registro.subject} - ${registro.year}° Año`;
+  
+  document.getElementById('modalImageContent').innerHTML = `
+    <div style="text-align: center;">
+      <p><strong>Fecha de envío:</strong> ${new Date(registro.timestamp).toLocaleString()}</p>
+      <img src="${registro.imageData}" class="grade-image-preview" alt="Calificaciones">
+      <div style="margin-top: 20px;">
+        <a href="${registro.imageData}" download="calificaciones_${registro.subject}_${registro.year}.png" 
+           class="btn btn-primary-custom">
+          <i class="fas fa-download me-2"></i>Descargar Imagen
+        </a>
+      </div>
+    </div>
+  `;
+  
+  document.getElementById('imageModal').style.display = 'flex';
+}
+
+function closeImageModal() {
+  document.getElementById('imageModal').style.display = 'none';
+}
 
 function eliminarActividad(id) {
   if (confirm('¿Estás seguro de que deseas eliminar esta actividad?')) {
-    let actividades = JSON.parse(sessionStorage.getItem('actividades') || '[]');
+    let actividades = JSON.parse(localStorage.getItem('actividades') || '[]');
     actividades = actividades.filter(a => a.id !== id);
-    sessionStorage.setItem('actividades', JSON.stringify(actividades));
+    localStorage.setItem('actividades', JSON.stringify(actividades));
     cargarActividades();
+    actualizarEstadisticas();
     mostrarMensaje('Actividad eliminada exitosamente', 'success');
   }
 }
 
 function eliminarNovedad(id) {
   if (confirm('¿Estás seguro de que deseas eliminar esta novedad?')) {
-    let novedades = JSON.parse(sessionStorage.getItem('novedades') || '[]');
+    let novedades = JSON.parse(localStorage.getItem('noticias') || '[]');
     novedades = novedades.filter(n => n.id !== id);
-    sessionStorage.setItem('novedades', JSON.stringify(novedades));
+    localStorage.setItem('noticias', JSON.stringify(novedades));
     cargarNovedades();
+    actualizarEstadisticas();
     mostrarMensaje('Novedad eliminada exitosamente', 'success');
   }
 }
 
-function editarActividad(id) {
- 
-  alert('Función de edición en desarrollo');
+function eliminarAsistencia(index) {
+  if (confirm('¿Estás seguro de que deseas eliminar este registro de asistencia?')) {
+    let asistencias = JSON.parse(localStorage.getItem('attendanceRecords') || '[]');
+    asistencias.splice(index, 1);
+    localStorage.setItem('attendanceRecords', JSON.stringify(asistencias));
+    cargarAsistencias();
+    actualizarEstadisticas();
+    mostrarMensaje('Registro de asistencia eliminado exitosamente', 'success');
+    
+    if (asistencias.length === 0) {
+      document.getElementById('attendanceBadge').style.display = 'none';
+    }
+  }
 }
 
-function editarNovedad(id) {
+function eliminarCalificacion(index) {
+  if (confirm('¿Estás seguro de que deseas eliminar este registro de calificaciones?')) {
+    let calificaciones = JSON.parse(localStorage.getItem('gradesRecords') || '[]');
+    calificaciones.splice(index, 1);
+    localStorage.setItem('gradesRecords', JSON.stringify(calificaciones));
+    cargarCalificaciones();
+    actualizarEstadisticas();
+    mostrarMensaje('Registro de calificaciones eliminado exitosamente', 'success');
+    
+    if (calificaciones.length === 0) {
+      document.getElementById('gradesBadge').style.display = 'none';
+    }
+  }
+}
+
+function actualizarEstadisticas() {
+  const actividades = JSON.parse(localStorage.getItem('actividades') || '[]');
+  const novedades = JSON.parse(localStorage.getItem('noticias') || '[]');
+  const asistencias = JSON.parse(localStorage.getItem('attendanceRecords') || '[]');
+  const calificaciones = JSON.parse(localStorage.getItem('gradesRecords') || '[]');
   
-  alert('Función de edición en desarrollo');
+  document.getElementById('statsActividades').textContent = actividades.length;
+  document.getElementById('statsNovedades').textContent = novedades.length;
+  document.getElementById('statsAsistencias').textContent = asistencias.length;
+  document.getElementById('statsCalificaciones').textContent = calificaciones.length;
 }
-
 
 function mostrarMensaje(mensaje, tipo) {
   const alertDiv = document.createElement('div');
@@ -823,6 +1259,80 @@ function mostrarMensaje(mensaje, tipo) {
   }, 5000);
 }
 
-
 document.getElementById('btnCerrarSesion').addEventListener('click', function() {
-  session
+  if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+    localStorage.clear();
+    window.location.href = 'login.html';
+  }
+});
+
+document.addEventListener('keydown', function(event) {
+  const blockedKeys = [
+    { key: 'F12' },
+    { key: 'I', ctrl: true, shift: true },
+    { key: 'C', ctrl: true, shift: true },
+    { key: 'J', ctrl: true, shift: true },
+    { key: 'U', ctrl: true }
+  ];
+
+  const currentKey = {
+    key: event.key,
+    ctrl: event.ctrlKey,
+    shift: event.shiftKey
+  };
+
+  const isBlocked = blockedKeys.some(blocked => {
+    return blocked.key === currentKey.key &&
+           (blocked.ctrl === undefined || blocked.ctrl === currentKey.ctrl) &&
+           (blocked.shift === undefined || blocked.shift === currentKey.shift);
+  });
+
+  if (isBlocked) {
+    event.preventDefault();
+    return false;
+  }
+});
+
+document.addEventListener('contextmenu', function(event) {
+  event.preventDefault();
+  return false;
+});
+
+setInterval(() => {
+  const isLoggedIn = localStorage.getItem('loggedIn');
+  const userRole = localStorage.getItem('userRole');
+
+  if (isLoggedIn !== 'true' || userRole !== 'preceptor') {
+    redirectToLogin('Sesión expirada');
+  }
+}, 30000);
+
+document.addEventListener('visibilitychange', function() {
+  if (!document.hidden) {
+    checkAccess();
+    checkForNewData();
+    cargarAsistencias();
+    cargarCalificaciones();
+  }
+});
+
+document.getElementById('imageModal').addEventListener('click', function(e) {
+  if (e.target === this) {
+    closeImageModal();
+  }
+});
+
+setInterval(() => {
+  checkForNewData();
+  cargarAsistencias();
+  cargarCalificaciones();
+  actualizarEstadisticas();
+}, 5000);
+
+console.log('%c🔒 PANEL ADMINISTRATIVO SEGURO', 
+  'color: #c53030; font-size: 20px; font-weight: bold;');
+console.log('%cAcceso restringido solo para preceptores autorizados.', 
+  'color: #d69e2e; font-size: 14px;');
+</script>
+</body>
+</html>
