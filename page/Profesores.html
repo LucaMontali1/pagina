@@ -7,6 +7,8 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     :root {
       --primary-color: #1a365d;
@@ -36,7 +38,6 @@
       min-height: 100vh;
     }
 
-    /* Header */
     .header {
       background: rgba(26, 54, 93, 0.95);
       backdrop-filter: blur(10px);
@@ -80,14 +81,12 @@
       transform: translateY(-1px);
     }
 
-    /* Container principal */
     .main-container {
       max-width: 1400px;
       margin: 0 auto;
       padding: 2rem;
     }
 
-    /* Navegación de niveles */
     .levels-nav {
       display: flex;
       gap: 1rem;
@@ -119,7 +118,6 @@
       border-color: var(--primary-color);
     }
 
-    /* Grid de materias */
     .subjects-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -196,7 +194,6 @@
       color: var(--text-secondary);
     }
 
-    /* Modal de estudiantes */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -259,7 +256,6 @@
       max-height: calc(90vh - 140px);
     }
 
-    /* Tabs */
     .tabs {
       display: flex;
       border-bottom: 2px solid var(--border-color);
@@ -291,7 +287,6 @@
       display: block;
     }
 
-    /* Lista de estudiantes */
     .students-list {
       display: grid;
       gap: 1rem;
@@ -383,10 +378,100 @@
       transform: translateY(-2px);
     }
 
-    /* Sistema de notas */
+    .send-attendance-btn {
+      background: var(--accent-color);
+      color: white;
+      border: none;
+      padding: 0.75rem 2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .send-attendance-btn:hover {
+      background: var(--secondary-color);
+      transform: translateY(-2px);
+    }
+
     .grades-container {
       display: grid;
       gap: 1rem;
+    }
+
+    .global-grade-section {
+      background: #fff3cd;
+      border: 2px solid var(--warning-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .global-grade-section h3 {
+      color: var(--warning-color);
+      margin-top: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .global-grade-input {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .global-grade-input label {
+      font-weight: 600;
+    }
+
+    .global-grade-input input, .global-grade-input select {
+      padding: 0.5rem 1rem;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 1rem;
+      min-width: 200px;
+    }
+
+    .apply-global-btn {
+      background: var(--warning-color);
+      color: white;
+      border: none;
+      padding: 0.5rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .apply-global-btn:hover {
+      background: #b7791f;
+    }
+
+    .average-toggle {
+      background: #e0f2fe;
+      border: 2px solid var(--accent-color);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .average-toggle label {
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+
+    .average-toggle input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
     }
 
     .student-grades-row {
@@ -405,6 +490,36 @@
       gap: 0.5rem;
       align-items: center;
       flex-wrap: wrap;
+    }
+
+    .grade-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      align-items: center;
+    }
+
+    .grade-name-input {
+      width: 80px;
+      padding: 0.25rem 0.5rem;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: white;
+    }
+
+    .grade-name-input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+    }
+
+    .grade-value-wrapper {
+      display: flex;
+      gap: 0.25rem;
+      align-items: center;
     }
 
     .grade-input {
@@ -440,17 +555,18 @@
     }
 
     .remove-grade-btn {
-      width: 30px;
-      height: 30px;
+      width: 25px;
+      height: 25px;
       background: var(--danger-color);
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 4px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: all 0.3s ease;
+      font-size: 0.75rem;
     }
 
     .remove-grade-btn:hover {
@@ -468,6 +584,20 @@
       border: 2px solid var(--border-color);
     }
 
+    .average-display input {
+      width: 100%;
+      border: none;
+      text-align: center;
+      font-weight: 600;
+      color: var(--primary-color);
+      background: transparent;
+    }
+
+    .average-display input:focus {
+      outline: none;
+      background: #f0f9ff;
+    }
+
     .save-grades {
       background: var(--warning-color);
       color: white;
@@ -478,10 +608,28 @@
       cursor: pointer;
       transition: all 0.3s ease;
       margin-top: 1rem;
+      margin-right: 1rem;
     }
 
     .save-grades:hover {
       background: #b7791f;
+      transform: translateY(-2px);
+    }
+
+    .send-grades-btn {
+      background: #9333ea;
+      color: white;
+      border: none;
+      padding: 0.75rem 2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+    }
+
+    .send-grades-btn:hover {
+      background: #7c3aed;
       transform: translateY(-2px);
     }
 
@@ -497,6 +645,7 @@
       z-index: 9999;
       transform: translateX(400px);
       transition: transform 0.3s ease;
+      box-shadow: var(--shadow-lg);
     }
 
     .notification.show {
@@ -507,12 +656,44 @@
       background: var(--danger-color);
     }
 
-    /* Estados ocultos */
+    .notification.info {
+      background: var(--accent-color);
+    }
+
     .hidden {
       display: none !important;
     }
 
-    /* Responsive */
+    #gradesCapture {
+      position: absolute;
+      left: -9999px;
+      background: white;
+      padding: 20px;
+    }
+
+    .capture-table {
+      border-collapse: collapse;
+      width: 100%;
+      font-family: Arial, sans-serif;
+    }
+
+    .capture-table th,
+    .capture-table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+
+    .capture-table th {
+      background-color: var(--primary-color);
+      color: white;
+      font-weight: bold;
+    }
+
+    .capture-table tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
     @media (max-width: 768px) {
       .main-container {
         padding: 1rem;
@@ -545,11 +726,14 @@
         flex: 1;
         min-width: 120px;
       }
+
+      .grade-item {
+        min-width: 100px;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- Header -->
   <header class="header">
     <div class="header-content">
       <div class="logo">
@@ -567,14 +751,12 @@
     </div>
   </header>
 
-  <!-- Contenido Principal -->
   <div class="main-container">
     <h1 style="text-align: center; margin-bottom: 2rem; color: var(--primary-color);">
       <i class="fas fa-chalkboard-teacher"></i>
       Sistema de Gestión Docente
     </h1>
 
-    <!-- Navegación por niveles -->
     <div class="levels-nav">
       <button class="level-btn active" onclick="showLevel(1)">
         <i class="fas fa-baby"></i> 1° Año
@@ -593,7 +775,6 @@
       </button>
     </div>
 
-    <!-- Materias por nivel -->
     <div id="level-1" class="level-content">
       <div class="subjects-grid" id="subjects-1"></div>
     </div>
@@ -611,7 +792,6 @@
     </div>
   </div>
 
-  <!-- Modal para gestión de estudiantes -->
   <div class="modal-overlay" id="studentModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -621,7 +801,6 @@
         </button>
       </div>
       <div class="modal-body">
-        <!-- Tabs -->
         <div class="tabs">
           <button class="tab-btn active" onclick="showTab('attendance')">
             <i class="fas fa-clipboard-check"></i> Asistencia
@@ -631,31 +810,70 @@
           </button>
         </div>
 
-        <!-- Tab de Asistencia -->
         <div id="attendance-tab" class="tab-content active">
           <div class="date-selector">
             <label><strong>Fecha:</strong></label>
             <input type="date" class="date-input" id="attendanceDate" onchange="loadAttendanceTab()">
             <button class="save-attendance" onclick="saveAttendance()">
-              <i class="fas fa-save"></i> Guardar Asistencia
+              <i class="fas fa-save"></i> Guardar Localmente
+            </button>
+            <button class="send-attendance-btn" onclick="sendToPreceptoria()">
+              <i class="fas fa-file-excel"></i> Enviar a Preceptoría
             </button>
           </div>
           <div class="students-list" id="attendanceList"></div>
         </div>
 
-        <!-- Tab de Calificaciones -->
         <div id="grades-tab" class="tab-content">
+          <div class="global-grade-section">
+            <h3>
+              <i class="fas fa-globe"></i> Configuración de Nota Global
+            </h3>
+            <p style="margin-bottom: 1rem; color: var(--text-secondary);">
+              Define un nombre que se aplicará a todas las notas en la misma posición
+            </p>
+            <div class="global-grade-input">
+              <label>Posición:</label>
+              <select id="globalGradeIndex">
+                <option value="0">Nota 1</option>
+                <option value="1">Nota 2</option>
+                <option value="2">Nota 3</option>
+                <option value="3">Nota 4</option>
+                <option value="4">Nota 5</option>
+                <option value="5">Nota 6</option>
+                <option value="6">Nota 7</option>
+                <option value="7">Nota 8</option>
+              </select>
+              <label>Nombre:</label>
+              <input type="text" id="globalGradeName" placeholder="Ej: TP1, Parcial..." maxlength="15">
+              <button class="apply-global-btn" onclick="applyGlobalGradeName()">
+                <i class="fas fa-check"></i> Aplicar a Todos
+              </button>
+            </div>
+          </div>
+
+          <div class="average-toggle">
+            <label>
+              <input type="checkbox" id="showAverageToggle" checked onchange="toggleAverageDisplay()">
+              <i class="fas fa-calculator"></i> Mostrar Promedio (Editable)
+            </label>
+          </div>
+          
           <div class="grades-container" id="gradesList"></div>
           <button class="save-grades" onclick="saveGrades()">
             <i class="fas fa-save"></i> Guardar Calificaciones
+          </button>
+          <button class="send-grades-btn" onclick="sendGradesToPreceptoria()">
+            <i class="fas fa-image"></i> Enviar Imagen a Preceptoría
           </button>
         </div>
       </div>
     </div>
   </div>
 
-  <script>
-    // Configuración de materias por nivel
+  <div id="gradesCapture" class="hidden"></div>
+
+ <script>
     const subjectsByLevel = {
       1: [
         { name: 'Lengua y Literatura', icon: 'fas fa-book' },
@@ -728,61 +946,47 @@
       ]
     };
 
-    // Lista de estudiantes (25 alumnos por materia)
     const students = [];
     for (let i = 1; i <= 25; i++) {
       students.push({
         id: i,
         name: `Alumno ${i}`,
         attendance: {},
-        grades: {}
+        grades: {},
+        gradeNames: {},
+        customAverage: {}
       });
     }
 
-    // Variables globales
     let currentLevel = 1;
     let currentSubject = null;
     let currentYear = null;
+    let showAverage = true;
 
-    // Inicialización
     document.addEventListener('DOMContentLoaded', function() {
       showLevel(1);
       document.getElementById('attendanceDate').value = new Date().toISOString().split('T')[0];
     });
 
-    // Función para mostrar nivel
     function showLevel(level) {
       currentLevel = level;
-      
-      // Actualizar botones activos
       document.querySelectorAll('.level-btn').forEach(btn => btn.classList.remove('active'));
       document.querySelectorAll('.level-btn')[level - 1].classList.add('active');
-
-      // Ocultar todos los niveles
       document.querySelectorAll('.level-content').forEach(content => content.classList.add('hidden'));
-      
-      // Mostrar nivel seleccionado
       document.getElementById(`level-${level}`).classList.remove('hidden');
-
-      // Cargar materias
       loadSubjects(level);
     }
 
-    // Función para cargar materias
     function loadSubjects(level) {
       const container = document.getElementById(`subjects-${level}`);
       const subjects = subjectsByLevel[level] || [];
-      
       container.innerHTML = '';
-      
       subjects.forEach(subject => {
         const card = document.createElement('div');
         card.className = 'subject-card';
         card.innerHTML = `
           <div class="subject-header">
-            <div class="subject-icon">
-              <i class="${subject.icon}"></i>
-            </div>
+            <div class="subject-icon"><i class="${subject.icon}"></i></div>
             <h3 class="subject-name">${subject.name}</h3>
           </div>
           <div class="subject-info">
@@ -790,61 +994,41 @@
             <span><i class="fas fa-calendar"></i> ${level}° Año</span>
           </div>
         `;
-        
         card.addEventListener('click', () => openSubjectModal(subject.name, level));
         container.appendChild(card);
       });
     }
 
-    // Función para abrir modal de materia
     function openSubjectModal(subjectName, year) {
       currentSubject = subjectName;
       currentYear = year;
-      
       document.getElementById('modalTitle').innerHTML = `
-        <i class="fas fa-chalkboard-teacher"></i>
-        ${subjectName} - ${year}° Año
+        <i class="fas fa-chalkboard-teacher"></i> ${subjectName} - ${year}° Año
       `;
-      
       loadAttendanceTab();
       loadGradesTab();
-      
       document.getElementById('studentModal').style.display = 'flex';
     }
 
-    // Función para cerrar modal
     function closeModal() {
       document.getElementById('studentModal').style.display = 'none';
     }
 
-    // Función para cambiar tabs
     function showTab(tabName) {
-      // Actualizar botones de tabs
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
       event.target.classList.add('active');
-
-      // Ocultar todos los tabs
       document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-      
-      // Mostrar tab seleccionado
-      document.getElementById(`${tabName}-tab`).classList.
-      add('active');
-
-      // Mostrar tab seleccionado
       document.getElementById(`${tabName}-tab`).classList.add('active');
     }
 
-    // Función para cargar tab de asistencia
     function loadAttendanceTab() {
       const container = document.getElementById('attendanceList');
       const date = document.getElementById('attendanceDate').value;
-      
       container.innerHTML = '';
       
       students.forEach(student => {
         const row = document.createElement('div');
         row.className = 'student-row';
-        
         const attendanceKey = `${currentSubject}-${currentYear}-${date}`;
         const currentAttendance = student.attendance[attendanceKey] || null;
         
@@ -861,12 +1045,15 @@
             </button>
           </div>
         `;
-        
         container.appendChild(row);
       });
     }
 
-    // Función para cargar tab de calificaciones
+    function toggleAverageDisplay() {
+      showAverage = document.getElementById('showAverageToggle').checked;
+      loadGradesTab();
+    }
+
     function loadGradesTab() {
       const container = document.getElementById('gradesList');
       container.innerHTML = '';
@@ -874,115 +1061,126 @@
       students.forEach(student => {
         const gradesKey = `${currentSubject}-${currentYear}`;
         const studentGrades = student.grades[gradesKey] || [];
+        const studentGradeNames = student.gradeNames[gradesKey] || [];
+        const customAverage = student.customAverage?.[gradesKey];
         
         const row = document.createElement('div');
         row.className = 'student-grades-row';
         row.setAttribute('data-student-id', student.id);
         
+        const calculatedAverage = calculateAverage(studentGrades);
+        const displayAverage = customAverage !== undefined ? customAverage : calculatedAverage;
+        
         row.innerHTML = `
           <div class="student-name">${student.name}</div>
           <div class="grades-input-section" id="grades-${student.id}">
-            ${generateGradeInputs(studentGrades, student.id)}
+            ${generateGradeInputs(studentGrades, studentGradeNames, student.id)}
             <button class="add-grade-btn" onclick="addGradeInput(${student.id})">
               <i class="fas fa-plus"></i>
             </button>
           </div>
           <div class="average-display" id="average-${student.id}">
-            ${calculateAverage(studentGrades)}
+            ${showAverage ? `<input type="number" step="0.01" min="1" max="10" value="${displayAverage !== '--' ? displayAverage : ''}" 
+                placeholder="${calculatedAverage}" 
+                onchange="updateCustomAverage(${student.id}, this.value)"
+                title="Promedio calculado: ${calculatedAverage}">` : 'N/A'}
           </div>
         `;
-        
         container.appendChild(row);
       });
     }
 
-    // Función para generar inputs de notas
-    function generateGradeInputs(grades, studentId) {
+    function generateGradeInputs(grades, gradeNames, studentId) {
       let html = '';
-      
-      // Mostrar al menos 2 inputs
       const minInputs = Math.max(2, grades.length);
       
       for (let i = 0; i < minInputs; i++) {
         const value = grades[i] || '';
-        html += `
-          <input type="number" class="grade-input" min="1" max="10" 
-                 value="${value}" onchange="updateGrade(${studentId}, ${i}, this.value)"
-                 placeholder="Nota">
-        `;
+        const name = gradeNames[i] || `Nota ${i + 1}`;
         
-        // Agregar botón de eliminar si hay más de 2 inputs y hay valor
-        if (i >= 2 && grades[i] !== undefined) {
-          html += `
-            <button class="remove-grade-btn" onclick="removeGradeInput(${studentId}, ${i})">
-              <i class="fas fa-minus"></i>
-            </button>
-          `;
-        }
+        html += `
+          <div class="grade-item">
+            <input type="text" class="grade-name-input" value="${name}" 
+                   onchange="updateGradeName(${studentId}, ${i}, this.value)"
+                   placeholder="Nombre" maxlength="15">
+            <div class="grade-value-wrapper">
+              <input type="number" class="grade-input" min="1" max="10" 
+                     value="${value}" onchange="updateGrade(${studentId}, ${i}, this.value)"
+                     placeholder="--">
+              ${i >= 2 && grades[i] !== undefined ? `
+                <button class="remove-grade-btn" onclick="removeGradeInput(${studentId}, ${i})">
+                  <i class="fas fa-times"></i>
+                </button>` : ''}
+            </div>
+          </div>
+        `;
       }
-      
       return html;
     }
 
-    // Función para calcular promedio
     function calculateAverage(grades) {
       if (!grades || grades.length === 0) return '--';
-      
       const validGrades = grades.filter(grade => grade !== '' && grade !== null && grade !== undefined);
       if (validGrades.length === 0) return '--';
-      
       const sum = validGrades.reduce((acc, grade) => acc + parseFloat(grade), 0);
       return (sum / validGrades.length).toFixed(2);
     }
 
-    // Función para establecer asistencia
     function setAttendance(studentId, isPresent) {
       const date = document.getElementById('attendanceDate').value;
       const attendanceKey = `${currentSubject}-${currentYear}-${date}`;
-      
       const student = students.find(s => s.id === studentId);
-      if (student) {
-        student.attendance[attendanceKey] = isPresent;
-      }
-      
-      // Actualizar UI
+      if (student) student.attendance[attendanceKey] = isPresent;
       loadAttendanceTab();
     }
 
-    // Función para actualizar nota
+    function updateGradeName(studentId, gradeIndex, name) {
+      const gradesKey = `${currentSubject}-${currentYear}`;
+      const student = students.find(s => s.id === studentId);
+      if (student) {
+        if (!student.gradeNames[gradesKey]) student.gradeNames[gradesKey] = [];
+        student.gradeNames[gradesKey][gradeIndex] = name;
+      }
+    }
+
     function updateGrade(studentId, gradeIndex, value) {
       const gradesKey = `${currentSubject}-${currentYear}`;
       const student = students.find(s => s.id === studentId);
-      
       if (student) {
-        if (!student.grades[gradesKey]) {
-          student.grades[gradesKey] = [];
-        }
-        
+        if (!student.grades[gradesKey]) student.grades[gradesKey] = [];
         student.grades[gradesKey][gradeIndex] = value === '' ? null : parseFloat(value);
         
-        // Actualizar promedio
-        const average = calculateAverage(student.grades[gradesKey]);
-        document.getElementById(`average-${studentId}`).textContent = average;
+        if (showAverage && !student.customAverage?.[gradesKey]) {
+          const average = calculateAverage(student.grades[gradesKey]);
+          const avgInput = document.querySelector(`#average-${studentId} input`);
+          if (avgInput) {
+            avgInput.placeholder = average;
+          }
+        }
       }
     }
 
-    // Función para agregar input de nota
+    function updateCustomAverage(studentId, value) {
+      const gradesKey = `${currentSubject}-${currentYear}`;
+      const student = students.find(s => s.id === studentId);
+      if (student) {
+        if (!student.customAverage) student.customAverage = {};
+        student.customAverage[gradesKey] = value === '' ? undefined : parseFloat(value);
+      }
+    }
+
     function addGradeInput(studentId) {
       const gradesKey = `${currentSubject}-${currentYear}`;
       const student = students.find(s => s.id === studentId);
-      
       if (student) {
-        if (!student.grades[gradesKey]) {
-          student.grades[gradesKey] = [];
-        }
-        
+        if (!student.grades[gradesKey]) student.grades[gradesKey] = [];
+        if (!student.gradeNames[gradesKey]) student.gradeNames[gradesKey] = [];
+        const newIndex = student.grades[gradesKey].length;
         student.grades[gradesKey].push('');
-        
-        // Regenerar los inputs
+        student.gradeNames[gradesKey].push(`Nota ${newIndex + 1}`);
         const container = document.getElementById(`grades-${studentId}`);
         container.innerHTML = `
-          ${generateGradeInputs(student.grades[gradesKey], studentId)}
+          ${generateGradeInputs(student.grades[gradesKey], student.gradeNames[gradesKey], studentId)}
           <button class="add-grade-btn" onclick="addGradeInput(${studentId})">
             <i class="fas fa-plus"></i>
           </button>
@@ -990,80 +1188,222 @@
       }
     }
 
-    // Función para eliminar input de nota
     function removeGradeInput(studentId, gradeIndex) {
       const gradesKey = `${currentSubject}-${currentYear}`;
       const student = students.find(s => s.id === studentId);
-      
       if (student && student.grades[gradesKey]) {
         student.grades[gradesKey].splice(gradeIndex, 1);
-        
-        // Regenerar los inputs
+        if (student.gradeNames[gradesKey]) student.gradeNames[gradesKey].splice(gradeIndex, 1);
         const container = document.getElementById(`grades-${studentId}`);
         container.innerHTML = `
-          ${generateGradeInputs(student.grades[gradesKey], studentId)}
+          ${generateGradeInputs(student.grades[gradesKey], student.gradeNames[gradesKey], studentId)}
           <button class="add-grade-btn" onclick="addGradeInput(${studentId})">
             <i class="fas fa-plus"></i>
           </button>
         `;
         
-        // Actualizar promedio
-        const average = calculateAverage(student.grades[gradesKey]);
-        document.getElementById(`average-${studentId}`).textContent = average;
+        if (showAverage && !student.customAverage?.[gradesKey]) {
+          const average = calculateAverage(student.grades[gradesKey]);
+          const avgInput = document.querySelector(`#average-${studentId} input`);
+          if (avgInput) {
+            avgInput.placeholder = average;
+          }
+        }
       }
     }
 
-    // Función para guardar asistencia
-    function saveAttendance() {
-      showNotification('Asistencia guardada exitosamente', 'success');
-      console.log('Asistencia guardada:', students.map(s => ({
-        id: s.id,
-        name: s.name,
-        attendance: s.attendance
-      })));
+    function applyGlobalGradeName() {
+      const gradeIndex = parseInt(document.getElementById('globalGradeIndex').value);
+      const gradeName = document.getElementById('globalGradeName').value.trim();
+      if (!gradeName) {
+        showNotification('Por favor ingresa un nombre para la nota', 'error');
+        return;
+      }
+      const gradesKey = `${currentSubject}-${currentYear}`;
+      let appliedCount = 0;
+      students.forEach(student => {
+        if (!student.gradeNames[gradesKey]) student.gradeNames[gradesKey] = [];
+        student.gradeNames[gradesKey][gradeIndex] = gradeName;
+        appliedCount++;
+      });
+      loadGradesTab();
+      showNotification(`Nombre "${gradeName}" aplicado a ${appliedCount} estudiantes`, 'success');
+      document.getElementById('globalGradeName').value = '';
     }
 
-    // Función para guardar calificaciones
+    function saveAttendance() {
+      showNotification('Asistencia guardada localmente', 'success');
+    }
+
+    function sendToPreceptoria() {
+      if (!confirm('¿Deseas enviar la asistencia a Preceptoría? Esta acción enviará el registro.')) {
+        return;
+      }
+      
+      const date = document.getElementById('attendanceDate').value;
+      const attendanceKey = `${currentSubject}-${currentYear}-${date}`;
+      
+      const wb = XLSX.utils.book_new();
+      const wsData = [
+        ['REPORTE DE ASISTENCIA'],
+        ['Materia:', currentSubject],
+        ['Año:', currentYear + '°'],
+        ['Fecha:', date],
+        [''],
+        ['N°', 'Estudiante', 'Estado']
+      ];
+      
+      students.forEach((student, index) => {
+        const status = student.attendance[attendanceKey] === true ? 'PRESENTE' : 
+                      student.attendance[attendanceKey] === false ? 'AUSENTE' : 'SIN REGISTRAR';
+        wsData.push([index + 1, student.name, status]);
+      });
+      
+      const ws = XLSX.utils.aoa_to_sheet(wsData);
+      ws['!cols'] = [{wch: 5}, {wch: 30}, {wch: 15}];
+      XLSX.utils.book_append_sheet(wb, ws, 'Asistencia');
+      XLSX.writeFile(wb, `Asistencia_${currentSubject}_${currentYear}_${date}.xlsx`);
+      
+      const attendanceData = {
+        subject: currentSubject,
+        year: currentYear,
+        date: date,
+        students: students.map(s => ({
+          id: s.id,
+          name: s.name,
+          status: s.attendance[attendanceKey] === true ? 'Presente' : 
+                  s.attendance[attendanceKey] === false ? 'Ausente' : 'Sin registrar'
+        })),
+        timestamp: new Date().toISOString()
+      };
+      
+      const records = JSON.parse(localStorage.getItem('attendanceRecords') || '[]');
+      records.push(attendanceData);
+      localStorage.setItem('attendanceRecords', JSON.stringify(records));
+      
+      showNotification('Asistencia enviada a Preceptoría como Excel', 'success');
+    }
+
     function saveGrades() {
       showNotification('Calificaciones guardadas exitosamente', 'success');
-      console.log('Calificaciones guardadas:', students.map(s => ({
-        id: s.id,
-        name: s.name,
-        grades: s.grades
-      })));
     }
 
-    // Función para mostrar notificaciones
+    function sendGradesToPreceptoria() {
+      const gradesKey = `${currentSubject}-${currentYear}`;
+      const captureDiv = document.getElementById('gradesCapture');
+      
+      let maxGrades = 0;
+      students.forEach(student => {
+        const grades = student.grades[gradesKey] || [];
+        if (grades.length > maxGrades) maxGrades = grades.length;
+      });
+      
+      let tableHTML = `
+        <div style="padding: 20px; background: white;">
+          <h2 style="text-align: center; color: #1a365d; margin-bottom: 10px;">
+            CALIFICACIONES - ${currentSubject}
+          </h2>
+          <p style="text-align: center; color: #666; margin-bottom: 20px;">
+            ${currentYear}° Año - ${new Date().toLocaleDateString()}
+          </p>
+          <table class="capture-table">
+            <thead>
+              <tr>
+                <th style="width: 40px;">N°</th>
+                <th style="width: 200px;">Estudiante</th>
+      `;
+      
+      for (let i = 0; i < maxGrades; i++) {
+        const firstStudent = students[0];
+        const gradeName = firstStudent.gradeNames[gradesKey] ? 
+                         (firstStudent.gradeNames[gradesKey][i] || `Nota ${i+1}`) : 
+                         `Nota ${i+1}`;
+        tableHTML += `<th>${gradeName}</th>`;
+      }
+      
+      if (showAverage) {
+        tableHTML += `<th style="background-color: #3182ce;">Promedio</th>`;
+      }
+      
+      tableHTML += `</tr></thead><tbody>`;
+      
+      students.forEach((student, index) => {
+        const studentGrades = student.grades[gradesKey] || [];
+        const customAverage = student.customAverage?.[gradesKey];
+        const calculatedAverage = calculateAverage(studentGrades);
+        const finalAverage = customAverage !== undefined ? customAverage : calculatedAverage;
+        
+        tableHTML += `<tr><td>${index + 1}</td><td style="text-align: left;">${student.name}</td>`;
+        
+        for (let i = 0; i < maxGrades; i++) {
+          const grade = studentGrades[i] || '--';
+          tableHTML += `<td>${grade}</td>`;
+        }
+        
+        if (showAverage) {
+          const avgDisplay = finalAverage !== '--' ? finalAverage : calculatedAverage;
+          tableHTML += `<td style="font-weight: bold; background-color: #e6f3ff;">${avgDisplay}</td>`;
+        }
+        
+        tableHTML += `</tr>`;
+      });
+      
+      tableHTML += `</tbody></table></div>`;
+      captureDiv.innerHTML = tableHTML;
+      captureDiv.style.left = '0';
+      captureDiv.style.position = 'fixed';
+      
+      setTimeout(() => {
+        html2canvas(captureDiv, {
+          scale: 2,
+          backgroundColor: '#ffffff',
+          logging: false
+        }).then(canvas => {
+          canvas.toBlob(blob => {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Calificaciones_${currentSubject}_${currentYear}_${new Date().toISOString().split('T')[0]}.png`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            const gradesData = {
+              subject: currentSubject,
+              year: currentYear,
+              imageData: canvas.toDataURL('image/png'),
+              timestamp: new Date().toISOString()
+            };
+            
+            const records = JSON.parse(localStorage.getItem('gradesRecords') || '[]');
+            records.push(gradesData);
+            localStorage.setItem('gradesRecords', JSON.stringify(records));
+            
+            captureDiv.style.left = '-9999px';
+            captureDiv.style.position = 'absolute';
+            showNotification('Calificaciones enviadas como imagen a Preceptoría', 'success');
+          });
+        });
+      }, 100);
+    }
+
     function showNotification(message, type = 'success') {
       const notification = document.createElement('div');
       notification.className = `notification ${type}`;
-      notification.textContent = message;
-      
+      notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i> ${message}`;
       document.body.appendChild(notification);
-      
-      setTimeout(() => {
-        notification.classList.add('show');
-      }, 100);
-      
+      setTimeout(() => notification.classList.add('show'), 100);
       setTimeout(() => {
         notification.classList.remove('show');
-        setTimeout(() => {
-          document.body.removeChild(notification);
-        }, 300);
+        setTimeout(() => document.body.removeChild(notification), 300);
       }, 3000);
     }
 
-    // Event listeners
     document.addEventListener('click', function(e) {
-      if (e.target === document.getElementById('studentModal')) {
-        closeModal();
-      }
+      if (e.target === document.getElementById('studentModal')) closeModal();
     });
 
     document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') {
-        closeModal();
-      }
+      if (e.key === 'Escape') closeModal();
     });
   </script>
 </body>
