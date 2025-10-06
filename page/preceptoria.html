@@ -843,3 +843,85 @@ function eliminarNovedad(id) {
     localStorage.setItem('noticias', JSON.stringify(novedades));
     cargarNovedades();
     actualizarEstadisticas();
+    mostrarMensaje('Novedad eliminada', 'success');
+  }
+}
+
+function mostrarMensaje(mensaje, tipo) {
+  const alertDiv = document.createElement('div');
+  alertDiv.className = `alert alert-${tipo} alert-dismissible fade show`;
+  alertDiv.innerHTML = `
+    ${mensaje}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  `;
+  
+  const container = document.querySelector('.container');
+  if (container) {
+    container.insertBefore(alertDiv, container.firstChild);
+    setTimeout(() => alertDiv.remove(), 5000);
+  }
+}
+
+document.getElementById('btnCerrarSesion').addEventListener('click', function() {
+  if (confirm('¿Cerrar sesión?')) {
+    localStorage.clear();
+    window.location.href = 'login.html';
+  }
+});
+
+window.addEventListener('popstate', function() {
+  history.pushState(null, null, location.href);
+});
+
+history.pushState(null, null, location.href);
+
+document.addEventListener('keydown', function(event) {
+  const blocked = [
+    { key: 'F12' },
+    { key: 'I', ctrl: true, shift: true },
+    { key: 'C', ctrl: true, shift: true },
+    { key: 'J', ctrl: true, shift: true },
+    { key: 'U', ctrl: true }
+  ];
+
+  const current = {
+    key: event.key,
+    ctrl: event.ctrlKey,
+    shift: event.shiftKey
+  };
+
+  const isBlocked = blocked.some(b => 
+    b.key === current.key &&
+    (b.ctrl === undefined || b.ctrl === current.ctrl) &&
+    (b.shift === undefined || b.shift === current.shift)
+  );
+
+  if (isBlocked) {
+    event.preventDefault();
+    return false;
+  }
+});
+
+document.addEventListener('contextmenu', function(e) {
+  e.preventDefault();
+  return false;
+});
+
+setInterval(() => {
+  const isLoggedIn = localStorage.getItem('loggedIn');
+  const userRole = localStorage.getItem('userRole');
+
+  if (isLoggedIn !== 'true' || userRole !== 'preceptor') {
+    redirectToLogin('Sesión expirada');
+  }
+}, 30000);
+
+document.addEventListener('visibilitychange', function() {
+  if (!document.hidden) {
+    checkAccess();
+  }
+});
+
+console.log('%c🔒 PANEL PRECEPTORIA', 'color: #c53030; font-size: 20px; font-weight: bold;');
+console.log('%cAcceso restringido', 'color: #d69e2e; font-size: 14px;');
+
