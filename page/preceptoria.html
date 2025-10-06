@@ -35,7 +35,6 @@
       overflow-x: hidden;
     }
 
-    /* Header profesional */
     .encabezado-profesional {
       position: fixed;
       width: 100%;
@@ -118,7 +117,6 @@
       box-shadow: 0 6px 20px rgba(197, 48, 48, 0.4);
     }
 
-    /* Contenido principal */
     .main-content {
       padding-top: 120px;
       min-height: 100vh;
@@ -144,7 +142,6 @@
       opacity: 0.9;
     }
 
-    /* Navegación por pestañas */
     .nav-tabs-custom {
       border: none;
       justify-content: center;
@@ -174,7 +171,6 @@
       border-color: transparent;
     }
 
-    /* Cards profesionales */
     .info-card {
       background: white;
       border-radius: 20px;
@@ -238,7 +234,6 @@
       margin: 0;
     }
 
-    /* Formularios */
     .form-container {
       background: white;
       border-radius: 20px;
@@ -286,7 +281,6 @@
       box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
     }
 
-    /* Lista de elementos */
     .item-list {
       background: white;
       border-radius: 20px;
@@ -348,7 +342,6 @@
       transform: scale(1.05);
     }
 
-    /* Loading y Security */
     .loading-screen {
       position: fixed;
       top: 0;
@@ -410,7 +403,6 @@
       margin-bottom: 1rem;
     }
 
-    /* Responsive */
     @media (max-width: 768px) {
       .dashboard-title {
         font-size: 2rem;
@@ -434,7 +426,6 @@
       }
     }
 
-    /* Animaciones */
     .animate-fade-in {
       opacity: 0;
       transform: translateY(20px);
@@ -447,20 +438,10 @@
         transform: translateY(0);
       }
     }
-
-    .success-message {
-      background: var(--success-color);
-      color: white;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      display: none;
-    }
   </style>
 </head>
 <body>
 
-<!-- Loading Screen -->
 <div class="loading-screen" id="loadingScreen">
   <div class="loading-content">
     <div class="loading-spinner"></div>
@@ -469,16 +450,14 @@
   </div>
 </div>
 
-<!-- Security Warning Overlay -->
 <div class="security-warning" id="securityWarning">
   <div class="warning-content">
     <i class="fas fa-exclamation-triangle"></i>
     <h3>¡Acceso Restringido!</h3>
-    <p>Este panel es exclusivo para preceptores. Serás redirigido.</p>
+    <p>Este panel es exclusivo para preceptores.</p>
   </div>
 </div>
 
-<!-- Header -->
 <header class="encabezado-profesional">
   <div class="container">
     <div class="d-flex justify-content-between align-items-center py-3">
@@ -511,7 +490,6 @@
   </div>
 
   <div class="container">
-    
     <ul class="nav nav-tabs nav-tabs-custom" id="adminTabs" role="tablist">
       <li class="nav-item" role="presentation">
         <button class="nav-link active" id="actividades-tab" data-bs-toggle="tab" data-bs-target="#actividades" type="button" role="tab">
@@ -530,10 +508,7 @@
       </li>
     </ul>
 
-    
     <div class="tab-content" id="adminTabsContent">
-      
-      <!-- Tab Actividades -->
       <div class="tab-pane fade show active" id="actividades" role="tabpanel">
         <div class="row">
           <div class="col-lg-6">
@@ -584,7 +559,6 @@
         </div>
       </div>
 
-      <!-- Tab Novedades -->
       <div class="tab-pane fade" id="novedades" role="tabpanel">
         <div class="row">
           <div class="col-lg-6">
@@ -605,20 +579,14 @@
                   <textarea class="form-control" id="novedadContenido" rows="4" required></textarea>
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Prioridad</label>
-                  <select class="form-control" id="novedadPrioridad" required>
-                    <option value="normal">Normal</option>
-                    <option value="importante">Importante</option>
-                    <option value="urgente">Urgente</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Dirigido a</label>
-                  <select class="form-control" id="novedadDestino" required>
-                    <option value="estudiantes">Estudiantes</option>
-                    <option value="padres">Padres</option>
-                    <option value="docentes">Docentes</option>
-                    <option value="todos">Toda la comunidad</option>
+                  <label class="form-label">Año</label>
+                  <select class="form-control" id="novedadAño" required>
+                    <option value="todos">Todos los años</option>
+                    <option value="1">1° Año</option>
+                    <option value="2">2° Año</option>
+                    <option value="3">3° Año</option>
+                    <option value="4">4° Año</option>
+                    <option value="5">5° Año</option>
                   </select>
                 </div>
                 <button type="submit" class="btn btn-primary-custom">
@@ -636,7 +604,6 @@
         </div>
       </div>
 
-      <!-- Tab Reportes -->
       <div class="tab-pane fade" id="reportes" role="tabpanel">
         <div class="row">
           <div class="col-lg-12">
@@ -650,26 +617,26 @@
               <div class="row text-center">
                 <div class="col-md-3">
                   <div class="info-card">
-                    <h4 class="text-primary">45</h4>
-                    <p>Actividades Este Mes</p>
+                    <h4 class="text-primary" id="statActividades">0</h4>
+                    <p>Actividades</p>
                   </div>
                 </div>
                 <div class="col-md-3">
                   <div class="info-card">
-                    <h4 class="text-success">23</h4>
+                    <h4 class="text-success" id="statNovedades">0</h4>
                     <p>Novedades Publicadas</p>
                   </div>
                 </div>
                 <div class="col-md-3">
                   <div class="info-card">
-                    <h4 class="text-warning">12</h4>
-                    <p>Eventos Próximos</p>
+                    <h4 class="text-warning">5</h4>
+                    <p>Años Académicos</p>
                   </div>
                 </div>
                 <div class="col-md-3">
                   <div class="info-card">
-                    <h4 class="text-info">567</h4>
-                    <p>Estudiantes Activos</p>
+                    <h4 class="text-info">100%</h4>
+                    <p>Sistema Activo</p>
                   </div>
                 </div>
               </div>
@@ -684,9 +651,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-
-// ===== SISTEMA DE VERIFICACIÓN DE ACCESO =====
-
 document.addEventListener('DOMContentLoaded', function() {
   checkAccess();
 });
@@ -696,75 +660,64 @@ function checkAccess() {
   const userRole = localStorage.getItem('userRole');
   const userName = localStorage.getItem('userName');
 
-  console.log('Verificando acceso:', { isLoggedIn, userRole, userName });
+  console.log('Verificando acceso preceptoria:', { isLoggedIn, userRole, userName });
 
-  // Verificar si está logueado
   if (isLoggedIn !== 'true') {
-    console.log('Usuario no logueado, redirigiendo a login');
+    console.log('Usuario no logueado');
     redirectToLogin('No has iniciado sesión');
     return;
   }
 
-  // Verificar que sea preceptor
   if (userRole !== 'preceptor') {
-    console.log('Usuario no es preceptor, acceso denegado');
-    redirectToLogin('Acceso restringido solo para preceptores');
+    console.log('Usuario no es preceptor:', userRole);
+    redirectToLogin('Acceso restringido a preceptores');
     return;
   }
 
-  // Si pasa todas las verificaciones, inicializar
-  console.log('Acceso autorizado para preceptor');
+  console.log('Acceso autorizado - Inicializando panel');
   initializePage(userName);
 }
 
-function redirectToLogin(message = 'Acceso no autorizado') {
+function redirectToLogin(message) {
   showSecurityWarning(message);
   setTimeout(() => {
     localStorage.clear();
     window.location.href = 'login.html';
-  }, 3000);
+  }, 2000);
 }
 
 function showSecurityWarning(message) {
   const warningOverlay = document.getElementById('securityWarning');
-  warningOverlay.style.display = 'flex';
-  
-  if (message) {
-    const warningContent = warningOverlay.querySelector('.warning-content p');
-    warningContent.textContent = message;
+  if (warningOverlay) {
+    warningOverlay.style.display = 'flex';
+    const warningText = warningOverlay.querySelector('.warning-content p');
+    if (warningText && message) {
+      warningText.textContent = message;
+    }
   }
 }
 
 function initializePage(userName) {
-  // Actualizar nombre de usuario
   if (userName) {
     document.getElementById('userName').textContent = userName;
   }
 
-  // Cargar datos
   cargarActividades();
   cargarNovedades();
+  actualizarEstadisticas();
 
-  // Ocultar loading screen
   setTimeout(() => {
     const loadingScreen = document.getElementById('loadingScreen');
-    loadingScreen.style.opacity = '0';
-    setTimeout(() => {
-      loadingScreen.style.display = 'none';
-    }, 500);
-  }, 1000);
+    if (loadingScreen) {
+      loadingScreen.style.opacity = '0';
+      setTimeout(() => {
+        loadingScreen.style.display = 'none';
+      }, 500);
+    }
+  }, 800);
 
-  console.log('Panel inicializado correctamente para:', userName);
+  console.log('Panel inicializado para:', userName);
 }
-
-// Prevenir navegación con botones del navegador
-window.addEventListener('popstate', function(event) {
-  history.pushState(null, null, location.href);
-});
-
-history.pushState(null, null, location.href);
-
-// ===== FUNCIONALIDAD DEL PANEL =====
 
 document.getElementById('actividadForm').addEventListener('submit', function(e) {
   e.preventDefault();
@@ -785,6 +738,7 @@ document.getElementById('actividadForm').addEventListener('submit', function(e) 
   mostrarMensaje('Actividad guardada exitosamente', 'success');
   this.reset();
   cargarActividades();
+  actualizarEstadisticas();
 });
 
 document.getElementById('novedadForm').addEventListener('submit', function(e) {
@@ -794,10 +748,8 @@ document.getElementById('novedadForm').addEventListener('submit', function(e) {
     id: Date.now(),
     titulo: document.getElementById('novedadTitulo').value,
     contenido: document.getElementById('novedadContenido').value,
-    prioridad: document.getElementById('novedadPrioridad').value,
-    destino: document.getElementById('novedadDestino').value,
+    año: document.getElementById('novedadAño').value,
     autor: localStorage.getItem('userName') || 'Preceptor',
-    año: 'todos',
     fecha: new Date().toISOString(),
     fechaCreacion: new Date().toLocaleDateString()
   };
@@ -809,6 +761,7 @@ document.getElementById('novedadForm').addEventListener('submit', function(e) {
   mostrarMensaje('Novedad publicada exitosamente', 'success');
   this.reset();
   cargarNovedades();
+  actualizarEstadisticas();
 });
 
 function cargarActividades() {
@@ -825,7 +778,7 @@ function cargarActividades() {
       <div class="item-title">${actividad.titulo}</div>
       <div class="item-date">
         <i class="fas fa-calendar me-2"></i>${actividad.fecha} | 
-        <i class="fas fa-users me-2"></i>${actividad.nivel === 'todos' ? 'Todos los niveles' : actividad.nivel + '° Año'}
+        <i class="fas fa-users me-2"></i>${actividad.nivel === 'todos' ? 'Todos' : actividad.nivel + '° Año'}
       </div>
       <p class="mt-2">${actividad.descripcion}</p>
       <div class="item-actions">
@@ -851,7 +804,8 @@ function cargarNovedades() {
       <div class="item-title">${novedad.titulo}</div>
       <div class="item-date">
         <i class="fas fa-clock me-2"></i>${novedad.fechaCreacion || new Date(novedad.fecha).toLocaleDateString()} | 
-        <i class="fas fa-user me-2"></i>${novedad.autor}
+        <i class="fas fa-user me-2"></i>${novedad.autor} | 
+        <i class="fas fa-graduation-cap me-2"></i>${novedad.año === 'todos' ? 'Todos' : novedad.año + '°'}
       </div>
       <p class="mt-2">${novedad.contenido}</p>
       <div class="item-actions">
@@ -863,105 +817,29 @@ function cargarNovedades() {
   `).join('');
 }
 
+function actualizarEstadisticas() {
+  const actividades = JSON.parse(localStorage.getItem('actividades') || '[]');
+  const novedades = JSON.parse(localStorage.getItem('noticias') || '[]');
+  
+  document.getElementById('statActividades').textContent = actividades.length;
+  document.getElementById('statNovedades').textContent = novedades.length;
+}
+
 function eliminarActividad(id) {
-  if (confirm('¿Estás seguro de que deseas eliminar esta actividad?')) {
+  if (confirm('¿Eliminar esta actividad?')) {
     let actividades = JSON.parse(localStorage.getItem('actividades') || '[]');
     actividades = actividades.filter(a => a.id !== id);
     localStorage.setItem('actividades', JSON.stringify(actividades));
     cargarActividades();
-    mostrarMensaje('Actividad eliminada exitosamente', 'success');
+    actualizarEstadisticas();
+    mostrarMensaje('Actividad eliminada', 'success');
   }
 }
 
 function eliminarNovedad(id) {
-  if (confirm('¿Estás seguro de que deseas eliminar esta novedad?')) {
+  if (confirm('¿Eliminar esta novedad?')) {
     let novedades = JSON.parse(localStorage.getItem('noticias') || '[]');
     novedades = novedades.filter(n => n.id !== id);
     localStorage.setItem('noticias', JSON.stringify(novedades));
     cargarNovedades();
-    mostrarMensaje('Novedad eliminada exitosamente', 'success');
-  }
-}
-
-function mostrarMensaje(mensaje, tipo) {
-  const alertDiv = document.createElement('div');
-  alertDiv.className = `alert alert-${tipo} alert-dismissible fade show`;
-  alertDiv.innerHTML = `
-    ${mensaje}
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-  `;
-  
-  const container = document.querySelector('.container');
-  container.insertBefore(alertDiv, container.firstChild);
-  
-  setTimeout(() => {
-    alertDiv.remove();
-  }, 5000);
-}
-
-// Cerrar sesión
-document.getElementById('btnCerrarSesion').addEventListener('click', function() {
-  if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
-    console.log('Cerrando sesión...');
-    localStorage.clear();
-    window.location.href = 'login.html';
-  }
-});
-
-// Bloquear teclas de desarrollador
-document.addEventListener('keydown', function(event) {
-  const blockedKeys = [
-    { key: 'F12' },
-    { key: 'I', ctrl: true, shift: true },
-    { key: 'C', ctrl: true, shift: true },
-    { key: 'J', ctrl: true, shift: true },
-    { key: 'U', ctrl: true }
-  ];
-
-  const currentKey = {
-    key: event.key,
-    ctrl: event.ctrlKey,
-    shift: event.shiftKey
-  };
-
-  const isBlocked = blockedKeys.some(blocked => {
-    return blocked.key === currentKey.key &&
-           (blocked.ctrl === undefined || blocked.ctrl === currentKey.ctrl) &&
-           (blocked.shift === undefined || blocked.shift === currentKey.shift);
-  });
-
-  if (isBlocked) {
-    event.preventDefault();
-    console.log('Tecla bloqueada');
-    return false;
-  }
-});
-
-// Bloquear clic derecho
-document.addEventListener('contextmenu', function(event) {
-  event.preventDefault();
-  return false;
-});
-
-// Verificación periódica de sesión
-setInterval(() => {
-  const isLoggedIn = localStorage.getItem('loggedIn');
-  const userRole = localStorage.getItem('userRole');
-
-  if (isLoggedIn !== 'true' || userRole !== 'preceptor') {
-    console.log('Sesión inválida detectada');
-    redirectToLogin('Sesión expirada');
-  }
-}, 30000); // Cada 30 segundos
-
-// Detectar cambios de ventana
-document.addEventListener('visibilitychange', function() {
-  if (!document.hidden) {
-    checkAccess();
-  }
-});
-
-console.log('%c🔒 PANEL ADMINISTRATIVO SEGURO', 
-  'color: #c53030; font-size: 20px; font-weight: bold;');
-console.log('%cAcceso restringido solo para preceptores autorizados.', 
-  'color: #d69e2e; font-size: 14px;');
+    actualizarEstadisticas();
