@@ -37,7 +37,6 @@
       padding-top: 90px;
     }
 
-    
     .encabezado-profesional {
       position: fixed;
       width: 100%;
@@ -133,7 +132,6 @@
       box-shadow: 0 6px 20px rgba(197, 48, 48, 0.4);
     }
 
-    
     .titulo-principal {
       text-align: center;
       margin: 60px 0 80px 0;
@@ -170,7 +168,6 @@
       margin-right: auto;
     }
 
-    
     .niveles-container {
       max-width: 1200px;
       margin: 0 auto;
@@ -185,7 +182,6 @@
       margin-top: 40px;
     }
 
-    /* Botones de nivel profesionales */
     .btn-nivel {
       background: white;
       color: var(--primary-color);
@@ -257,12 +253,10 @@
       line-height: 1.4;
     }
 
-    
     .btn-nivel:hover .btn-nivel-descripcion {
       opacity: 1;
     }
 
-    
     .btn-nivel-preceptoria {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
@@ -285,7 +279,28 @@
       color: white;
     }
 
-    
+    .btn-nivel-profesores {
+      background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+      color: white;
+    }
+
+    .btn-nivel-profesores .btn-nivel-icon {
+      color: white;
+    }
+
+    .btn-nivel-profesores .btn-nivel-descripcion {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .btn-nivel-profesores:hover {
+      background: linear-gradient(135deg, #2f855a 0%, #38a169 100%);
+      color: white;
+    }
+
+    .btn-nivel-profesores:hover .btn-nivel-icon {
+      color: white;
+    }
+
     .animate-on-scroll {
       opacity: 0;
       transform: translateY(30px);
@@ -297,7 +312,6 @@
       transform: translateY(0);
     }
 
-    
     @media (max-width: 768px) {
       .titulo-principal h1 {
         font-size: 2.5rem;
@@ -326,7 +340,6 @@
       }
     }
 
-    
     .background-particles {
       position: fixed;
       top: 0;
@@ -364,7 +377,6 @@
 </head>
 <body>
 
-
 <div class="background-particles">
   <div class="particle" style="left: 10%; width: 6px; height: 6px; animation-delay: 0s;"></div>
   <div class="particle" style="left: 20%; width: 4px; height: 4px; animation-delay: 2s;"></div>
@@ -376,7 +388,6 @@
   <div class="particle" style="left: 80%; width: 5px; height: 5px; animation-delay: 14s;"></div>
   <div class="particle" style="left: 90%; width: 8px; height: 8px; animation-delay: 16s;"></div>
 </div>
-
 
 <header class="encabezado-profesional">
   <div class="container">
@@ -403,14 +414,12 @@
   </div>
 </header>
 
-
 <section class="titulo-principal animate-on-scroll">
   <div class="container">
     <h1>Niveles Educativos</h1>
     <p>Bienvenido a los niveles del secundario Dante Alighieri.</p>
   </div>
 </section>
-
 
 <div class="niveles-container">
   <div class="niveles-grid">
@@ -474,7 +483,6 @@
       </div>
     </a>
 
-    <!-- NUEVO BOTÓN DE PROFESORES -->
     <a href="Profesores.html" class="btn-nivel btn-nivel-profesores animate-on-scroll" style="animation-delay: 0.7s;">
       <div class="btn-nivel-icon">
         <i class="fas fa-chalkboard-teacher"></i>
@@ -487,11 +495,10 @@
   </div>
 </div>
 
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-
+// Efecto de header al hacer scroll
 let lastScrollTop = 0;
 const header = document.querySelector('.encabezado-profesional');
 
@@ -509,7 +516,7 @@ window.addEventListener('scroll', function() {
   lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
 });
 
-
+// Animaciones al hacer scroll
 const observerOptions = {
   threshold: 0.1,
   rootMargin: '0px 0px -50px 0px'
@@ -527,22 +534,33 @@ document.querySelectorAll('.animate-on-scroll').forEach(el => {
   observer.observe(el);
 });
 
-
+// Botón de cerrar sesión
 document.getElementById('btnCerrarSesion').addEventListener('click', function() {
-  localStorage.removeItem('loggedIn');
-  window.location.href = 'login.html';
+  if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+    localStorage.clear();
+    window.location.href = 'login.html';
+  }
 });
 
-
+// VERIFICACIÓN DE ACCESO CORREGIDA
 if (localStorage.getItem('loggedIn') !== 'true') {
+  window.location.href = 'login.html';
+} else {
+  // Verificar que sea profesor o preceptor
+  const userRole = localStorage.getItem('userRole');
   
-  const currentPage = window.location.pathname.split('/').pop();
-  if (currentPage !== 'preceptoria.html') {
-    window.location.href = 'login.html';
+  if (userRole !== 'profesor' && userRole !== 'preceptor') {
+    // Si es estudiante, redirigir a su año
+    const userYear = localStorage.getItem('userYear');
+    if (userRole === 'estudiante' && userYear) {
+      window.location.href = `${userYear} año.html`;
+    } else {
+      window.location.href = 'login.html';
+    }
   }
 }
 
-
+// Smooth scroll para enlaces internos
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', function(e) {
     e.preventDefault();
