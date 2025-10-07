@@ -626,10 +626,28 @@
       cursor: pointer;
       transition: all 0.3s ease;
       margin-top: 1rem;
+      margin-right: 1rem;
     }
 
     .send-grades-btn:hover {
       background: #7c3aed;
+      transform: translateY(-2px);
+    }
+
+    .send-excel-btn {
+      background: #217346;
+      color: white;
+      border: none;
+      padding: 0.75rem 2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+    }
+
+    .send-excel-btn:hover {
+      background: #1a5c37;
       transform: translateY(-2px);
     }
 
@@ -863,6 +881,9 @@
           <button class="save-grades" onclick="saveGrades()">
             <i class="fas fa-save"></i> Guardar Calificaciones
           </button>
+          <button class="send-excel-btn" onclick="sendGradesToPreceptoriaExcel()">
+            <i class="fas fa-file-excel"></i> Enviar Excel a Preceptoría
+          </button>
           <button class="send-grades-btn" onclick="sendGradesToPreceptoria()">
             <i class="fas fa-image"></i> Enviar Imagen a Preceptoría
           </button>
@@ -873,7 +894,7 @@
 
   <div id="gradesCapture" class="hidden"></div>
 
- <script>
+  <script>
     const subjectsByLevel = {
       1: [
         { name: 'Lengua y Literatura', icon: 'fas fa-book' },
@@ -1288,6 +1309,104 @@
       showNotification('Calificaciones guardadas exitosamente', 'success');
     }
 
+    function sendGradesToPreceptoriaExcel() {
+      if (!confirm('¿Deseas enviar las calificaciones a Preceptoría en formato Excel?')) {
+        return;
+      }
+      
+      const gradesKey = `${currentSubject}-${currentYear}`;
+      
+      let maxGrades = 0;
+      students.forEach(student => {
+        const grades = student.grades[gradesKey] || [];
+        if (grades.length > maxGrades) maxGrades = grades.length;
+      });
+      
+      const wb = XLSX.utils.book_new();
+      const wsData = [
+        ['REPORTE DE CALIFICACIONES'],
+        ['Materia:', currentSubject],
+        ['Año:', currentYear + '°'],
+        ['Fecha:', new Date().toLocaleDateString()],
+        ['']
+      ];
+      
+      const headers = ['N°', 'Estudiante'];
+      for (let i = 0; i < maxGrades; i++) {
+        const firstStudent = students[0];
+        const gradeName = firstStudent.gradeNames[gradesKey] ? 
+                         (firstStudent.gradeNames[gradesKey][i] || `Nota ${i+1}`) : 
+                         `Nota ${i+1}`;
+        headers.push(gradeName);
+      }
+      if (showAverage) {
+        headers.push('Promedio');
+      }
+      wsData.push(headers);
+      
+      students.forEach((student, index) => {
+        const studentGrades = student.grades[gradesKey] || [];
+        const customAverage = student.customAverage?.[gradesKey];
+        const calculatedAverage = calculateAverage(studentGrades);
+        const finalAverage = customAverage !== undefined ? customAverage : calculatedAverage;
+        
+        const row = [index + 1, student.name];
+        
+        for (let i = 0; i < maxGrades; i++) {
+          row.push(studentGrades[i] || '--');
+        }
+        
+        if (showAverage) {
+          row.push(finalAverage !== '--' ? finalAverage : calculatedAverage);
+        }
+        
+        wsData.push(row);
+      });
+      
+      const ws = XLSX.utils.aoa_to_sheet(wsData);
+      
+      const colWidths = [{wch: 5}, {wch: 30}];
+      for (let i = 0; i < maxGrades; i++) {
+        colWidths.push({wch: 12});
+      }
+      if (showAverage) {
+        colWidths.push({wch: 12});
+      }
+      ws['!cols'] = colWidths;
+      
+      XLSX.utils.book_append_sheet(wb, ws, 'Calificaciones');
+      XLSX.writeFile(wb, `Calificaciones_${currentSubject}_${currentYear}_${new Date().toISOString().split('T')[0]}.xlsx`);
+      
+      const gradesData = {
+        subject: currentSubject,
+        year: currentYear,
+        date: new Date().toISOString().split('T')[0],
+        students: students.map(s => {
+          const studentGrades = s.grades[gradesKey] || [];
+          const studentGradeNames = s.gradeNames[gradesKey] || [];
+          const customAverage = s.customAverage?.[gradesKey];
+          const calculatedAverage = calculateAverage(studentGrades);
+          const finalAverage = customAverage !== undefined ? customAverage : calculatedAverage;
+          
+          return {
+            id: s.id,
+            name: s.name,
+            grades: studentGrades,
+            gradeNames: studentGradeNames,
+            average: finalAverage
+          };
+        }),
+        timestamp: new Date().toISOString(),
+        type: 'excel'
+      };
+      
+      const records = JSON.parse(localStorage.getItem('gradesRecordsExcel') || '[]');
+      records.push(gradesData);
+      localStorage.setItem('gradesRecordsExcel', JSON.stringify(records));
+      
+      showNotification('Calificaciones enviadas a Preceptoría como Excel', 'success');
+    }
+
     function sendGradesToPreceptoria() {
       const gradesKey = `${currentSubject}-${currentYear}`;
       const captureDiv = document.getElementById('gradesCapture');
@@ -1408,3 +1527,4 @@
   </script>
 </body>
 </html>
+
