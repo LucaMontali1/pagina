@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html><!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -569,7 +569,7 @@
       background: white;
       border-radius: 20px;
       padding: 30px;
-      max-width: 800px;
+      max-width: 900px;
       width: 100%;
       max-height: 90vh;
       overflow-y: auto;
@@ -885,7 +885,7 @@ function checkAccess() {
   if (userRole !== 'preceptor') {
     redirectToLogin('Acceso restringido solo para preceptores');
     return;
-}
+  }
 
   initializePage(userName);
 }
@@ -931,12 +931,13 @@ function initializePage(userName) {
 function checkForNewData() {
   const attendanceRecords = JSON.parse(localStorage.getItem('attendanceRecords') || '[]');
   const gradesRecords = JSON.parse(localStorage.getItem('gradesRecords') || '[]');
+  const gradesRecordsExcel = JSON.parse(localStorage.getItem('gradesRecordsExcel') || '[]');
   
   if (attendanceRecords.length > 0) {
     document.getElementById('attendanceBadge').style.display = 'inline-block';
   }
   
-  if (gradesRecords.length > 0) {
+  if (gradesRecords.length > 0 || gradesRecordsExcel.length > 0) {
     document.getElementById('gradesBadge').style.display = 'inline-block';
   }
 }
@@ -1122,32 +1123,111 @@ function cargarAsistencias() {
 
 function cargarCalificaciones() {
   const calificaciones = JSON.parse(localStorage.getItem('gradesRecords') || '[]');
+  const calificacionesExcel = JSON.parse(localStorage.getItem('gradesRecordsExcel') || '[]');
   const container = document.getElementById('calificacionesList');
   
-  if (calificaciones.length === 0) {
+  if (calificaciones.length === 0 && calificacionesExcel.length === 0) {
     container.innerHTML = '<p class="text-muted">No hay registros de calificaciones recibidos.</p>';
     return;
   }
   
-  container.innerHTML = calificaciones.map((registro, index) => `
-    <div class="item">
-      <div class="item-title">
-        <i class="fas fa-star me-2"></i>${registro.subject} - ${registro.year}° Año
+  let html = '';
+  
+  calificacionesExcel.forEach((registro, index) => {
+    html += `
+      <div class="item">
+        <div class="item-title">
+          <i class="fas fa-file-excel me-2" style="color: #217346;"></i>${registro.subject} - ${registro.year}° Año
+        </div>
+        <div class="item-date">
+          <i class="fas fa-calendar me-2"></i>${registro.date} | 
+          <i class="fas fa-clock me-2"></i>${new Date(registro.timestamp).toLocaleString()}
+        </div>
+        <p class="mt-2">Registro de calificaciones enviado como Excel</p>
+        <div class="item-actions">
+          <button class="btn-small btn-view" onclick="verCalificacionesExcel(${index})">
+            <i class="fas fa-table"></i> Ver Detalles
+          </button>
+          <button class="btn-small btn-delete" onclick="eliminarCalificacionExcel(${index})">
+            <i class="fas fa-trash"></i> Eliminar
+          </button>
+        </div>
       </div>
-      <div class="item-date">
-        <i class="fas fa-clock me-2"></i>${new Date(registro.timestamp).toLocaleString()}
+    `;
+  });
+  
+  calificaciones.forEach((registro, index) => {
+    html += `
+      <div class="item">
+        <div class="item-title">
+          <i class="fas fa-image me-2" style="color: #9333ea;"></i>${registro.subject} - ${registro.year}° Año
+        </div>
+        <div class="item-date">
+          <i class="fas fa-clock me-2"></i>${new Date(registro.timestamp).toLocaleString()}
+        </div>
+        <p class="mt-2">Registro de calificaciones enviado como imagen</p>
+        <div class="item-actions">
+          <button class="btn-small btn-view" onclick="verImagenCalificacion(${index})">
+            <i class="fas fa-image"></i> Ver Imagen
+          </button>
+          <button class="btn-small btn-delete" onclick="eliminarCalificacion(${index})">
+            <i class="fas fa-trash"></i> Eliminar
+          </button>
+        </div>
       </div>
-      <p class="mt-2">Registro de calificaciones enviado como imagen</p>
-      <div class="item-actions">
-        <button class="btn-small btn-view" onclick="verImagenCalificacion(${index})">
-          <i class="fas fa-image"></i> Ver Imagen
-        </button>
-        <button class="btn-small btn-delete" onclick="eliminarCalificacion(${index})">
-          <i class="fas fa-trash"></i> Eliminar
-        </button>
-      </div>
-    </div>
-  `).join('');
+    `;
+  });
+  
+  container.innerHTML = html;
+}
+
+function verCalificacionesExcel(index) {
+  const calificaciones = JSON.parse(localStorage.getItem('gradesRecordsExcel') || '[]');
+  const registro = calificaciones[index];
+  
+  if (!registro) return;
+  
+  document.getElementById('modalImageTitle').textContent = 
+    `Calificaciones - ${registro.subject} - ${registro.year}° Año`;
+  
+  let tableHTML = `
+    <div style="padding: 20px;">
+      <p><strong>Fecha:</strong> ${registro.date}</p>
+      <p><strong>Enviado:</strong> ${new Date(registro.timestamp).toLocaleString()}</p>
+      <table class="attendance-table" style="margin-top: 20px;">
+        <thead>
+          <tr>
+            <th style="width: 50px;">N°</th>
+            <th>Estudiante</th>
+  `;
+  
+  const maxGrades = Math.max(...registro.students.map(s => s.grades.length));
+  for (let i = 0; i < maxGrades; i++) {
+    const gradeName = registro.students[0].gradeNames[i] || `Nota ${i+1}`;
+    tableHTML += `<th>${gradeName}</th>`;
+  }
+  tableHTML += `<th style="background: #e6f3ff;">Promedio</th>`;
+  tableHTML += `</tr></thead><tbody>`;
+  
+  registro.students.forEach((student, i) => {
+    tableHTML += `
+      <tr>
+        <td>${i + 1}</td>
+        <td>${student.name}</td>
+    `;
+    
+    for (let j = 0; j < maxGrades; j++) {
+      tableHTML += `<td style="text-align: center;">${student.grades[j] || '--'}</td>`;
+    }
+    
+    tableHTML += `<td style="text-align: center; font-weight: bold;">${student.average}</td>`;
+    tableHTML += `</tr>`;
+  });
+  
+  tableHTML += `</tbody></table></div>`;
+  
+  document.getElementById('modalImageContent').innerHTML = tableHTML;
+  document.getElementById('imageModal').style.display = 'flex';
 }
 
 function verImagenCalificacion(index) {
@@ -1225,7 +1305,24 @@ function eliminarCalificacion(index) {
     actualizarEstadisticas();
     mostrarMensaje('Registro de calificaciones eliminado exitosamente', 'success');
     
-    if (calificaciones.length === 0) {
+    const gradesRecordsExcel = JSON.parse(localStorage.getItem('gradesRecordsExcel') || '[]');
+    if (calificaciones.length === 0 && gradesRecordsExcel.length === 0) {
+      document.getElementById('gradesBadge').style.display = 'none';
+    }
+  }
+}
+
+function eliminarCalificacionExcel(index) {
+  if (confirm('¿Estás seguro de que deseas eliminar este registro de calificaciones?')) {
+    let calificaciones = JSON.parse(localStorage.getItem('gradesRecordsExcel') || '[]');
+    calificaciones.splice(index, 1);
+    localStorage.setItem('gradesRecordsExcel', JSON.stringify(calificaciones));
+    cargarCalificaciones();
+    actualizarEstadisticas();
+    mostrarMensaje('Registro de calificaciones eliminado exitosamente', 'success');
+    
+    const gradesRecords = JSON.parse(localStorage.getItem('gradesRecords') || '[]');
+    if (calificaciones.length === 0 && gradesRecords.length === 0) {
       document.getElementById('gradesBadge').style.display = 'none';
     }
   }
@@ -1236,11 +1333,12 @@ function actualizarEstadisticas() {
   const novedades = JSON.parse(localStorage.getItem('noticias') || '[]');
   const asistencias = JSON.parse(localStorage.getItem('attendanceRecords') || '[]');
   const calificaciones = JSON.parse(localStorage.getItem('gradesRecords') || '[]');
+  const calificacionesExcel = JSON.parse(localStorage.getItem('gradesRecordsExcel') || '[]');
   
   document.getElementById('statsActividades').textContent = actividades.length;
   document.getElementById('statsNovedades').textContent = novedades.length;
   document.getElementById('statsAsistencias').textContent = asistencias.length;
-  document.getElementById('statsCalificaciones').textContent = calificaciones.length;
+  document.getElementById('statsCalificaciones').textContent = calificaciones.length + calificacionesExcel.length;
 }
 
 function mostrarMensaje(mensaje, tipo) {
