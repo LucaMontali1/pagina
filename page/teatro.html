@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lengua y Literatura - 1° Año | Dante Alighieri</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary-color: #1a365d;
+      --secondary-color: #2c5282;
+      --accent-color: #3182ce;
+      --light-blue: #e6f3ff;
+      --success-color: #38a169;
+      --warning-color: #d69e2e;
+      --danger-color: #e53e3e;
+      --text-primary: #2d3748;
+      --text-secondary: #4a5568;
+      --border-color: #e2e8f0;
+      --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #f7fafc 0%, var(--light-blue) 100%);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    .header {
+      background: rgba(26, 54, 93, 0.95);
+      backdrop-filter: blur(10px);
+      color: white;
+      padding: 1rem 0;
+      box-shadow: var(--shadow-md);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.3rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .nav-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      transform: translateY(-1px);
+    }
+
+    .subject-hero {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      color: white;
+      padding: 3rem 2rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .hero-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .hero-icon {
+      width: 100px;
+      height: 100px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+    }
+
+    .hero-info h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-info p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
+    .main-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid var(--border-color);
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .tab-btn.active {
+      color: var(--primary-color);
+      border-bottom-color: var(--primary-color);
+    }
+
+    .tab-btn:hover {
+      color: var(--accent-color);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .tasks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .task-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow-md);
+      border-left: 5px solid var(--accent-color);
+      transition: all 0.3s ease;
+    }
+
+    .task-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .task-card.submitted {
+      border-left-color: var(--success-color);
+    }
+
+    .task-card.graded {
+      border-left-color: var(--warning-color);
+    }
+
+    .task-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 1rem;
+    }
+
+    .task-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .task-status {
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .status-pending {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .status-submitted {
+      background: #d1ecf1;
+      color: #0c5460;
+    }
+
+    .status-graded {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .task-description {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .task-meta {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .task-meta span {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .task-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: var(--accent-color);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--secondary-color);
+      transform: translateY(-1px);
+    }
+
+    .btn-success {
+      background: var(--success-color);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #2f855a;
+    }
+
+    .btn-secondary {
+      background: var(--border-color);
+      color: var(--text-primary);
+    }
+
+    .btn-secondary:hover {
+      background: #cbd5e0;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .modal-header {
+      background: var(--primary-color);
+      color: white;
+      padding: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 16px 16px 0 0;
+    }
+
+    .modal-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 8px;
+      transition: background 0.3s ease;
+    }
+
+    .close-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .modal-body {
+      padding: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+    }
+
+    .file-upload-area {
+      border: 2px dashed var(--border-color);
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .file-upload-area:hover {
+      border-color: var(--accent-color);
+      background: var(--light-blue);
+    }
+
+    .file-upload-area.dragging {
+      border-color: var(--success-color);
+      background: #f0fff4;
+    }
+
+    .file-upload-icon {
+      font-size: 3rem;
+      color: var(--accent-color);
+      margin-bottom: 1rem;
+    }
+
+    .uploaded-files {
+      margin-top: 1rem;
+    }
+
+    .file-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem;
+      background: var(--light-blue);
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+    }
+
+    .file-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .file-icon {
+      font-size: 1.5rem;
+      color: var(--accent-color);
+    }
+
+    .file-remove {
+      background: var(--danger-color);
+      color: white;
+      border: none;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    .grade-display {
+      background: linear-gradient(135deg, var(--warning-color), #b7791f);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .grade-value {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .grade-label {
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+
+    .no-tasks {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-secondary);
+    }
+
+    .no-tasks i {
+      font-size: 4rem;
+      opacity: 0.3;
+      margin-bottom: 1rem;
+    }
+
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 1rem 2rem;
+      background: var(--success-color);
+      color: white;
+      border-radius: 8px;
+      font-weight: 600;
+      z-index: 9999;
+      transform: translateX(400px);
+      transition: transform 0.3s ease;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .notification.show {
+      transform: translateX(0);
+    }
+
+    .notification.error {
+      background: var(--danger-color);
+    }
+
+    @media (max-width: 768px) {
+      .hero-content {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .hero-info h1 {
+        font-size: 2rem;
+      }
+
+      .tasks-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .tabs {
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">
+        <i class="fas fa-theater-masks"></i>
+        Teatro
+      </div>
+      <div class="nav-buttons">
+        <button class="nav-btn" onclick="goBack()">
+          <i class="fas fa-arrow-left"></i> Volver
+        </button>
+        <button class="nav-btn" onclick="logout()">
+          <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="subject-hero">
+    <div class="hero-content">
+      <div class="hero-icon">
+        <i class="fas fa-book"></i>
+      </div>
+      <div class="hero-info">
+        <h1>Teatro</h1>
+        <p>1° Año -</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-container">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('tareas')">
+        <i class="fas fa-tasks"></i> Tareas Asignadas
+      </button>
+      <button class="tab-btn" onclick="showTab('calificaciones')">
+        <i class="fas fa-star"></i> Mis Calificaciones
+      </button>
+    </div>
+
+    <div id="tareas-tab" class="tab-content active">
+      <div class="tasks-grid" id="tasksGrid">
+        <div class="no-tasks">
+          <i class="fas fa-clipboard-list"></i>
+          <h3>No hay tareas disponibles</h3>
+          <p>Cuando tu profesor asigne tareas, aparecerán aquí</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="calificaciones-tab" class="tab-content">
+      <div id="gradesContainer">
+        <div class="no-tasks">
+          <i class="fas fa-star"></i>
+          <h3>No hay calificaciones disponibles</h3>
+          <p>Tus calificaciones aparecerán aquí una vez que el profesor las publique</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="submitModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">Entregar Tarea</h2>
+        <button class="close-btn" onclick="closeModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Comentario (opcional)</label>
+          <textarea id="commentInput" class="form-control" rows="3" placeholder="Agrega un comentario sobre tu entrega..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Archivos</label>
+          <div class="file-upload-area" id="fileUploadArea">
+            <i class="fas fa-cloud-upload-alt file-upload-icon"></i>
+            <p><strong>Click para seleccionar archivos</strong> o arrastra aquí</p>
+            <p style="font-size: 0.9rem; color: var(--text-secondary);">
+              Formatos: PDF, Word, imágenes, ZIP (Máx. 10MB por archivo)
+            </p>
+            <input type="file" id="fileInput" multiple style="display: none;" 
+                   accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.zip,.txt">
+          </div>
+          <div class="uploaded-files" id="uploadedFiles"></div>
+        </div>
+
+        <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+          <button class="btn btn-secondary" onclick="closeModal()">
+            Cancelar
+          </button>
+          <button class="btn btn-success" onclick="submitTask()">
+            <i class="fas fa-paper-plane"></i> Entregar Tarea
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentTaskId = null;
+    let uploadedFiles = [];
+    const studentYear = localStorage.getItem('userYear') || '1';
+    const studentName = localStorage.getItem('userName') || 'Estudiante';
+    const studentId = localStorage.getItem('userId') || Date.now();
+
+    document.addEventListener('DOMContentLoaded', function() {
+      checkAccess();
+      loadTasks();
+      loadGrades();
+      initializeFileUpload();
+    });
+
+    function checkAccess() {
+      const isLoggedIn = localStorage.getItem('loggedIn');
+      const userRole = localStorage.getItem('userRole');
+
+      if (isLoggedIn !== 'true' || userRole !== 'estudiante') {
+        alert('Acceso no autorizado');
+        window.location.href = 'login.html';
+      }
+    }
+
+    function showTab(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      document.getElementById(`${tabName}-tab`).classList.add('active');
+    }
+
+    function loadTasks() {
+      const tasksKey = `tasks-lengua-${studentYear}`;
+      const tasks = JSON.parse(localStorage.getItem(tasksKey) || '[]');
+      const submissionsKey = `submissions-${studentId}`;
+      const submissions = JSON.parse(localStorage.getItem(submissionsKey) || '{}');
+      
+      const container = document.getElementById('tasksGrid');
+      
+      if (tasks.length === 0) {
+        container.innerHTML = `
+          <div class="no-tasks">
+            <i class="fas fa-clipboard-list"></i>
+            <h3>No hay tareas disponibles</h3>
+            <p>Cuando tu profesor asigne tareas, aparecerán aquí</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = tasks.map(task => {
+        const submission = submissions[task.id];
+        const isSubmitted = !!submission;
+        const isGraded = submission && submission.grade !== undefined;
+        
+        let statusClass = 'status-pending';
+        let statusText = 'Pendiente';
+        let cardClass = '';
+        
+        if (isGraded) {
+          statusClass = 'status-graded';
+          statusText = 'Calificada';
+          cardClass = 'graded';
+        } else if (isSubmitted) {
+          statusClass = 'status-submitted';
+          statusText = 'Entregada';
+          cardClass = 'submitted';
+        }
+
+        const dueDate = new Date(task.dueDate);
+        const now = new Date();
+        const isOverdue = !isSubmitted && dueDate < now;
+        
+        return `
+          <div class="task-card ${cardClass}">
+            <div class="task-header">
+              <div>
+                <div class="task-title">${task.title}</div>
+                <span class="task-status ${statusClass}">${statusText}</span>
+              </div>
+            </div>
+            <div class="task-description">${task.description}</div>
+            <div class="task-meta">
+              <span><i class="fas fa-calendar"></i> ${formatDate(task.dueDate)}</span>
+              ${isOverdue ? '<span style="color: var(--danger-color);"><i class="fas fa-exclamation-circle"></i> Vencida</span>' : ''}
+              ${isGraded ? `<span style="color: var(--warning-color);"><i class="fas fa-star"></i> Nota: ${submission.grade}/10</span>` : ''}
+            </div>
+            <div class="task-actions">
+              ${!isSubmitted ? `
+                <button class="btn btn-primary" onclick="openSubmitModal(${task.id})">
+                  <i class="fas fa-upload"></i> Entregar
+                </button>
+              ` : `
+                <button class="btn btn-secondary" onclick="viewSubmission(${task.id})">
+                  <i class="fas fa-eye"></i> Ver entrega
+                </button>
+              `}
+              ${task.attachments && task.attachments.length > 0 ? `
+                <button class="btn btn-secondary" onclick="viewTaskDetails(${task.id})">
+                  <i class="fas fa-paperclip"></i> Archivos (${task.attachments.length})
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function loadGrades() {
+      const tasksKey = `tasks-lengua-${studentYear}`;
+      const tasks = JSON.parse(localStorage.getItem(tasksKey) || '[]');
+      const submissionsKey = `submissions-${studentId}`;
+      const submissions = JSON.parse(localStorage.getItem(submissionsKey) || '{}');
+      
+      const container = document.getElementById('gradesContainer');
+      
+      const gradedTasks = tasks.filter(task => {
+        const submission = submissions[task.id];
+        return submission && submission.grade !== undefined;
+      });
+
+      if (gradedTasks.length === 0) {
+        container.innerHTML = `
+          <div class="no-tasks">
+            <i class="fas fa-star"></i>
+            <h3>No hay calificaciones disponibles</h3>
+            <p>Tus calificaciones aparecerán aquí una vez que el profesor las publique</p>
+          </div>
+        `;
+        return;
+      }
+
+      const totalGrade = gradedTasks.reduce((sum, task) => sum + submissions[task.id].grade, 0);
+      const average = (totalGrade / gradedTasks.length).toFixed(2);
+
+      container.innerHTML = `
+        <div class="grade-display">
+          <div class="grade-value">${average}</div>
+          <div class="grade-label">Promedio General</div>
+          <div style="margin-top: 0.5rem; font-size: 0.9rem;">
+            ${gradedTasks.length} tarea(s) calificada(s)
+          </div>
+        </div>
+        <div class="tasks-grid">
+          ${gradedTasks.map(task => {
+            const submission = submissions[task.id];
+            return `
+              <div class="task-card graded">
+                <div class="task-title">${task.title}</div>
+                <div class="task-meta">
+                  <span><i class="fas fa-calendar"></i> Entregado: ${formatDate(submission.submitDate)}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                  <div>
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--warning-color);">
+                      ${submission.grade}/10
+                    </div>
+                  </div>
+                  <button class="btn btn-secondary" onclick="viewSubmission(${task.id})">
+                    <i class="fas fa-eye"></i> Ver detalle
+                  </button>
+                </div>
+                ${submission.feedback ? `
+                  <div style="margin-top: 1rem; padding: 1rem; background: var(--light-blue); border-radius: 8px;">
+                    <strong>Comentario del profesor:</strong>
+                    <p style="margin: 0.5rem 0 0 0;">${submission.feedback}</p>
+                  </div>
+                ` : ''}
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function openSubmitModal(taskId) {
+      currentTaskId = taskId;
+      uploadedFiles = [];
+      document.getElementById('commentInput').value = '';
+      document.getElementById('uploadedFiles').innerHTML = '';
+      document.getElementById('submitModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('submitModal').style.display = 'none';
+      currentTaskId = null;
+      uploadedFiles = [];
+    }
+
+    function initializeFileUpload() {
+      const uploadArea = document.getElementById('fileUploadArea');
+      const fileInput = document.getElementById('fileInput');
+
+      uploadArea.addEventListener('click', () => fileInput.click());
+
+      fileInput.addEventListener('change', handleFiles);
+
+      uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragging');
+      });
+
+      uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragging');
+      });
+
+      uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragging');
+        handleFiles({ target: { files: e.dataTransfer.files } });
+      });
+    }
+
+    function handleFiles(event) {
+      const files = Array.from(event.target.files);
+      const maxSize = 10 * 1024 * 1024; // 10MB
+
+      files.forEach(file => {
+        if (file.size > maxSize) {
+          showNotification(`${file.name} excede el tamaño máximo (10MB)`, 'error');
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          uploadedFiles.push({
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            data: e.target.result
+          });
+          displayUploadedFiles();
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function displayUploadedFiles() {
+      const container = document.getElementById('uploadedFiles');
+      container.innerHTML = uploadedFiles.map((file, index) => `
+        <div class="file-item">
+          <div class="file-info">
+            <i class="fas ${getFileIcon(file.type)} file-icon"></i>
+            <div>
+              <div><strong>${file.name}</strong></div>
+              <div style="font-size: 0.85rem; color: var(--text-secondary);">
+                ${formatFileSize(file.size)}
+              </div>
+            </div>
+          </div>
+          <button class="file-remove" onclick="removeFile(${index})">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function removeFile(index) {
+      uploadedFiles.splice(index, 1);
+      displayUploadedFiles();
+    }
+
+    function getFileIcon(type) {
+      if (type.includes('pdf')) return 'fa-file-pdf';
+      if (type.includes('word') || type.includes('document')) return 'fa-file-word';
+      if (type.includes('image')) return 'fa-file-image';
+      if (type.includes('zip')) return 'fa-file-archive';
+      return 'fa-file';
+    }
+
+    function formatFileSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('es-AR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    function submitTask() {
+      if (uploadedFiles.length === 0) {
+        showNotification('Debes subir al menos un archivo', 'error');
+        return;
+      }
+
+      const comment = document.getElementById('commentInput').value;
+      const submissionsKey = `submissions-${studentId}`;
+      const submissions = JSON.parse(localStorage.getItem(submissionsKey) || '{}');
+
+      submissions[currentTaskId] = {
+        studentId: studentId,
+        studentName: studentName,
+        taskId: currentTaskId,
+        files: uploadedFiles,
+        comment: comment,
+        submitDate: new Date().toISOString(),
+        status: 'submitted'
+      };
+
+      localStorage.setItem(submissionsKey, JSON.stringify(submissions));
+
+      // También guardar en un registro global para que el profesor pueda verlo
+      const globalKey = `submissions-lengua-${studentYear}`;
+      const globalSubmissions = JSON.parse(localStorage.getItem(globalKey) || '[]');
+      
+      // Remover submission anterior si existe
+      const existingIndex = globalSubmissions.findIndex(
+        s => s.studentId === studentId && s.taskId === currentTaskId
+      );
+      if (existingIndex !== -1) {
+        globalSubmissions.splice(existingIndex, 1);
+      }
+
+      globalSubmissions.push(submissions[currentTaskId]);
+      localStorage.setItem(globalKey, JSON.stringify(globalSubmissions));
+
+      showNotification('Tarea entregada exitosamente', 'success');
+      closeModal();
+      loadTasks();
+      loadGrades();
+    }
+
+    function viewSubmission(taskId) {
+      const submissionsKey = `submissions-${studentId}`;
+      const submissions = JSON.parse(localStorage.getItem(submissionsKey) || '{}');
+      const submission = submissions[taskId];
+
+      if (!submission) {
+        showNotification('No se encontró la entrega', 'error');
+        return;
+      }
+
+      const tasksKey = `tasks-lengua-${studentYear}`;
+      const tasks = JSON.parse(localStorage.getItem(tasksKey) || '[]');
+      const task = tasks.find(t => t.id === taskId);
+
+      let modalContent = `
+        <div style="padding: 2rem;">
+          <h3 style="margin-bottom: 1rem; color: var(--primary-color);">
+            <i class="fas fa-clipboard-check"></i> ${task ? task.title : 'Tarea'}
+          </h3>
+          
+          <div style="background: var(--light-blue); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+            <strong>Fecha de entrega:</strong> ${formatDate(submission.submitDate)}
+          </div>
+
+          ${submission.comment ? `
+            <div style="margin-bottom: 1rem;">
+              <strong>Tu comentario:</strong>
+              <p style="background: #f8fafc; padding: 1rem; border-radius: 8px; margin-top: 0.5rem;">
+                ${submission.comment}
+              </p>
+            </div>
+          ` : ''}
+
+          <div style="margin-bottom: 1rem;">
+            <strong>Archivos entregados:</strong>
+            <div style="margin-top: 0.5rem;">
+              ${submission.files.map(file => `
+                <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; background: #f8fafc; border-radius: 8px; margin-bottom: 0.5rem;">
+                  <i class="fas ${getFileIcon(file.type)}" style="font-size: 1.5rem; color: var(--accent-color);"></i>
+                  <div style="flex: 1;">
+                    <div><strong>${file.name}</strong></div>
+                    <div style="font-size: 0.85rem; color: var(--text-secondary);">
+                      ${formatFileSize(file.size)}
+                    </div>
+                  </div>
+                  <a href="${file.data}" download="${file.name}" class="btn btn-primary" style="text-decoration: none;">
+                    <i class="fas fa-download"></i>
+                  </a>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          ${submission.grade !== undefined ? `
+            <div style="background: linear-gradient(135deg, var(--warning-color), #b7791f); color: white; padding: 1.5rem; border-radius: 12px; text-align: center; margin-bottom: 1rem;">
+              <div style="font-size: 3rem; font-weight: 700;">${submission.grade}/10</div>
+              <div>Calificación</div>
+            </div>
+          ` : `
+            <div style="background: #fff3cd; color: #856404; padding: 1rem; border-radius: 8px; text-align: center;">
+              <i class="fas fa-clock"></i> Esperando calificación del profesor
+            </div>
+          `}
+
+          ${submission.feedback ? `
+            <div style="background: #d1ecf1; color: #0c5460; padding: 1rem; border-radius: 8px;">
+              <strong><i class="fas fa-comment"></i> Comentario del profesor:</strong>
+              <p style="margin: 0.5rem 0 0 0;">${submission.feedback}</p>
+            </div>
+          ` : ''}
+        </div>
+      `;
+
+      document.getElementById('modalTitle').textContent = 'Detalle de la Entrega';
+      document.querySelector('.modal-body').innerHTML = modalContent;
+      document.getElementById('submitModal').style.display = 'flex';
+    }
+
+    function viewTaskDetails(taskId) {
+      const tasksKey = `tasks-lengua-${studentYear}`;
+      const tasks = JSON.parse(localStorage.getItem(tasksKey) || '[]');
+      const task = tasks.find(t => t.id === taskId);
+
+      if (!task) {
+        showNotification('No se encontró la tarea', 'error');
+        return;
+      }
+
+      let modalContent = `
+        <div style="padding: 2rem;">
+          <h3 style="margin-bottom: 1rem; color: var(--primary-color);">
+            ${task.title}
+          </h3>
+          
+          <div style="background: var(--light-blue); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+            <strong>Descripción:</strong>
+            <p style="margin: 0.5rem 0 0 0;">${task.description}</p>
+          </div>
+
+          <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+            <strong><i class="fas fa-calendar"></i> Fecha de entrega:</strong> ${formatDate(task.dueDate)}
+          </div>
+
+          ${task.attachments && task.attachments.length > 0 ? `
+            <div>
+              <strong>Archivos adjuntos por el profesor:</strong>
+              <div style="margin-top: 0.5rem;">
+                ${task.attachments.map(file => `
+                  <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; background: #f8fafc; border-radius: 8px; margin-bottom: 0.5rem;">
+                    <i class="fas ${getFileIcon(file.type)}" style="font-size: 1.5rem; color: var(--accent-color);"></i>
+                    <div style="flex: 1;">
+                      <div><strong>${file.name}</strong></div>
+                      <div style="font-size: 0.85rem; color: var(--text-secondary);">
+                        ${formatFileSize(file.size)}
+                      </div>
+                    </div>
+                    <a href="${file.data}" download="${file.name}" class="btn btn-primary" style="text-decoration: none;">
+                      <i class="fas fa-download"></i>
+                    </a>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+
+      document.getElementById('modalTitle').textContent = 'Detalles de la Tarea';
+      document.querySelector('.modal-body').innerHTML = modalContent;
+      document.getElementById('submitModal').style.display = 'flex';
+    }
+
+    function showNotification(message, type = 'success') {
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      notification.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> 
+        ${message}
+      `;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => notification.classList.add('show'), 100);
+      
+      setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => document.body.removeChild(notification), 300);
+      }, 3000);
+    }
+
+    function goBack() {
+      const userYear = localStorage.getItem('userYear');
+      if (userYear) {
+        window.location.href = `${userYear} año.html`;
+      } else {
+        window.location.href = 'index.html';
+      }
+    }
+
+    function logout() {
+      if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+        localStorage.clear();
+        window.location.href = 'login.html';
+      }
+    }
+
+    // Cerrar modal al hacer click fuera
+    document.getElementById('submitModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+
+    // Cerrar modal con ESC
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    });
+  </script>
+</body>
+</html>
