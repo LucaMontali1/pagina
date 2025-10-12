@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <title>Login - Colegio Dante Alighieri</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
   <style>
     body {
       background-color: white;
@@ -30,6 +29,7 @@
       background: white;
     }
 
+    /* PANEL IZQUIERDO - DISEÑO ORIGINAL */
     .info-section {
       flex: 1;
       padding: 30px 40px;
@@ -76,6 +76,16 @@
       color: #04294e;
     }
 
+    .info-section::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .info-section::-webkit-scrollbar-thumb {
+      background-color: rgba(4, 41, 78, 0.3);
+      border-radius: 3px;
+    }
+
+    /* PANEL DERECHO - MEJORADO */
     .login-box {
       flex: 1;
       max-width: 450px;
@@ -92,13 +102,86 @@
       text-align: center;
     }
 
+    .role-selector {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .role-option {
+      padding: 1rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    .role-option:hover {
+      border-color: #04294e;
+      background: #f7fafc;
+    }
+
+    .role-option.active {
+      border-color: #04294e;
+      background: #e6f3ff;
+    }
+
+    .role-option i {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .role-option span {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #04294e;
+    }
+
+    .year-selector {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .year-option {
+      padding: 0.75rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      background: white;
+      color: #04294e;
+    }
+
+    .year-option:hover {
+      border-color: #04294e;
+      background: #f7fafc;
+    }
+
+    .year-option.active {
+      border-color: #04294e;
+      background: #04294e;
+      color: white;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
     .login-box label {
       font-weight: 600;
       margin-top: 15px;
+      color: #04294e;
     }
 
-    .login-box input,
-    .login-box select {
+    .login-box input {
       margin-top: 5px;
       padding: 10px;
       border: 1.5px solid #ccc;
@@ -108,14 +191,12 @@
       background-color: white;
     }
 
-    .login-box input:focus,
-    .login-box select:focus {
+    .login-box input:focus {
       border-color: #04294e;
       outline: none;
     }
 
-    .login-box input.error,
-    .login-box select.error {
+    .login-box input.error {
       border-color: #dc3545;
       background-color: #fff5f5;
     }
@@ -132,6 +213,10 @@
       transition: background-color 0.3s ease;
       width: 100%;
       font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
     }
 
     .login-box button:hover {
@@ -148,6 +233,23 @@
       padding: 10px;
       border-radius: 6px;
       font-size: 0.9rem;
+      display: none;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .alert.show {
+      display: block;
     }
 
     .alert-danger {
@@ -162,74 +264,43 @@
       border: 1px solid #c3e6cb;
     }
 
-    .alert-info {
-      background-color: #cce7ff;
-      color: #004085;
-      border: 1px solid #b8daff;
-    }
-
-    .test-users {
-      margin-top: 20px;
-      padding: 15px;
-      background-color: #f0f8ff;
-      border-radius: 8px;
-      border: 1px solid #b8daff;
-    }
-
-    .test-users h4 {
-      color: #04294e;
-      margin-bottom: 10px;
-      font-size: 0.9rem;
-    }
-
-    .test-users ul {
-      margin: 0;
-      padding-left: 20px;
-      font-size: 0.8rem;
-      color: #666;
-    }
-
-    .test-users li {
-      margin-bottom: 5px;
-    }
-
-    .info-section::-webkit-scrollbar {
-      width: 6px;
-    }
-    .info-section::-webkit-scrollbar-thumb {
-      background-color: rgba(4, 41, 78, 0.3);
-      border-radius: 3px;
-    }
-
     @media (max-width: 900px) {
       .login-container {
         flex-direction: column;
         height: auto;
       }
+      
       .info-section, .login-box {
         max-width: 100%;
         width: 100%;
         padding: 20px;
       }
+      
       .info-block {
         flex-direction: column;
         text-align: center;
       }
+      
       .info-block img {
         margin-bottom: 10px;
         width: 60%;
       }
+      
       .info-text {
         text-align: center;
+      }
+
+      .role-selector {
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 <body>
-
-  <div class="login-container" role="main" aria-label="Página de inicio de sesión y descripción de Dante Alighieri">
+  <div class="login-container">
     
-    <div class="info-section" aria-label="Información sobre Dante Alighieri">
+    <!-- PANEL IZQUIERDO - DISEÑO ORIGINAL -->
+    <div class="info-section">
       <div class="info-block">
         <img src="descarga (3).jpg" alt="Dante Alighieri Retrato" />
         <div class="info-text">
@@ -255,323 +326,180 @@
       </div>
     </div>
 
+    <!-- PANEL DERECHO - MEJORADO -->
     <div class="login-box">
       <h2>Iniciar Sesión</h2>
       
-      <label for="rol">Tipo de Usuario</label>
-      <select id="rol" name="rol" required>
-        <option value="">Seleccione su rol</option>
-        <option value="estudiante">Estudiante</option>
-        <option value="profesor">Profesor</option>
-        <option value="preceptor">Preceptor</option>
-      </select>
-      
-      <label for="usuario">Usuario</label>
-      <input type="text" id="usuario" name="usuario" placeholder="Ingrese su usuario" required />
-      
-      <label for="password">Contraseña</label>
-      <input type="password" id="password" name="password" placeholder="Ingrese su contraseña" required />
-      
-      <button type="button" id="loginBtn" onclick="login()">Entrar</button>
-      
-      <!-- Mensajes de estado -->
-      <div id="alertMessage" style="display: none;"></div>
-      
-      <!-- Info de usuarios de prueba -->
-      <div class="test-users">
-        <h4>Usuarios de prueba:</h4>
-        <ul>
-          <li><strong>Estudiantes:</strong></li>
-          <li>año1 / año1</li>
-          <li>año2 / año2</li>
-          <li>año3 / año3</li>
-          <li>año4 / año4</li>
-          <li>año5 / año5</li>
-          <li><strong>Profesor:</strong> profesores / profesores123</li>
-          <li><strong>Preceptor:</strong> preceptores / preceptores123</li>
-        </ul>
-      </div>
+      <div class="alert" id="alertMessage"></div>
+
+      <form id="loginForm">
+        <label>Selecciona tu rol</label>
+        <div class="role-selector">
+          <div class="role-option" data-role="estudiante">
+            <i class="fas fa-user-graduate" style="color: #667eea;"></i>
+            <span>Estudiante</span>
+          </div>
+          <div class="role-option" data-role="docente">
+            <i class="fas fa-chalkboard-teacher" style="color: #38a169;"></i>
+            <span>Docente</span>
+          </div>
+          <div class="role-option" data-role="preceptor">
+            <i class="fas fa-user-tie" style="color: #d69e2e;"></i>
+            <span>Preceptor</span>
+          </div>
+        </div>
+
+        <div id="yearSelector" class="hidden">
+          <label>Selecciona tu año</label>
+          <div class="year-selector">
+            <div class="year-option" data-year="1">1°</div>
+            <div class="year-option" data-year="2">2°</div>
+            <div class="year-option" data-year="3">3°</div>
+            <div class="year-option" data-year="4">4°</div>
+            <div class="year-option" data-year="5">5°</div>
+          </div>
+        </div>
+
+        <label for="usuario">Usuario</label>
+        <input 
+          type="text" 
+          id="usuario" 
+          placeholder="Ingresa tu usuario"
+          required
+        />
+
+        <label for="password">Contraseña</label>
+        <input 
+          type="password" 
+          id="password" 
+          placeholder="Ingresa tu contraseña"
+          required
+        />
+
+        <button type="submit">
+          <i class="fas fa-sign-in-alt"></i>
+          Iniciar Sesión
+        </button>
+      </form>
     </div>
   </div>
 
   <script>
-    // Configuración de Supabase
-    const supabaseUrl = 'https://zcuodmndmrrvamyvgczm.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpjdW9kbW5kbXJydmFteXZnY3ptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIzNTA1ODMsImV4cCI6MjA2NzkyNjU4M30.l0XJgelYCQQ8sQyhL3XsY_4FOLGu6DwyZQ7PiocyLEE';
-    
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey, {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false,
-        detectSessionInUrl: false
-      }
+    let selectedRole = null;
+    let selectedYear = null;
+
+    // Limpiar sesión al cargar
+    document.addEventListener('DOMContentLoaded', function() {
+      localStorage.clear();
+      console.log('Login cargado - sesión limpia');
     });
 
-    // Elementos del DOM
-    const rolSelect = document.getElementById('rol');
-    const usuarioInput = document.getElementById('usuario');
-    const passwordInput = document.getElementById('password');
-    const loginBtn = document.getElementById('loginBtn');
-    const alertMessage = document.getElementById('alertMessage');
+    // Selección de rol
+    document.querySelectorAll('.role-option').forEach(option => {
+      option.addEventListener('click', function() {
+        document.querySelectorAll('.role-option').forEach(opt => opt.classList.remove('active'));
+        this.classList.add('active');
+        selectedRole = this.dataset.role;
 
-    // Usuarios locales para roles específicos
-    const localUsers = {
-      estudiante: {
-        año1: { password: 'año1', year: '1' },
-        año2: { password: 'año2', year: '2' },
-        año3: { password: 'año3', year: '3' },
-        año4: { password: 'año4', year: '4' },
-        año5: { password: 'año5', year: '5' }
-      },
-      profesor: {
-        profesores: { password: 'profesores123' }
-      },
-      preceptor: {
-        preceptores: { password: 'preceptores123' }
-      }
-    };
+        const yearSelector = document.getElementById('yearSelector');
+        if (selectedRole === 'estudiante') {
+          yearSelector.classList.remove('hidden');
+        } else {
+          yearSelector.classList.add('hidden');
+          selectedYear = null;
+          document.querySelectorAll('.year-option').forEach(opt => opt.classList.remove('active'));
+        }
+      });
+    });
 
-    // Función para mostrar mensajes
-    function showAlert(message, type = 'danger') {
-      alertMessage.style.display = 'block';
-      alertMessage.className = `alert alert-${type}`;
-      alertMessage.textContent = message;
-      
-      if (type === 'danger') {
-        setTimeout(() => {
-          alertMessage.style.display = 'none';
-        }, 5000);
-      }
-    }
+    // Selección de año
+    document.querySelectorAll('.year-option').forEach(option => {
+      option.addEventListener('click', function() {
+        document.querySelectorAll('.year-option').forEach(opt => opt.classList.remove('active'));
+        this.classList.add('active');
+        selectedYear = this.dataset.year;
+      });
+    });
 
-    // Función para limpiar mensajes
-    function clearAlert() {
-      alertMessage.style.display = 'none';
-    }
+    // Formulario de login
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
 
-    // Función para validar campos
-    function validateInputs(rol, usuario, password) {
-      // Limpiar estilos de error anteriores
-      rolSelect.classList.remove('error');
-      usuarioInput.classList.remove('error');
-      passwordInput.classList.remove('error');
-      
-      if (!rol) {
-        rolSelect.classList.add('error');
-        showAlert('Debe seleccionar un tipo de usuario');
-        rolSelect.focus();
-        return false;
-      }
-      
-      if (!usuario.trim()) {
-        usuarioInput.classList.add('error');
-        showAlert('El campo usuario es obligatorio');
-        usuarioInput.focus();
-        return false;
-      }
-      
-      if (!password.trim()) {
-        passwordInput.classList.add('error');
-        showAlert('El campo contraseña es obligatorio');
-        passwordInput.focus();
-        return false;
-      }
-      
-      return true;
-    }
+      const username = document.getElementById('usuario').value.trim();
+      const password = document.getElementById('password').value.trim();
 
-    // Función para validar credenciales locales
-    function validateLocalCredentials(rol, usuario, password) {
-      if (!localUsers[rol]) {
-        return null;
-      }
-      
-      if (!localUsers[rol][usuario]) {
-        return null;
-      }
-      
-      if (localUsers[rol][usuario].password !== password) {
-        return null;
-      }
-      
-      return localUsers[rol][usuario];
-    }
-
-    // Función para redirigir según el rol
-    function redirectUser(rol, userData) {
-      const baseUserData = {
-        nombre: usuarioInput.value.trim(),
-        rol: rol,
-        loginTime: new Date().toISOString()
-      };
-
-      // Guardar estado de login
-      localStorage.setItem('loggedIn', 'true');
-      localStorage.setItem('userRole', rol);
-      localStorage.setItem('userName', baseUserData.nombre);
-
-      switch (rol) {
-        case 'estudiante':
-          const year = userData.year;
-          localStorage.setItem('userYear', year);
-          localStorage.setItem('userData', JSON.stringify({
-            ...baseUserData,
-            year: year
-          }));
-          
-          // Redirigir al año específico
-          setTimeout(() => {
-            window.location.href = `${year} año.html`;
-          }, 1500);
-          break;
-
-        case 'profesor':
-          localStorage.setItem('userData', JSON.stringify(baseUserData));
-          setTimeout(() => {
-            window.location.href = 'niveles.html';
-          }, 1500);
-          break;
-
-        case 'preceptor':
-          localStorage.setItem('userData', JSON.stringify(baseUserData));
-          setTimeout(() => {
-            window.location.href = 'niveles.html';
-          }, 1500);
-          break;
-
-        default:
-          showAlert('Rol no reconocido');
-          return;
-      }
-    }
-
-    // Función principal de login
-    async function login() {
-      const rol = rolSelect.value;
-      const usuario = usuarioInput.value.trim();
-      const password = passwordInput.value;
-      
-      // Validar campos obligatorios
-      if (!validateInputs(rol, usuario, password)) {
+      // Validaciones
+      if (!selectedRole) {
+        showAlert('Por favor selecciona un rol', 'danger');
         return;
       }
-      
-      try {
-        // Deshabilitar botón y mostrar estado de carga
-        loginBtn.disabled = true;
-        loginBtn.textContent = 'Verificando...';
-        clearAlert();
-        
-        console.log('Intentando login con:', { rol, usuario, password });
-        
-        // Primero intentar validación local
-        const localValidation = validateLocalCredentials(rol, usuario, password);
-        
-        if (localValidation) {
-          // Login exitoso con credenciales locales
-          showAlert('Login exitoso. Redirigiendo...', 'success');
-          console.log('Login exitoso (local) para:', { rol, usuario });
-          
-          redirectUser(rol, localValidation);
-          return;
+
+      if (selectedRole === 'estudiante' && !selectedYear) {
+        showAlert('Por favor selecciona tu año', 'danger');
+        return;
+      }
+
+      if (!username || !password) {
+        showAlert('Por favor completa todos los campos', 'danger');
+        return;
+      }
+
+      if (password.length < 3) {
+        showAlert('Contraseña incorrecta', 'danger');
+        return;
+      }
+
+      // Login exitoso
+      showAlert('Iniciando sesión...', 'success');
+
+      // Guardar datos
+      localStorage.setItem('loggedIn', 'true');
+      localStorage.setItem('userRole', selectedRole);
+      localStorage.setItem('userName', username);
+      localStorage.setItem('userId', Date.now().toString());
+
+      if (selectedRole === 'estudiante') {
+        localStorage.setItem('userYear', selectedYear);
+      }
+
+      // Redirigir
+      setTimeout(() => {
+        if (selectedRole === 'estudiante') {
+          window.location.href = `${selectedYear} año.html`;
+        } else if (selectedRole === 'docente') {
+          window.location.href = 'profesores.html';
+        } else if (selectedRole === 'preceptor') {
+          window.location.href = 'preceptoria.html';
         }
-        
-        // Si no es local, intentar con Supabase (para compatibilidad con usuarios existentes)
-        const { data, error } = await supabase
-          .from('usuarios')
-          .select('*')
-          .eq('nombre', usuario)
-          .eq('contraseña', password)
-          .single();
-        
-        if (error) {
-          console.error('Error de Supabase:', error);
-          showAlert('Usuario o contraseña incorrectos');
-          return;
-        }
-        
-        if (data) {
-          // Login exitoso con Supabase
-          showAlert('Login exitoso. Redirigiendo...', 'success');
-          console.log('Login exitoso (Supabase) para:', data);
-          
-          // Usar el rol seleccionado por el usuario, no el de la base de datos
-          redirectUser(rol, { year: data.year || '1' });
-        } else {
-          showAlert('Usuario o contraseña incorrectos');
-        }
-        
-      } catch (error) {
-        console.error('Error inesperado:', error);
-        showAlert('Usuario o contraseña incorrectos');
-      } finally {
-        // Restaurar botón
-        loginBtn.disabled = false;
-        loginBtn.textContent = 'Entrar';
+      }, 1000);
+    });
+
+    function showAlert(message, type) {
+      const alert = document.getElementById('alertMessage');
+      alert.className = `alert alert-${type} show`;
+      alert.textContent = message;
+
+      if (type === 'danger') {
+        setTimeout(() => {
+          alert.classList.remove('show');
+        }, 3000);
       }
     }
 
-    // Event listeners para navegación con teclado
-    rolSelect.addEventListener('keypress', (e) => {
+    // Enter para navegar
+    document.getElementById('usuario').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {
-        usuarioInput.focus();
+        e.preventDefault();
+        document.getElementById('password').focus();
       }
     });
 
-    usuarioInput.addEventListener('keypress', (e) => {
+    document.getElementById('password').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {
-        passwordInput.focus();
-      }
-    });
-
-    passwordInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        login();
-      }
-    });
-
-    // Limpiar errores al cambiar valores
-    rolSelect.addEventListener('change', () => {
-      rolSelect.classList.remove('error');
-      clearAlert();
-    });
-
-    usuarioInput.addEventListener('input', () => {
-      usuarioInput.classList.remove('error');
-      clearAlert();
-    });
-
-    passwordInput.addEventListener('input', () => {
-      passwordInput.classList.remove('error');
-      clearAlert();
-    });
-
-    // Verificar si ya está logueado al cargar la página
-    document.addEventListener('DOMContentLoaded', () => {
-      const isLoggedIn = localStorage.getItem('loggedIn');
-      const userRole = localStorage.getItem('userRole');
-      const userYear = localStorage.getItem('userYear');
-
-      if (isLoggedIn === 'true' && userRole) {
-        // Ya está logueado, redirigir según el rol
-        switch (userRole) {
-          case 'estudiante':
-            if (userYear) {
-              window.location.href = `${userYear} año.html`;
-            }
-            break;
-          case 'profesor':
-          case 'preceptor':
-            window.location.href = 'niveles.html';
-            break;
-        }
+        e.preventDefault();
+        document.getElementById('loginForm').dispatchEvent(new Event('submit'));
       }
     });
   </script>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>
-
-
