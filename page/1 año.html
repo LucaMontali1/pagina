@@ -34,7 +34,6 @@
       padding-top: 80px;
     }
 
-    /* Header restringido - solo logout */
     .restricted-header {
       position: fixed;
       top: 0;
@@ -105,7 +104,6 @@
       transform: translateY(-2px);
     }
 
-    /* Sección de noticias */
     .news-section {
       max-width: 1200px;
       margin: 2rem auto;
@@ -185,7 +183,6 @@
       padding: 2rem;
     }
 
-    /* Hero section */
     .hero-section {
       text-align: center;
       padding: 3rem 2rem;
@@ -217,7 +214,6 @@
       backdrop-filter: blur(10px);
     }
 
-    /* Buscador */
     .search-section {
       max-width: 600px;
       margin: 2rem auto;
@@ -250,7 +246,6 @@
       background: transparent;
     }
 
-    /* Grid de materias */
     .subjects-section {
       max-width: 1200px;
       margin: 2rem auto;
@@ -374,71 +369,10 @@
       margin-bottom: 1rem;
     }
 
-    .no-results h3 {
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
-    }
-
     .hidden {
       display: none !important;
     }
 
-    /* Security warning overlay */
-    .security-warning {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.9);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 10000;
-      color: white;
-      text-align: center;
-      padding: 2rem;
-    }
-
-    .warning-content {
-      background: var(--danger-color);
-      padding: 2rem;
-      border-radius: 16px;
-      max-width: 400px;
-    }
-
-    .warning-content i {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .hero-section h1 {
-        font-size: 2rem;
-      }
-      
-      .hero-section p {
-        font-size: 1rem;
-      }
-      
-      .subjects-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-      }
-      
-      .subject-content {
-        flex-direction: column;
-        text-align: center;
-      }
-      
-      .header-content {
-        flex-direction: column;
-        gap: 1rem;
-      }
-    }
-
-    /* Loading screen */
     .loading-screen {
       position: fixed;
       top: 0;
@@ -473,32 +407,35 @@
         transform: rotate(360deg);
       }
     }
+
+    @media (max-width: 768px) {
+      .hero-section h1 {
+        font-size: 2rem;
+      }
+      
+      .subjects-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .header-content {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
   </style>
 </head>
 <body>
-  <!-- Loading Screen -->
   <div class="loading-screen" id="loadingScreen">
     <div class="loading-content">
       <div class="loading-spinner"></div>
-      <h3>Verificando acceso...</h3>
-      <p>Cargando 1° Año</p>
+      <h3>Cargando 1° Año...</h3>
     </div>
   </div>
 
-  <!-- Security Warning Overlay -->
-  <div class="security-warning" id="securityWarning">
-    <div class="warning-content">
-      <i class="fas fa-exclamation-triangle"></i>
-      <h3>¡Acceso Restringido!</h3>
-      <p>Se ha detectado un intento de acceso no autorizado. La sesión será cerrada por seguridad.</p>
-    </div>
-  </div>
-
-  <!-- Header Restringido -->
   <header class="restricted-header">
     <div class="header-content">
       <div class="student-info">
-        <div class="student-avatar" id="studentAvatar">1</div>
+        <div class="student-avatar" id="studentAvatar">E</div>
         <div class="student-details">
           <h3 id="studentName">Estudiante de 1° Año</h3>
           <p>Colegio Dante Alighieri</p>
@@ -512,7 +449,6 @@
   </header>
 
   <main>
-    <!-- Sección de Noticias -->
     <section class="news-section">
       <div class="news-container" id="newsContainer">
         <div class="news-header">
@@ -530,14 +466,12 @@
       </div>
     </section>
 
-    <!-- Hero Section -->
     <section class="hero-section">
       <span class="year-badge">1° Año</span>
       <h1>Primer Año</h1>
       <p>Inicio de la educación secundaria y desarrollo de competencias básicas</p>
     </section>
 
-    <!-- Buscador -->
     <section class="search-section">
       <div class="search-container">
         <i class="fas fa-search search-icon"></i>
@@ -551,7 +485,6 @@
       </div>
     </section>
 
-    <!-- Grid de materias -->
     <section class="subjects-section">
       <div class="subjects-grid" id="subjectsGrid">
         <div class="subject-card" style="--index: 0">
@@ -720,104 +653,12 @@
   </main>
 
   <script>
-    // ===== SISTEMA DE RESTRICCIONES Y SEGURIDAD =====
-    
-    // Verificar acceso al cargar la página
     document.addEventListener('DOMContentLoaded', function() {
-      checkAccess();
+      initializePage();
     });
 
-    // Función principal de verificación de acceso
-    function checkAccess() {
-      const isLoggedIn = localStorage.getItem('loggedIn');
-      const userRole = localStorage.getItem('userRole');
-      const userYear = localStorage.getItem('userYear');
-      const userName = localStorage.getItem('userName');
-
-      console.log('Verificando acceso:', { isLoggedIn, userRole, userYear, userName });
-
-      // Verificar si está logueado
-      if (isLoggedIn !== 'true') {
-        console.log('Usuario no logueado, redirigiendo a login');
-        redirectToLogin('No has iniciado sesión');
-        return;
-      }
-
-      // Verificar que sea estudiante
-      if (userRole !== 'estudiante') {
-        console.log('Usuario no es estudiante, redirigiendo a login');
-        redirectToLogin('Acceso restringido a estudiantes');
-        return;
-      }
-
-      // Verificar que corresponda a 1° año
-      if (userYear !== '1') {
-        console.log('Usuario no es de 1° año, redirigiendo a su año correspondiente');
-        redirectToCorrectYear(userYear);
-        return;
-      }
-
-      // Si pasa todas las verificaciones, inicializar la página
-      console.log('Acceso autorizado para 1° año');
-      initializePage(userName);
-    }
-
-    // Redirigir a login con mensaje
-    function redirectToLogin(message = 'Acceso no autorizado') {
-      showSecurityWarning(message);
-      setTimeout(() => {
-        localStorage.clear(); // Limpiar toda la sesión
-        window.location.href = 'login.html';
-      }, 3000);
-    }
-
-    // Redirigir al año correspondiente
-    function redirectToCorrectYear(year) {
-      if (year && year >= '1' && year <= '5') {
-        alert(`Serás redirigido a tu año correspondiente: ${year}° Año`);
-        window.location.href = `${year} año.html`;
-      } else {
-        redirectToLogin('Año no válido');
-      }
-    }
-
-    // Mostrar advertencia de seguridad
-    function showSecurityWarning(message) {
-      const warningOverlay = document.getElementById('securityWarning');
-      warningOverlay.style.display = 'flex';
-      
-      // Actualizar mensaje si se proporciona
-      if (message) {
-        const warningContent = warningOverlay.querySelector('.warning-content p');
-        warningContent.textContent = message;
-      }
-    }
-
-    // Prevenir navegación con botones del navegador
-    window.addEventListener('popstate', function(event) {
-      console.log('Intento de navegación bloqueado');
-      history.pushState(null, null, location.href);
-      showSecurityWarning('No puedes salir de tu año asignado');
-      setTimeout(() => {
-        document.getElementById('securityWarning').style.display = 'none';
-      }, 2000);
-    });
-
-    // Bloquear navegación inicial
-    history.pushState(null, null, location.href);
-
-    // Función de logout seguro
-    function logout() {
-      if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
-        console.log('Cerrando sesión...');
-        localStorage.clear();
-        window.location.href = 'login.html';
-      }
-    }
-
-    // Inicializar página después de verificaciones
-    function initializePage(userName) {
-      // Actualizar información del estudiante
+    function initializePage() {
+      const userName = localStorage.getItem('userName') || 'Estudiante';
       const studentNameElement = document.getElementById('studentName');
       const studentAvatar = document.getElementById('studentAvatar');
       
@@ -826,36 +667,21 @@
         studentAvatar.textContent = userName.charAt(0).toUpperCase();
       }
 
-      // Cargar noticias
       loadNews();
-
-      // Inicializar búsqueda
       initializeSearch();
 
-      // Inicializar protecciones de seguridad
-      initializeSecurityProtections();
-
-      // Ocultar loading screen
       setTimeout(() => {
         const loadingScreen = document.getElementById('loadingScreen');
         loadingScreen.style.opacity = '0';
         setTimeout(() => {
           loadingScreen.style.display = 'none';
         }, 500);
-      }, 1500);
-
-      console.log('Página inicializada correctamente para:', userName);
+      }, 1000);
     }
 
-    // ===== SISTEMA DE NOTICIAS =====
-    
     function loadNews() {
       const newsList = document.getElementById('newsList');
-      
-      // Obtener noticias del localStorage
       const allNews = JSON.parse(localStorage.getItem('noticias') || '[]');
-      
-      // Filtrar noticias para 1° año o para todos
       const filteredNews = allNews.filter(noticia => 
         noticia.año === '1' || noticia.año === 'todos'
       );
@@ -870,7 +696,6 @@
         return;
       }
 
-      // Mostrar noticias
       newsList.innerHTML = filteredNews.map(noticia => `
         <div class="news-item">
           <h4>${noticia.titulo}</h4>
@@ -892,8 +717,6 @@
       });
     }
 
-    // ===== SISTEMA DE BÚSQUEDA =====
-    
     function initializeSearch() {
       const searchInput = document.getElementById('searchInput');
       const subjectsGrid = document.getElementById('subjectsGrid');
@@ -911,16 +734,13 @@
           const isVisible = subjectName.includes(query) || subjectDesc.includes(query);
           
           if (isVisible) {
-            subject.classList.remove('hidden');
             subject.style.display = 'block';
             visibleCount++;
           } else {
-            subject.classList.add('hidden');
             subject.style.display = 'none';
           }
         });
 
-        // Mostrar/ocultar mensaje de "no resultados"
         if (visibleCount === 0 && query !== '') {
           noResults.style.display = 'block';
           subjectsGrid.style.display = 'none';
@@ -930,252 +750,63 @@
         }
       });
 
-      // Limpiar búsqueda con Escape
       searchInput.addEventListener('keydown', function(event) {
         if (event.key === 'Escape') {
           searchInput.value = '';
-          subjects.forEach(subject => {
-            subject.classList.remove('hidden');
-            subject.style.display = 'block';
-          });
+          subjects.forEach(subject => subject.style.display = 'block');
           noResults.style.display = 'none';
           subjectsGrid.style.display = 'grid';
         }
       });
 
-      // Agregar efectos de click a las tarjetas
       subjects.forEach(card => {
         card.addEventListener('click', function() {
           const subjectName = this.querySelector('.subject-name').textContent;
           
-          // Efecto visual
           this.style.transform = 'translateY(-2px) scale(0.98)';
           setTimeout(() => {
             this.style.transform = '';
           }, 150);
 
-          console.log('Materia seleccionada:', subjectName);
-          
-          // Navegación específica por materia
           if (subjectName === 'ASISTENCIA') {
             window.location.href = 'asistencia.html';
+          } else if (subjectName === 'Lengua y Literatura') {
+            window.location.href = 'LyL.html';
+          } else if (subjectName === 'Matemática') {
+            window.location.href = 'Matematica.html';
+          } else if (subjectName === 'Historia') {
+            window.location.href = 'historia.html';
+          } else if (subjectName === 'Geografía') {
+            window.location.href = 'geografia.html';
+          } else if (subjectName === 'Formación Ética y Ciudadana') {
+            window.location.href = 'fec.html';
+          } else if (subjectName === 'Biología') {
+            window.location.href = 'biologia.html';
+          } else if (subjectName === 'Educación Tecnológica') {
+            window.location.href = 'edtecnologica.html';
+          } else if (subjectName === 'Lengua Extranjera (Inglés)') {
+            window.location.href = 'ingles.html';
+          } else if (subjectName === 'Física') {
+            window.location.href = 'fisica.html';
+          } else if (subjectName === 'Educación Artística (Plástica)') {
+            window.location.href = 'plastica.html';
+          } else if (subjectName === 'Educación Artística (Teatro)') {
+            window.location.href = 'teatro.html';
+          } else if (subjectName === 'Educación Física') {
+            window.location.href = 'edfisica.html';
           } else {
-            alert(`Accediendo a: ${subjectName}`);
+            alert(`Próximamente: ${subjectName}`);
           }
         });
       });
     }
 
-    // ===== PREVENCIÓN DE ACCESOS NO AUTORIZADOS =====
-    
-    function initializeSecurityProtections() {
-      // Monitor de actividad del usuario
-      let activityTimer;
-      const INACTIVITY_TIMEOUT = 30 * 60 * 1000; // 30 minutos
-
-      function resetActivityTimer() {
-        clearTimeout(activityTimer);
-        activityTimer = setTimeout(() => {
-          alert('Sesión cerrada por inactividad');
-          logout();
-        }, INACTIVITY_TIMEOUT);
+    function logout() {
+      if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+        localStorage.clear();
+        window.location.href = 'login.html';
       }
-
-      // Eventos de actividad del usuario
-      ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(event => {
-        document.addEventListener(event, resetActivityTimer, true);
-      });
-
-      // Inicializar timer
-      resetActivityTimer();
-
-      // Detectar si las herramientas de desarrollador están abiertas
-      let devtools = { open: false, orientation: null };
-
-      setInterval(() => {
-        if (window.outerHeight - window.innerHeight > 200 || 
-            window.outerWidth - window.innerWidth > 200) {
-          if (!devtools.open) {
-            devtools.open = true;
-            console.clear();
-            showSecurityWarning('Herramientas de desarrollador detectadas. Acceso restringido.');
-            setTimeout(() => {
-              document.getElementById('securityWarning').style.display = 'none';
-            }, 3000);
-          }
-        } else {
-          devtools.open = false;
-        }
-      }, 500);
-
-      // Verificación periódica de sesión
-      setInterval(() => {
-        const isLoggedIn = localStorage.getItem('loggedIn');
-        const userRole = localStorage.getItem('userRole');
-        const userYear = localStorage.getItem('userYear');
-
-        if (isLoggedIn !== 'true' || userRole !== 'estudiante' || userYear !== '1') {
-          console.log('Sesión comprometida, cerrando...');
-          redirectToLogin('Sesión inválida detectada');
-        }
-      }, 10000);
-
-      // Prevenir selección de texto
-      document.addEventListener('selectstart', function(e) {
-        e.preventDefault();
-      });
-
-      // Prevenir arrastrar elementos
-      document.addEventListener('dragstart', function(e) {
-        e.preventDefault();
-      });
-
-      // Detectar cambios de ventana/pestaña
-      document.addEventListener('visibilitychange', function() {
-        if (!document.hidden) {
-          checkAccess();
-        }
-      });
     }
-
-    // Bloquear teclas de desarrollador y atajos peligrosos
-    document.addEventListener('keydown', function(event) {
-      const blockedKeys = [
-        { key: 'F12' },
-        { key: 'I', ctrl: true, shift: true },
-        { key: 'C', ctrl: true, shift: true },
-        { key: 'J', ctrl: true, shift: true },
-        { key: 'U', ctrl: true },
-        { key: 'S', ctrl: true },
-        { key: 'A', ctrl: true },
-        { key: 'P', ctrl: true },
-        { key: 'F', ctrl: true },
-        { key: 'R', ctrl: true },
-        { key: 'F5' },
-      ];
-
-      const currentKey = {
-        key: event.key,
-        ctrl: event.ctrlKey,
-        shift: event.shiftKey,
-        alt: event.altKey
-      };
-
-      const isBlocked = blockedKeys.some(blocked => {
-        return blocked.key === currentKey.key &&
-               (blocked.ctrl === undefined || blocked.ctrl === currentKey.ctrl) &&
-               (blocked.shift === undefined || blocked.shift === currentKey.shift) &&
-               (blocked.alt === undefined || blocked.alt === currentKey.alt);
-      });
-
-      if (isBlocked) {
-        event.preventDefault();
-        event.stopPropagation();
-        console.log('Tecla bloqueada:', currentKey);
-        
-        if (event.key === 'F12' || 
-            (event.ctrlKey && event.shiftKey && ['I', 'C', 'J'].includes(event.key))) {
-          showSecurityWarning('Acceso a herramientas de desarrollador bloqueado');
-          setTimeout(() => {
-            document.getElementById('securityWarning').style.display = 'none';
-          }, 2000);
-        }
-        
-        return false;
-      }
-    });
-
-    // Bloquear clic derecho
-    document.addEventListener('contextmenu', function(event) {
-      event.preventDefault();
-      console.log('Clic derecho bloqueado');
-      
-      if (Math.random() < 0.3) {
-        showSecurityWarning('Clic derecho deshabilitado por seguridad');
-        setTimeout(() => {
-          document.getElementById('securityWarning').style.display = 'none';
-        }, 1500);
-      }
-      
-      return false;
-    });
-
-    // Detectar intentos de manipulación del DOM
-    const observer = new MutationObserver(function(mutations) {
-      mutations.forEach(function(mutation) {
-        if (mutation.type === 'childList') {
-          mutation.addedNodes.forEach(function(node) {
-            if (node.nodeType === Node.ELEMENT_NODE) {
-              if (node.tagName === 'SCRIPT' && !node.hasAttribute('data-allowed')) {
-                console.log('Script no autorizado detectado');
-                node.remove();
-              }
-            }
-          });
-        }
-      });
-    });
-
-    observer.observe(document, {
-      childList: true,
-      subtree: true
-    });
-
-    // Protección contra inyección de código
-    window.addEventListener('error', function(event) {
-      if (event.error && event.error.stack) {
-        console.log('Error detectado:', event.error.message);
-        event.preventDefault();
-      }
-    });
-
-    // Limpiar consola periódicamente
-    setInterval(() => {
-      if (typeof console !== 'undefined' && console.clear) {
-        console.clear();
-      }
-    }, 30000);
-
-    // Verificación de integridad de elementos críticos
-    function verifyPageIntegrity() {
-      const criticalElements = [
-        '#studentName',
-        '#studentAvatar',
-        '.logout-btn',
-        '#subjectsGrid'
-      ];
-
-      criticalElements.forEach(selector => {
-        const element = document.querySelector(selector);
-        if (!element) {
-          console.log('Elemento crítico faltante:', selector);
-          location.reload();
-        }
-      });
-    }
-
-    setInterval(verifyPageIntegrity, 60000);
-
-    // Protección final
-    const originalConsoleLog = console.log;
-    console.log = function(...args) {
-      const sensitivePatterns = ['password', 'token', 'session', 'auth'];
-      const logString = args.join(' ').toLowerCase();
-      
-      if (!sensitivePatterns.some(pattern => logString.includes(pattern))) {
-        originalConsoleLog.apply(console, args);
-      }
-    };
-
-    // Mensaje de seguridad en consola
-    console.log('%c🔒 SISTEMA EDUCATIVO SEGURO', 
-      'color: #e53e3e; font-size: 20px; font-weight: bold;');
-    console.log('%cEste sistema está protegido. El acceso no autorizado está prohibido.', 
-      'color: #d69e2e; font-size: 14px;');
-    
-    // Inicialización final
-    console.log('Sistema de 1° Año inicializado correctamente');
-    
   </script>
 </body>
 </html>
