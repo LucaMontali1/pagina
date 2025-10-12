@@ -1,4 +1,4 @@
-<!DOCTYPE html><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -146,6 +146,7 @@
       border: none;
       justify-content: center;
       margin-bottom: 40px;
+      flex-wrap: wrap;
     }
 
     .nav-tabs-custom .nav-link {
@@ -153,7 +154,7 @@
       border: 2px solid transparent;
       border-radius: 15px;
       padding: 15px 30px;
-      margin: 0 10px;
+      margin: 5px 10px;
       color: var(--text-dark);
       font-weight: 600;
       transition: all 0.3s ease;
@@ -502,6 +503,64 @@
       gap: 8px;
     }
 
+    .alumno-item {
+      padding: 15px;
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .alumno-item:hover {
+      background: #f7fafc;
+      border-color: #667eea;
+      transform: translateX(5px);
+    }
+
+    .alumno-item.active {
+      background: var(--bg-gradient);
+      color: white;
+      border-color: transparent;
+    }
+
+    .libreta-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    .libreta-table th,
+    .libreta-table td {
+      padding: 12px;
+      border: 1px solid #e2e8f0;
+      text-align: center;
+    }
+
+    .libreta-table th {
+      background: var(--bg-gradient);
+      color: white;
+      font-weight: 600;
+    }
+
+    .libreta-table tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    .nota-input {
+      width: 60px;
+      padding: 5px;
+      border: 2px solid #e2e8f0;
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    .promedio-cell {
+      background: #e6f3ff !important;
+      font-weight: bold;
+    }
+
     @media (max-width: 768px) {
       .dashboard-title {
         font-size: 2rem;
@@ -596,6 +655,35 @@
     .modal-close:hover {
       color: var(--accent-color);
     }
+
+    .datos-alumno-box {
+      background: #f7fafc;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    .datos-alumno-box h5 {
+      color: var(--primary-color);
+      margin-bottom: 15px;
+      border-bottom: 2px solid #667eea;
+      padding-bottom: 10px;
+    }
+
+    .dato-row {
+      display: flex;
+      margin-bottom: 10px;
+    }
+
+    .dato-label {
+      font-weight: 600;
+      width: 150px;
+      color: var(--text-dark);
+    }
+
+    .dato-value {
+      color: #4a5568;
+    }
   </style>
 </head>
 <body>
@@ -643,7 +731,7 @@
   <div class="dashboard-header">
     <div class="container">
       <h1 class="dashboard-title">Panel Administrativo</h1>
-      <p class="dashboard-subtitle">Gestión de actividades, novedades, asistencias y calificaciones</p>
+      <p class="dashboard-subtitle">Gestión de actividades, novedades, asistencias, calificaciones y libretas</p>
     </div>
   </div>
 
@@ -670,6 +758,11 @@
         <button class="nav-link" id="calificaciones-tab" data-bs-toggle="tab" data-bs-target="#calificaciones" type="button" role="tab">
           <i class="fas fa-star me-2"></i>Calificaciones
           <span class="badge-new" id="gradesBadge" style="display:none;">Nuevo</span>
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="libretas-tab" data-bs-toggle="tab" data-bs-target="#libretas" type="button" role="tab">
+          <i class="fas fa-book me-2"></i>Libretas
         </button>
       </li>
       <li class="nav-item" role="presentation">
@@ -807,6 +900,96 @@
         </div>
       </div>
 
+      <div class="tab-pane fade" id="libretas" role="tabpanel">
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="info-card animate-fade-in" style="border-left-color: #3182ce;">
+              <div class="card-header">
+                <div class="card-icon" style="background: #3182ce;">
+                  <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h3 class="card-title">Seleccionar Alumno</h3>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Año</label>
+                <select class="form-control" id="libretaYear" onchange="cargarAlumnosLibreta()">
+                  <option value="">Seleccionar año</option>
+                  <option value="1">1° Año</option>
+                  <option value="2">2° Año</option>
+                  <option value="3">3° Año</option>
+                  <option value="4">4° Año</option>
+                  <option value="5">5° Año</option>
+                </select>
+              </div>
+              <div id="alumnosListLibreta"></div>
+            </div>
+          </div>
+          <div class="col-lg-8">
+            <div id="libretaContainer" style="display: none;">
+              <div class="info-card animate-fade-in" style="border-left-color: #9333ea;">
+                <div class="card-header">
+                  <div class="card-icon" style="background: #9333ea;">
+                    <i class="fas fa-book"></i>
+                  </div>
+                  <h3 class="card-title" id="libretaTitle">Libreta del Alumno</h3>
+                </div>
+                
+                <div id="datosAlumno" class="datos-alumno-box"></div>
+                
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                  <button class="btn btn-primary-custom" onclick="mostrarFormularioNotas()">
+                    <i class="fas fa-plus me-2"></i>Cargar Nota
+                  </button>
+                  <button class="btn btn-primary-custom" onclick="descargarLibreta()">
+                    <i class="fas fa-download me-2"></i>Descargar PDF
+                  </button>
+                </div>
+                
+                <div id="formularioNotas" style="display: none; background: #f7fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                  <h5 style="margin-bottom: 15px;"><i class="fas fa-edit me-2"></i>Cargar Nota</h5>
+                  <form id="notasForm" onsubmit="guardarNota(event)">
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label class="form-label">Materia</label>
+                          <select class="form-control" id="notaMateria" required></select>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label class="form-label">Trimestre</label>
+                          <select class="form-control" id="notaTrimestre" required>
+                            <option value="1">1° Trimestre</option>
+                            <option value="2">2° Trimestre</option>
+                            <option value="3">3° Trimestre</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label class="form-label">Calificación</label>
+                          <input type="number" class="form-control" id="notaCalificacion" min="1" max="10" step="0.5" required>
+                        </div>
+                      </div>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                      <button type="submit" class="btn btn-primary-custom">
+                        <i class="fas fa-save me-2"></i>Guardar
+                      </button>
+                      <button type="button" class="btn btn-primary-custom" onclick="ocultarFormularioNotas()" style="background: #718096;">
+                        <i class="fas fa-times me-2"></i>Cancelar
+                      </button>
+                    </div>
+                  </form>
+                </div>
+                
+                <div id="tablaNotas"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="tab-pane fade" id="reportes" role="tabpanel">
         <div class="row">
           <div class="col-lg-12">
@@ -866,6 +1049,44 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+
+const MATERIAS_POR_AÑO = {
+  '1': ['Lengua y Literatura', 'Matemática', 'Historia', 'Geografía', 'Formación Ética y Ciudadana', 'Biología', 'Educación Tecnológica', 'Lengua Extranjera (Inglés)', 'Física', 'Educación Artística (Plástica)', 'Educación Artística (Teatro)', 'Educación Física'],
+  '2': ['Lengua y Literatura', 'Matemática', 'Historia', 'Geografía', 'Formación Ética y Ciudadana', 'Biología', 'Educación Tecnológica', 'Lengua Extranjera (Inglés)', 'Química', 'Educación Artística (Plástica)', 'Educación Artística (Teatro)', 'Educación Física'],
+  '3': ['Lengua y Literatura', 'Matemática', 'Historia', 'Geografía', 'Biología', 'Lengua Extranjera (Inglés)', 'Educación Física', 'Educación Artística (Plástica)', 'Educación Artística (Teatro)', 'Aplicaciones para la Gestión de Oficinas', 'Tecnologías Informáticas de Comunicación', 'Diseño Multimedial'],
+  '4': ['Lengua y Literatura', 'Matemática', 'Historia', 'Geografía', 'Física', 'Lengua Extranjera (Inglés)', 'Educación Física', 'Filosofía', 'Aplicaciones para la Gestión de Oficinas II', 'Programación Imperativa', 'Sistemas de Procesamiento de Datos', 'Laboratorio Informático'],
+  '5': ['Lengua y Literatura', 'Formación Ética y Ciudadana', 'Matemática', 'Educación Física', 'Lengua Extranjera (Inglés)', 'Química', 'Psicología', 'Economía', 'Programación Orientada a Objetos', 'Sistemas de Gestión de Bases de Datos', 'Proyecto de Investigación en Informática']
+};
+
+const ALUMNOS_DATA = {
+  '1': [
+    { id: 1, nombre: 'García, Juan Pablo', dni: '45123456', direccion: 'Av. Belgrano 1234', tutores: 'García, Roberto / García, María', email: 'juan.garcia@estudiante.dante.edu.ar', telefono: '387-5551234' },
+    { id: 2, nombre: 'Martínez, Ana Sofía', dni: '45234567', direccion: 'Calle Balcarce 567', tutores: 'Martínez, Carlos / López, Laura', email: 'ana.martinez@estudiante.dante.edu.ar', telefono: '387-5552345' },
+    { id: 3, nombre: 'Rodríguez, Lucas Matías', dni: '45345678', direccion: 'Pje. Güemes 890', tutores: 'Rodríguez, Miguel / Fernández, Silvia', email: 'lucas.rodriguez@estudiante.dante.edu.ar', telefono: '387-5553456' }
+  ],
+  '2': [
+    { id: 4, nombre: 'Fernández, Valentina', dni: '44123456', direccion: 'Av. Sarmiento 2345', tutores: 'Fernández, Jorge / Gómez, Patricia', email: 'valentina.fernandez@estudiante.dante.edu.ar', telefono: '387-5554567' },
+    { id: 5, nombre: 'González, Mateo Andrés', dni: '44234567', direccion: 'Calle Mitre 678', tutores: 'González, Alberto / Díaz, Mónica', email: 'mateo.gonzalez@estudiante.dante.edu.ar', telefono: '387-5555678' },
+    { id: 6, nombre: 'López, Camila Belén', dni: '44345678', direccion: 'Av. Virrey Toledo 1234', tutores: 'López, Fernando / Pérez, Claudia', email: 'camila.lopez@estudiante.dante.edu.ar', telefono: '387-5556789' }
+  ],
+  '3': [
+    { id: 7, nombre: 'Pérez, Santiago Nicolás', dni: '43123456', direccion: 'Calle Caseros 456', tutores: 'Pérez, Daniel / Romero, Andrea', email: 'santiago.perez@estudiante.dante.edu.ar', telefono: '387-5557890' },
+    { id: 8, nombre: 'Díaz, Martina Agustina', dni: '43234567', direccion: 'Av. Entre Ríos 789', tutores: 'Díaz, Ricardo / Suárez, Beatriz', email: 'martina.diaz@estudiante.dante.edu.ar', telefono: '387-5558901' },
+    { id: 9, nombre: 'Sánchez, Benjamín Gabriel', dni: '43345678', direccion: 'Calle Alberdi 1012', tutores: 'Sánchez, Pablo / Torres, Cristina', email: 'benjamin.sanchez@estudiante.dante.edu.ar', telefono: '387-5559012' }
+  ],
+  '4': [
+    { id: 10, nombre: 'Romero, Catalina María', dni: '42123456', direccion: 'Pje. San Martín 234', tutores: 'Romero, Gustavo / Morales, Elena', email: 'catalina.romero@estudiante.dante.edu.ar', telefono: '387-5550123' },
+    { id: 11, nombre: 'Torres, Franco Emanuel', dni: '42234567', direccion: 'Av. Arenales 567', tutores: 'Torres, Martín / Castro, Gabriela', email: 'franco.torres@estudiante.dante.edu.ar', telefono: '387-5551234' },
+    { id: 12, nombre: 'Morales, Lucía Victoria', dni: '42345678', direccion: 'Calle España 890', tutores: 'Morales, Oscar / Ruiz, Natalia', email: 'lucia.morales@estudiante.dante.edu.ar', telefono: '387-5552345' }
+  ],
+  '5': [
+    { id: 13, nombre: 'Castro, Tomás Agustín', dni: '41123456', direccion: 'Av. Reyes Católicos 1234', tutores: 'Castro, Sergio / Vargas, Liliana', email: 'tomas.castro@estudiante.dante.edu.ar', telefono: '387-5553456' },
+    { id: 14, nombre: 'Ruiz, Florencia Antonella', dni: '41234567', direccion: 'Calle Urquiza 567', tutores: 'Ruiz, Eduardo / Herrera, Marcela', email: 'florencia.ruiz@estudiante.dante.edu.ar', telefono: '387-5554567' },
+    { id: 15, nombre: 'Vargas, Agustín Ezequiel', dni: '41345678', direccion: 'Pje. Rivadavia 890', tutores: 'Vargas, Andrés / Molina, Valeria', email: 'agustin.vargas@estudiante.dante.edu.ar', telefono: '387-5555678' }
+  ]
+};
+
+let alumnoSeleccionado = null;
 
 document.addEventListener('DOMContentLoaded', function() {
   checkAccess();
@@ -940,6 +1161,187 @@ function checkForNewData() {
   if (gradesRecords.length > 0 || gradesRecordsExcel.length > 0) {
     document.getElementById('gradesBadge').style.display = 'inline-block';
   }
+}
+
+function cargarAlumnosLibreta() {
+  const year = document.getElementById('libretaYear').value;
+  const container = document.getElementById('alumnosListLibreta');
+  
+  if (!year) {
+    container.innerHTML = '';
+    document.getElementById('libretaContainer').style.display = 'none';
+    return;
+  }
+  
+  const alumnos = ALUMNOS_DATA[year] || [];
+  
+  container.innerHTML = `
+    <div style="margin-top: 20px;">
+      <h6 style="margin-bottom: 15px; color: var(--text-dark);">Alumnos de ${year}° Año</h6>
+      ${alumnos.map(alumno => `
+        <div class="alumno-item" onclick="seleccionarAlumno(${year}, ${alumno.id})">
+          <i class="fas fa-user-graduate me-2"></i>${alumno.nombre}
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function seleccionarAlumno(year, alumnoId) {
+  const alumnos = ALUMNOS_DATA[year] || [];
+  alumnoSeleccionado = alumnos.find(a => a.id === alumnoId);
+  
+  if (!alumnoSeleccionado) return;
+  
+  alumnoSeleccionado.year = year;
+  
+  document.querySelectorAll('.alumno-item').forEach(item => {
+    item.classList.remove('active');
+  });
+  event.target.closest('.alumno-item').classList.add('active');
+  
+  document.getElementById('libretaTitle').textContent = `Libreta de ${alumnoSeleccionado.nombre}`;
+  
+  document.getElementById('datosAlumno').innerHTML = `
+    <h5><i class="fas fa-id-card me-2"></i>Datos del Alumno</h5>
+    <div class="dato-row">
+      <span class="dato-label">Nombre Completo:</span>
+      <span class="dato-value">${alumnoSeleccionado.nombre}</span>
+    </div>
+    <div class="dato-row">
+      <span class="dato-label">DNI:</span>
+      <span class="dato-value">${alumnoSeleccionado.dni}</span>
+    </div>
+    <div class="dato-row">
+      <span class="dato-label">Año:</span>
+      <span class="dato-value">${year}° Año</span>
+    </div>
+    <div class="dato-row">
+      <span class="dato-label">Dirección:</span>
+      <span class="dato-value">${alumnoSeleccionado.direccion}</span>
+    </div>
+    <div class="dato-row">
+      <span class="dato-label">Tutores:</span>
+      <span class="dato-value">${alumnoSeleccionado.tutores}</span>
+    </div>
+    <div class="dato-row">
+      <span class="dato-label">Email:</span>
+      <span class="dato-value">${alumnoSeleccionado.email}</span>
+    </div>
+    <div class="dato-row">
+      <span class="dato-label">Teléfono:</span>
+      <span class="dato-value">${alumnoSeleccionado.telefono}</span>
+    </div>
+  `;
+  
+  const materias = MATERIAS_POR_AÑO[year];
+  const selectMateria = document.getElementById('notaMateria');
+  selectMateria.innerHTML = '<option value="">Seleccionar materia</option>' +
+    materias.map(m => `<option value="${m}">${m}</option>`).join('');
+  
+  document.getElementById('libretaContainer').style.display = 'block';
+  
+  cargarTablaNotas();
+}
+
+function mostrarFormularioNotas() {
+  document.getElementById('formularioNotas').style.display = 'block';
+}
+
+function ocultarFormularioNotas() {
+  document.getElementById('formularioNotas').style.display = 'none';
+  document.getElementById('notasForm').reset();
+}
+
+function guardarNota(event) {
+  event.preventDefault();
+  
+  if (!alumnoSeleccionado) return;
+  
+  const materia = document.getElementById('notaMateria').value;
+  const trimestre = document.getElementById('notaTrimestre').value;
+  const calificacion = parseFloat(document.getElementById('notaCalificacion').value);
+  
+  let libretas = JSON.parse(localStorage.getItem('libretas') || '{}');
+  
+  const key = `${alumnoSeleccionado.id}_${alumnoSeleccionado.year}`;
+  
+  if (!libretas[key]) {
+    libretas[key] = {
+      alumnoId: alumnoSeleccionado.id,
+      year: alumnoSeleccionado.year,
+      notas: {}
+    };
+  }
+  
+  if (!libretas[key].notas[materia]) {
+    libretas[key].notas[materia] = { '1': null, '2': null, '3': null };
+  }
+  
+  libretas[key].notas[materia][trimestre] = calificacion;
+  
+  localStorage.setItem('libretas', JSON.stringify(libretas));
+  
+  mostrarMensaje('Nota guardada exitosamente', 'success');
+  ocultarFormularioNotas();
+  cargarTablaNotas();
+}
+
+function cargarTablaNotas() {
+  if (!alumnoSeleccionado) return;
+  
+  const key = `${alumnoSeleccionado.id}_${alumnoSeleccionado.year}`;
+  const libretas = JSON.parse(localStorage.getItem('libretas') || '{}');
+  const libreta = libretas[key];
+  
+  const materias = MATERIAS_POR_AÑO[alumnoSeleccionado.year];
+  
+  let html = `
+    <table class="libreta-table">
+      <thead>
+        <tr>
+          <th style="text-align: left;">Materia</th>
+          <th>1° Trim.</th>
+          <th>2° Trim.</th>
+          <th>3° Trim.</th>
+          <th class="promedio-cell">Promedio</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+  
+  materias.forEach(materia => {
+    const notas = libreta?.notas?.[materia] || { '1': null, '2': null, '3': null };
+    const trim1 = notas['1'];
+    const trim2 = notas['2'];
+    const trim3 = notas['3'];
+    
+    let promedio = '--';
+    const notasValidas = [trim1, trim2, trim3].filter(n => n !== null);
+    if (notasValidas.length > 0) {
+      const suma = notasValidas.reduce((a, b) => a + b, 0);
+      promedio = (suma / notasValidas.length).toFixed(2);
+    }
+    
+    html += `
+      <tr>
+        <td style="text-align: left;">${materia}</td>
+        <td>${trim1 !== null ? trim1 : '--'}</td>
+        <td>${trim2 !== null ? trim2 : '--'}</td>
+        <td>${trim3 !== null ? trim3 : '--'}</td>
+        <td class="promedio-cell">${promedio}</td>
+      </tr>
+    `;
+  });
+  
+  html += `</tbody></table>`;
+  
+  document.getElementById('tablaNotas').innerHTML = html;
+}
+
+function descargarLibreta() {
+  if (!alumnoSeleccionado) return;
+  mostrarMensaje('Función de descarga en desarrollo. Se generará un PDF con la libreta completa.', 'info');
 }
 
 window.addEventListener('popstate', function(event) {
@@ -1434,3 +1836,4 @@ console.log('%cAcceso restringido solo para preceptores autorizados.',
 </script>
 </body>
 </html>
+
