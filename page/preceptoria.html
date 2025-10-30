@@ -718,7 +718,7 @@
             </div>
             <span id="userName">Preceptor</span>
           </div>
-          <button class="cerrar-sesion-btn" id="btnCerrarSesion">
+          <button class="cerrar-sesion-btn" onclick="logout()">
             <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
           </button>
         </div>
@@ -768,6 +768,11 @@
       <li class="nav-item" role="presentation">
         <button class="nav-link" id="reportes-tab" data-bs-toggle="tab" data-bs-target="#reportes" type="button" role="tab">
           <i class="fas fa-chart-bar me-2"></i>Reportes
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" onclick="window.location.href='registro.html'" type="button">
+          <i class="fas fa-user-plus me-2"></i>Registrar Estudiante
         </button>
       </li>
     </ul>
@@ -1047,7 +1052,8 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="session-validator.js"></script>
 <script>
 
 const MATERIAS_POR_AÑO = {
@@ -1088,65 +1094,48 @@ const ALUMNOS_DATA = {
 
 let alumnoSeleccionado = null;
 
-document.addEventListener('DOMContentLoaded', function() {
-  checkAccess();
-  checkForNewData();
-});
-
-function checkAccess() {
-  const isLoggedIn = localStorage.getItem('loggedIn');
-  const userRole = localStorage.getItem('userRole');
-  const userName = localStorage.getItem('userName');
-
-  if (isLoggedIn !== 'true') {
-    redirectToLogin('No has iniciado sesión');
-    return;
-  }
-
-  if (userRole !== 'preceptor') {
-    redirectToLogin('Acceso restringido solo para preceptores');
-    return;
-  }
-
-  initializePage(userName);
-}
-
-function redirectToLogin(message = 'Acceso no autorizado') {
-  showSecurityWarning(message);
-  setTimeout(() => {
-    localStorage.clear();
-    window.location.href = 'login.html';
-  }, 3000);
-}
-
-function showSecurityWarning(message) {
-  const warningOverlay = document.getElementById('securityWarning');
-  warningOverlay.style.display = 'flex';
+// ============================================
+// VERIFICACIÓN DE SESIÓN CON SESSION MANAGER
+// ============================================
+document.addEventListener('DOMContentLoaded', async function() {
+  const sessionData = await SessionManager.verificarSesion();
   
-  if (message) {
-    const warningContent = warningOverlay.querySelector('.warning-content p');
-    warningContent.textContent = message;
-  }
-}
-
-function initializePage(userName) {
-  if (userName) {
-    document.getElementById('userName').textContent = userName;
+  if (!sessionData) {
+    return;
   }
 
+  if (!SessionManager.verificarPermiso(['preceptor'])) {
+    return;
+  }
+
+  const usuario = SessionManager.obtenerUsuarioActual();
+  document.getElementById('userName').textContent = usuario.username || 'Preceptor';
+  
   cargarActividades();
   cargarNovedades();
   cargarAsistencias();
   cargarCalificaciones();
   actualizarEstadisticas();
-
+  checkForNewData();
+  
   setTimeout(() => {
     const loadingScreen = document.getElementById('loadingScreen');
-    loadingScreen.style.opacity = '0';
-    setTimeout(() => {
-      loadingScreen.style.display = 'none';
-    }, 500);
+    if (loadingScreen) {
+      loadingScreen.style.opacity = '0';
+      setTimeout(() => {
+        loadingScreen.style.display = 'none';
+      }, 500);
+    }
   }, 1000);
+});
+
+// ============================================
+// FUNCIÓN DE LOGOUT
+// ============================================
+function logout() {
+  if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+    SessionManager.cerrarSesion();
+  }
 }
 
 function checkForNewData() {
@@ -1375,13 +1364,14 @@ document.getElementById('actividadForm').addEventListener('submit', function(e) 
 document.getElementById('novedadForm').addEventListener('submit', function(e) {
   e.preventDefault();
   
+  const usuario = SessionManager.obtenerUsuarioActual();
   const novedad = {
     id: Date.now(),
     titulo: document.getElementById('novedadTitulo').value,
     contenido: document.getElementById('novedadContenido').value,
     prioridad: document.getElementById('novedadPrioridad').value,
     destino: document.getElementById('novedadDestino').value,
-    autor: localStorage.getItem('userName') || 'Preceptor',
+    autor: usuario.username || 'Preceptor',
     año: 'todos',
     fecha: new Date().toISOString(),
     fechaCreacion: new Date().toLocaleDateString()
@@ -1759,13 +1749,6 @@ function mostrarMensaje(mensaje, tipo) {
   }, 5000);
 }
 
-document.getElementById('btnCerrarSesion').addEventListener('click', function() {
-  if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
-    localStorage.clear();
-    window.location.href = 'login.html';
-  }
-});
-
 document.addEventListener('keydown', function(event) {
   const blockedKeys = [
     { key: 'F12' },
@@ -1798,18 +1781,8 @@ document.addEventListener('contextmenu', function(event) {
   return false;
 });
 
-setInterval(() => {
-  const isLoggedIn = localStorage.getItem('loggedIn');
-  const userRole = localStorage.getItem('userRole');
-
-  if (isLoggedIn !== 'true' || userRole !== 'preceptor') {
-    redirectToLogin('Sesión expirada');
-  }
-}, 30000);
-
 document.addEventListener('visibilitychange', function() {
   if (!document.hidden) {
-    checkAccess();
     checkForNewData();
     cargarAsistencias();
     cargarCalificaciones();
@@ -1836,4 +1809,3 @@ console.log('%cAcceso restringido solo para preceptores autorizados.',
 </script>
 </body>
 </html>
-

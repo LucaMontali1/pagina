@@ -34,7 +34,67 @@
       padding-top: 80px;
     }
 
-    /* Header restringido - solo logout */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    .loading-content {
+      text-align: center;
+      color: white;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255,255,255,0.3);
+      border-left: 4px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .security-warning {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      color: white;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .warning-content {
+      background: var(--danger-color);
+      padding: 2rem;
+      border-radius: 16px;
+      max-width: 400px;
+    }
+
+    .warning-content i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
     .restricted-header {
       position: fixed;
       top: 0;
@@ -105,7 +165,6 @@
       transform: translateY(-2px);
     }
 
-    /* Sección de noticias */
     .news-section {
       max-width: 1200px;
       margin: 2rem auto;
@@ -185,7 +244,6 @@
       padding: 2rem;
     }
 
-    /* Hero section */
     .hero-section {
       text-align: center;
       padding: 3rem 2rem;
@@ -217,7 +275,6 @@
       backdrop-filter: blur(10px);
     }
 
-    /* Buscador */
     .search-section {
       max-width: 600px;
       margin: 2rem auto;
@@ -250,7 +307,6 @@
       background: transparent;
     }
 
-    /* Grid de materias */
     .subjects-section {
       max-width: 1200px;
       margin: 2rem auto;
@@ -383,36 +439,6 @@
       display: none !important;
     }
 
-    /* Security warning overlay */
-    .security-warning {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.9);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 10000;
-      color: white;
-      text-align: center;
-      padding: 2rem;
-    }
-
-    .warning-content {
-      background: var(--danger-color);
-      padding: 2rem;
-      border-radius: 16px;
-      max-width: 400px;
-    }
-
-    .warning-content i {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-    }
-
-    /* Responsive */
     @media (max-width: 768px) {
       .hero-section h1 {
         font-size: 2rem;
@@ -437,46 +463,9 @@
         gap: 1rem;
       }
     }
-
-    /* Loading screen */
-    .loading-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      transition: opacity 0.5s ease;
-    }
-
-    .loading-content {
-      text-align: center;
-      color: white;
-    }
-
-    .loading-spinner {
-      width: 50px;
-      height: 50px;
-      border: 4px solid rgba(255,255,255,0.3);
-      border-left: 4px solid white;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 1rem auto;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
   </style>
 </head>
 <body>
-  <!-- Loading Screen -->
   <div class="loading-screen" id="loadingScreen">
     <div class="loading-content">
       <div class="loading-spinner"></div>
@@ -485,16 +474,14 @@
     </div>
   </div>
 
-  <!-- Security Warning Overlay -->
   <div class="security-warning" id="securityWarning">
     <div class="warning-content">
       <i class="fas fa-exclamation-triangle"></i>
       <h3>¡Acceso Restringido!</h3>
-      <p>Se ha detectado un intento de acceso no autorizado. La sesión será cerrada por seguridad.</p>
+      <p>Se ha detectado un intento de acceso no autorizado.</p>
     </div>
   </div>
 
-  <!-- Header Restringido -->
   <header class="restricted-header">
     <div class="header-content">
       <div class="student-info">
@@ -512,7 +499,6 @@
   </header>
 
   <main>
-    <!-- Sección de Noticias -->
     <section class="news-section">
       <div class="news-container" id="newsContainer">
         <div class="news-header">
@@ -530,14 +516,12 @@
       </div>
     </section>
 
-    <!-- Hero Section -->
     <section class="hero-section">
       <span class="year-badge">5° Año</span>
       <h1>Quinto Año</h1>
       <p>Culminación de la educación secundaria y preparación para la educación superior</p>
     </section>
 
-    <!-- Buscador -->
     <section class="search-section">
       <div class="search-container">
         <i class="fas fa-search search-icon"></i>
@@ -551,7 +535,6 @@
       </div>
     </section>
 
-    <!-- Grid de materias -->
     <section class="subjects-section">
       <div class="subjects-grid" id="subjectsGrid">
         <div class="subject-card" style="--index: 0">
@@ -707,145 +690,83 @@
     </section>
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="session-validator.js"></script>
   <script>
-    // ===== SISTEMA DE RESTRICCIONES Y SEGURIDAD =====
-    
-    // Verificar acceso al cargar la página
-    document.addEventListener('DOMContentLoaded', function() {
-      checkAccess();
-    });
+    // CONSTANTE DEL AÑO - SOLO CAMBIA ESTE NÚMERO PARA OTROS AÑOS
+    const CURRENT_YEAR = 5;
 
-    // Función principal de verificación de acceso
-    function checkAccess() {
-      const isLoggedIn = localStorage.getItem('loggedIn');
-      const userRole = localStorage.getItem('userRole');
-      const userYear = localStorage.getItem('userYear');
-      const userName = localStorage.getItem('userName');
-
-      console.log('Verificando acceso:', { isLoggedIn, userRole, userYear, userName });
-
-      // Verificar si está logueado
-      if (isLoggedIn !== 'true') {
-        console.log('Usuario no logueado, redirigiendo a login');
-        redirectToLogin('No has iniciado sesión');
-        return;
-      }
-
-      // Verificar que sea estudiante
-      if (userRole !== 'estudiante') {
-        console.log('Usuario no es estudiante, redirigiendo a login');
-        redirectToLogin('Acceso restringido a estudiantes');
-        return;
-      }
-
-      // Verificar que corresponda a 5° año
-      if (userYear !== '5') {
-        console.log('Usuario no es de 5° año, redirigiendo a su año correspondiente');
-        redirectToCorrectYear(userYear);
-        return;
-      }
-
-      // Si pasa todas las verificaciones, inicializar la página
-      console.log('Acceso autorizado para 5° año');
-      initializePage(userName);
-    }
-
-    // Redirigir a login con mensaje
-    function redirectToLogin(message = 'Acceso no autorizado') {
-      showSecurityWarning(message);
-      setTimeout(() => {
-        localStorage.clear(); // Limpiar toda la sesión
-        window.location.href = 'login.html';
-      }, 3000);
-    }
-
-    // Redirigir al año correspondiente
-    function redirectToCorrectYear(year) {
-      if (year && year >= '1' && year <= '5') {
-        alert(`Serás redirigido a tu año correspondiente: ${year}° Año`);
-        window.location.href = `${year} año.html`;
-      } else {
-        redirectToLogin('Año no válido');
-      }
-    }
-
-    // Mostrar advertencia de seguridad
-    function showSecurityWarning(message) {
-      const warningOverlay = document.getElementById('securityWarning');
-      warningOverlay.style.display = 'flex';
+    // ============================================
+    // VERIFICACIÓN DE SESIÓN CON SESSION MANAGER
+    // ============================================
+    document.addEventListener('DOMContentLoaded', async function() {
+      const sessionData = await SessionManager.verificarSesion();
       
-      // Actualizar mensaje si se proporciona
-      if (message) {
-        const warningContent = warningOverlay.querySelector('.warning-content p');
-        warningContent.textContent = message;
+      if (!sessionData) {
+        return;
       }
-    }
 
-    // Prevenir navegación con botones del navegador
-    window.addEventListener('popstate', function(event) {
-      console.log('Intento de navegación bloqueado');
-      history.pushState(null, null, location.href);
-      showSecurityWarning('No puedes salir de tu año asignado');
-      setTimeout(() => {
-        document.getElementById('securityWarning').style.display = 'none';
-      }, 2000);
-    });
-
-    // Bloquear navegación inicial
-    history.pushState(null, null, location.href);
-
-    // Función de logout seguro
-    function logout() {
-      if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
-        console.log('Cerrando sesión...');
-        localStorage.clear();
-        window.location.href = 'login.html';
+      if (!SessionManager.verificarPermiso(['estudiante'])) {
+        return;
       }
-    }
 
-    // Inicializar página después de verificaciones
-    function initializePage(userName) {
+      const usuario = SessionManager.obtenerUsuarioActual();
+      
+      // Verificar que el estudiante pertenezca a este año
+      if (usuario.year !== CURRENT_YEAR) {
+        showSecurityWarning(`Este panel es para ${CURRENT_YEAR}° Año. Tu año es ${usuario.year}°`);
+        setTimeout(() => {
+          window.location.href = `${usuario.year} año.html`;
+        }, 3000);
+        return;
+      }
+
       // Actualizar información del estudiante
-      const studentNameElement = document.getElementById('studentName');
-      const studentAvatar = document.getElementById('studentAvatar');
+      document.getElementById('studentName').textContent = usuario.nombre_completo || `Estudiante de ${CURRENT_YEAR}° Año`;
+      document.getElementById('studentAvatar').textContent = usuario.nombre_completo ? usuario.nombre_completo.charAt(0).toUpperCase() : CURRENT_YEAR;
       
-      if (userName) {
-        studentNameElement.textContent = userName;
-        studentAvatar.textContent = userName.charAt(0).toUpperCase();
-      }
-
       // Cargar noticias
-      loadNews();
-
+      await loadNews();
+      
       // Inicializar búsqueda
       initializeSearch();
-
-      // Inicializar protecciones de seguridad
+      
+      // Inicializar protecciones
       initializeSecurityProtections();
-
+      
       // Ocultar loading screen
       setTimeout(() => {
         const loadingScreen = document.getElementById('loadingScreen');
-        loadingScreen.style.opacity = '0';
-        setTimeout(() => {
-          loadingScreen.style.display = 'none';
-        }, 500);
-      }, 1500);
+        if (loadingScreen) {
+          loadingScreen.style.opacity = '0';
+          setTimeout(() => {
+            loadingScreen.style.display = 'none';
+          }, 500);
+        }
+      }, 1000);
+    });
 
-      console.log('Página inicializada correctamente para:', userName);
+    // ============================================
+    // FUNCIÓN DE LOGOUT
+    // ============================================
+    function logout() {
+      if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+        SessionManager.cerrarSesion();
+      }
     }
 
-    // ===== SISTEMA DE NOTICIAS =====
-    
-    function loadNews() {
+    // ============================================
+    // SISTEMA DE NOTICIAS
+    // ============================================
+    async function loadNews() {
       const newsList = document.getElementById('newsList');
       
       // Obtener noticias del localStorage
       const allNews = JSON.parse(localStorage.getItem('noticias') || '[]');
       
-      // Filtrar noticias para 5° año o para todos
+      // Filtrar noticias para este año o para todos
       const filteredNews = allNews.filter(noticia => 
-        noticia.año === '5' || noticia.año === 'todos'
+        noticia.año === String(CURRENT_YEAR) || noticia.año === 'todos'
       );
 
       if (filteredNews.length === 0) {
@@ -880,8 +801,9 @@
       });
     }
 
-    // ===== SISTEMA DE BÚSQUEDA =====
-    
+    // ============================================
+    // SISTEMA DE BÚSQUEDA
+    // ============================================
     function initializeSearch() {
       const searchInput = document.getElementById('searchInput');
       const subjectsGrid = document.getElementById('subjectsGrid');
@@ -908,7 +830,6 @@
           }
         });
 
-        // Mostrar/ocultar mensaje de "no resultados"
         if (visibleCount === 0 && query !== '') {
           noResults.style.display = 'block';
           subjectsGrid.style.display = 'none';
@@ -918,7 +839,6 @@
         }
       });
 
-      // Limpiar búsqueda con Escape
       searchInput.addEventListener('keydown', function(event) {
         if (event.key === 'Escape') {
           searchInput.value = '';
@@ -931,39 +851,31 @@
         }
       });
 
-      // Agregar efectos de click a las tarjetas
       subjects.forEach(card => {
         card.addEventListener('click', function() {
           const subjectName = this.querySelector('.subject-name').textContent;
           
-          // Efecto visual
           this.style.transform = 'translateY(-2px) scale(0.98)';
           setTimeout(() => {
             this.style.transform = '';
           }, 150);
 
-          console.log('Materia seleccionada:', subjectName);
-          
-          // Navegación específica por materia
           if (subjectName === 'ASISTENCIA') {
-            // Redirigir a página de asistencia
             window.location.href = 'asistencia.html';
           } else {
-            // Para otras materias, mostrar mensaje informativo
             alert(`Accediendo a: ${subjectName}`);
-            // Aquí puedes agregar navegación a páginas específicas de materias
-            // window.location.href = `materia.html?subject=${encodeURIComponent(subjectName)}`;
           }
         });
       });
     }
 
-    // ===== PREVENCIÓN DE ACCESOS NO AUTORIZADOS =====
-    
+    // ============================================
+    // PREVENCIÓN DE ACCESOS NO AUTORIZADOS
+    // ============================================
     function initializeSecurityProtections() {
-      // Monitor de actividad del usuario
+      // Monitor de inactividad (30 minutos)
       let activityTimer;
-      const INACTIVITY_TIMEOUT = 30 * 60 * 1000; // 30 minutos
+      const INACTIVITY_TIMEOUT = 30 * 60 * 1000;
 
       function resetActivityTimer() {
         clearTimeout(activityTimer);
@@ -973,128 +885,90 @@
         }, INACTIVITY_TIMEOUT);
       }
 
-      // Eventos de actividad del usuario
       ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(event => {
         document.addEventListener(event, resetActivityTimer, true);
       });
 
-      // Inicializar timer
       resetActivityTimer();
 
-      // Detectar si las herramientas de desarrollador están abiertas
-      let devtools = {
-        open: false,
-        orientation: null
-      };
-
-      setInterval(() => {
-        if (window.outerHeight - window.innerHeight > 200 || 
-            window.outerWidth - window.innerWidth > 200) {
-          if (!devtools.open) {
-            devtools.open = true;
-            console.clear();
-            showSecurityWarning('Herramientas de desarrollador detectadas. Acceso restringido.');
-            setTimeout(() => {
-              document.getElementById('securityWarning').style.display = 'none';
-            }, 3000);
-          }
-        } else {
-          devtools.open = false;
-        }
-      }, 500);
-
       // Verificación periódica de sesión
-      setInterval(() => {
-        const isLoggedIn = localStorage.getItem('loggedIn');
-        const userRole = localStorage.getItem('userRole');
-        const userYear = localStorage.getItem('userYear');
-
-        if (isLoggedIn !== 'true' || userRole !== 'estudiante' || userYear !== '5') {
-          console.log('Sesión comprometida, cerrando...');
-          redirectToLogin('Sesión inválida detectada');
+      setInterval(async () => {
+        const sessionData = await SessionManager.verificarSesion();
+        if (!sessionData || sessionData.year !== CURRENT_YEAR) {
+          showSecurityWarning('Sesión inválida detectada');
+          setTimeout(() => {
+            window.location.href = 'login.html';
+          }, 2000);
         }
-      }, 10000); // Verificar cada 10 segundos
+      }, 30000); // Cada 30 segundos
 
-      // Prevenir selección de texto
-      document.addEventListener('selectstart', function(e) {
-        e.preventDefault();
-      });
-
-      // Prevenir arrastrar elementos
-      document.addEventListener('dragstart', function(e) {
-        e.preventDefault();
-      });
-
-      // Detectar cambios de ventana/pestaña
-      document.addEventListener('visibilitychange', function() {
-        if (document.hidden) {
-          console.log('Usuario cambió de pestaña');
-        } else {
-          console.log('Usuario regresó a la pestaña');
-          // Verificar sesión al regresar
-          checkAccess();
-        }
-      });
-
-      // Prevenir zoom excesivo
-      document.addEventListener('wheel', function(e) {
-        if (e.ctrlKey) {
-          e.preventDefault();
-        }
-      });
-
-      // Detectar cambios de tamaño de ventana sospechosos
-      window.addEventListener('resize', function() {
-        const minWidth = 320;
-        const minHeight = 240;
-        
-        if (window.innerWidth < minWidth || window.innerHeight < minHeight) {
-          console.log('Tamaño de ventana sospechoso detectado');
+      // Detectar cambios de visibilidad
+      document.addEventListener('visibilitychange', async function() {
+        if (!document.hidden) {
+          const sessionData = await SessionManager.verificarSesion();
+          if (!sessionData || sessionData.year !== CURRENT_YEAR) {
+            window.location.href = 'login.html';
+          }
         }
       });
     }
 
-    // Bloquear teclas de desarrollador y atajos peligrosos
+    // ============================================
+    // MOSTRAR ADVERTENCIA DE SEGURIDAD
+    // ============================================
+    function showSecurityWarning(message) {
+      const warningOverlay = document.getElementById('securityWarning');
+      warningOverlay.style.display = 'flex';
+      
+      if (message) {
+        const warningContent = warningOverlay.querySelector('.warning-content p');
+        warningContent.textContent = message;
+      }
+    }
+
+    // ============================================
+    // PREVENIR NAVEGACIÓN CON BOTONES DEL NAVEGADOR
+    // ============================================
+    window.addEventListener('popstate', function(event) {
+      history.pushState(null, null, location.href);
+      showSecurityWarning('No puedes salir de tu año asignado');
+      setTimeout(() => {
+        document.getElementById('securityWarning').style.display = 'none';
+      }, 2000);
+    });
+
+    history.pushState(null, null, location.href);
+
+    // ============================================
+    // BLOQUEAR TECLAS DE DESARROLLADOR
+    // ============================================
     document.addEventListener('keydown', function(event) {
-      // Lista de combinaciones bloqueadas
       const blockedKeys = [
-        // Herramientas de desarrollador
         { key: 'F12' },
         { key: 'I', ctrl: true, shift: true },
         { key: 'C', ctrl: true, shift: true },
         { key: 'J', ctrl: true, shift: true },
         { key: 'U', ctrl: true },
-        // Otras combinaciones
-        { key: 'S', ctrl: true }, // Guardar
-        { key: 'A', ctrl: true }, // Seleccionar todo
-        { key: 'P', ctrl: true }, // Imprimir
-        { key: 'F', ctrl: true }, // Buscar
-        { key: 'R', ctrl: true }, // Recargar
-        { key: 'F5' }, // Recargar
+        { key: 'S', ctrl: true },
+        { key: 'P', ctrl: true },
       ];
 
       const currentKey = {
         key: event.key,
         ctrl: event.ctrlKey,
-        shift: event.shiftKey,
-        alt: event.altKey
+        shift: event.shiftKey
       };
 
       const isBlocked = blockedKeys.some(blocked => {
         return blocked.key === currentKey.key &&
                (blocked.ctrl === undefined || blocked.ctrl === currentKey.ctrl) &&
-               (blocked.shift === undefined || blocked.shift === currentKey.shift) &&
-               (blocked.alt === undefined || blocked.alt === currentKey.alt);
+               (blocked.shift === undefined || blocked.shift === currentKey.shift);
       });
 
       if (isBlocked) {
         event.preventDefault();
-        event.stopPropagation();
-        console.log('Tecla bloqueada:', currentKey);
         
-        // Mostrar advertencia para F12 y herramientas de desarrollador
-        if (event.key === 'F12' || 
-            (event.ctrlKey && event.shiftKey && ['I', 'C', 'J'].includes(event.key))) {
+        if (event.key === 'F12' || (event.ctrlKey && event.shiftKey && ['I', 'C', 'J'].includes(event.key))) {
           showSecurityWarning('Acceso a herramientas de desarrollador bloqueado');
           setTimeout(() => {
             document.getElementById('securityWarning').style.display = 'none';
@@ -1105,12 +979,12 @@
       }
     });
 
-    // Bloquear clic derecho
+    // ============================================
+    // BLOQUEAR CLIC DERECHO
+    // ============================================
     document.addEventListener('contextmenu', function(event) {
       event.preventDefault();
-      console.log('Clic derecho bloqueado');
       
-      // Mostrar advertencia ocasional
       if (Math.random() < 0.3) {
         showSecurityWarning('Clic derecho deshabilitado por seguridad');
         setTimeout(() => {
@@ -1121,14 +995,46 @@
       return false;
     });
 
-    // Detectar intentos de manipulación del DOM
+    // ============================================
+    // DETECTAR HERRAMIENTAS DE DESARROLLADOR
+    // ============================================
+    let devtools = { open: false };
+    
+    setInterval(() => {
+      if (window.outerHeight - window.innerHeight > 200 || 
+          window.outerWidth - window.innerWidth > 200) {
+        if (!devtools.open) {
+          devtools.open = true;
+          console.clear();
+          showSecurityWarning('Herramientas de desarrollador detectadas');
+          setTimeout(() => {
+            document.getElementById('securityWarning').style.display = 'none';
+          }, 3000);
+        }
+      } else {
+        devtools.open = false;
+      }
+    }, 1000);
+
+    // ============================================
+    // PREVENIR SELECCIÓN Y ARRASTRE
+    // ============================================
+    document.addEventListener('selectstart', function(e) {
+      e.preventDefault();
+    });
+
+    document.addEventListener('dragstart', function(e) {
+      e.preventDefault();
+    });
+
+    // ============================================
+    // DETECTAR MANIPULACIÓN DEL DOM
+    // ============================================
     const observer = new MutationObserver(function(mutations) {
       mutations.forEach(function(mutation) {
         if (mutation.type === 'childList') {
-          // Verificar si se agregaron elementos sospechosos
           mutation.addedNodes.forEach(function(node) {
             if (node.nodeType === Node.ELEMENT_NODE) {
-              // Detectar scripts inyectados
               if (node.tagName === 'SCRIPT' && !node.hasAttribute('data-allowed')) {
                 console.log('Script no autorizado detectado');
                 node.remove();
@@ -1139,54 +1045,25 @@
       });
     });
 
-    // Observar cambios en el documento
     observer.observe(document, {
       childList: true,
       subtree: true
     });
 
-    // Protección contra inyección de código
-    window.addEventListener('error', function(event) {
-      if (event.error && event.error.stack) {
-        console.log('Error detectado:', event.error.message);
-        // No mostrar errores al usuario por seguridad
-        event.preventDefault();
-      }
-    });
-
-    // Limpiar consola periódicamente
+    // ============================================
+    // LIMPIAR CONSOLA PERIÓDICAMENTE
+    // ============================================
     setInterval(() => {
       if (typeof console !== 'undefined' && console.clear) {
         console.clear();
       }
-    }, 30000); // Cada 30 segundos
+    }, 30000);
 
-    // Verificación de integridad de elementos críticos
-    function verifyPageIntegrity() {
-      const criticalElements = [
-        '#studentName',
-        '#studentAvatar',
-        '.logout-btn',
-        '#subjectsGrid'
-      ];
-
-      criticalElements.forEach(selector => {
-        const element = document.querySelector(selector);
-        if (!element) {
-          console.log('Elemento crítico faltante:', selector);
-          // Recargar página si falta un elemento crítico
-          location.reload();
-        }
-      });
-    }
-
-    // Verificar integridad cada minuto
-    setInterval(verifyPageIntegrity, 60000);
-
-    // Protección final: Verificar que el script no ha sido modificado
+    // ============================================
+    // PROTECCIÓN DE LOGS SENSIBLES
+    // ============================================
     const originalConsoleLog = console.log;
     console.log = function(...args) {
-      // Filtrar logs sensibles
       const sensitivePatterns = ['password', 'token', 'session', 'auth'];
       const logString = args.join(' ').toLowerCase();
       
@@ -1195,50 +1072,13 @@
       }
     };
 
-    // Mensaje de seguridad en consola
-    console.log('%c🔒 SISTEMA EDUCATIVO SEGURO', 
+    // ============================================
+    // MENSAJE DE SEGURIDAD EN CONSOLA
+    // ============================================
+    console.log('%c🔒 SISTEMA EDUCATIVO SEGURO - ' + CURRENT_YEAR + '° AÑO', 
       'color: #e53e3e; font-size: 20px; font-weight: bold;');
     console.log('%cEste sistema está protegido. El acceso no autorizado está prohibido.', 
       'color: #d69e2e; font-size: 14px;');
-    
-    // ===== FUNCIONES UTILITARIAS =====
-    
-    // Función para formatear fechas en español
-    function formatDateSpanish(date) {
-      const months = [
-        'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
-        'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
-      ];
-      
-      const day = date.getDate();
-      const month = months[date.getMonth()];
-      const year = date.getFullYear();
-      
-      return `${day} de ${month} de ${year}`;
-    }
-
-    // Función para generar IDs únicos
-    function generateUniqueId() {
-      return 'id_' + Math.random().toString(36).substr(2, 16);
-    }
-
-    // Función para sanitizar texto
-    function sanitizeText(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    }
-
-    // Logging seguro para debugging
-    function secureLog(message, data = null) {
-      if (localStorage.getItem('debugMode') === 'true') {
-        console.log(`[${new Date().toISOString()}] ${message}`, data);
-      }
-    }
-
-    // Inicialización final
-    secureLog('Sistema de 5° Año inicializado correctamente');
-    
   </script>
 </body>
 </html>

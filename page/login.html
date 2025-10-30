@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
   <style>
     body {
       background-color: white;
@@ -29,7 +31,6 @@
       background: white;
     }
 
-    /* PANEL IZQUIERDO - DISEÑO ORIGINAL */
     .info-section {
       flex: 1;
       padding: 30px 40px;
@@ -85,7 +86,6 @@
       border-radius: 3px;
     }
 
-    /* PANEL DERECHO - MEJORADO */
     .login-box {
       flex: 1;
       max-width: 450px;
@@ -264,6 +264,12 @@
       border: 1px solid #c3e6cb;
     }
 
+    .alert-info {
+      background-color: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+
     @media (max-width: 900px) {
       .login-container {
         flex-direction: column;
@@ -294,12 +300,25 @@
         grid-template-columns: 1fr;
       }
     }
+
+    .loader {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #04294e;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
   <div class="login-container">
     
-    <!-- PANEL IZQUIERDO - DISEÑO ORIGINAL -->
     <div class="info-section">
       <div class="info-block">
         <img src="descarga (3).jpg" alt="Dante Alighieri Retrato" />
@@ -326,7 +345,6 @@
       </div>
     </div>
 
-    <!-- PANEL DERECHO - MEJORADO -->
     <div class="login-box">
       <h2>Iniciar Sesión</h2>
       
@@ -385,13 +403,19 @@
   </div>
 
   <script>
+    // ============================================
+    // CONFIGURACIÓN DE SUPABASE
+    // ============================================
+    const SUPABASE_URL = 'https://zcuodmndmrrvamyvgczm.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpjdW9kbW5kbXJydmFteXZnY3ptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIzNTA1ODMsImV4cCI6MjA2NzkyNjU4M30.l0XJgelYCQQ8sQyhL3XsY_4FOLGu6DwyZQ7PiocyLEE';
+    
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
     let selectedRole = null;
     let selectedYear = null;
 
-    // Limpiar sesión al cargar
     document.addEventListener('DOMContentLoaded', function() {
-      localStorage.clear();
-      console.log('Login cargado - sesión limpia');
+      console.log('Login cargado - Sistema de sesiones simultáneas activo');
     });
 
     // Selección de rol
@@ -417,16 +441,19 @@
       option.addEventListener('click', function() {
         document.querySelectorAll('.year-option').forEach(opt => opt.classList.remove('active'));
         this.classList.add('active');
-        selectedYear = this.dataset.year;
+        selectedYear = parseInt(this.dataset.year);
       });
     });
 
     // Formulario de login
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
       e.preventDefault();
 
       const username = document.getElementById('usuario').value.trim();
       const password = document.getElementById('password').value.trim();
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+
+      console.log('Intentando login:', { username, selectedRole, selectedYear });
 
       // Validaciones
       if (!selectedRole) {
@@ -444,34 +471,107 @@
         return;
       }
 
-      if (password.length < 3) {
-        showAlert('Contraseña incorrecta', 'danger');
-        return;
-      }
+      // Deshabilitar botón y mostrar loading
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<div class="loader"></div> Verificando...';
 
-      // Login exitoso
-      showAlert('Iniciando sesión...', 'success');
+      try {
+        // PASO 1: Verificar credenciales
+        let query = supabase
+          .from('usuarios')
+          .select('*')
+          .eq('username', username)
+          .eq('password', password)
+          .eq('role', selectedRole);
 
-      // Guardar datos
-      localStorage.setItem('loggedIn', 'true');
-      localStorage.setItem('userRole', selectedRole);
-      localStorage.setItem('userName', username);
-      localStorage.setItem('userId', Date.now().toString());
-
-      if (selectedRole === 'estudiante') {
-        localStorage.setItem('userYear', selectedYear);
-      }
-
-      // Redirigir
-      setTimeout(() => {
         if (selectedRole === 'estudiante') {
-          window.location.href = `${selectedYear} año.html`;
-        } else if (selectedRole === 'docente') {
-          window.location.href = 'Profesores.html';
-        } else if (selectedRole === 'preceptor') {
-          window.location.href = 'preceptoria.html';
+          query = query.eq('year', selectedYear);
         }
-      }, 1000);
+
+        const { data: userData, error: userError } = await query.single();
+
+        if (userError || !userData) {
+          console.error('Error de autenticación:', userError);
+          showAlert('Usuario o contraseña incorrectos', 'danger');
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Iniciar Sesión';
+          return;
+        }
+
+        console.log('Usuario autenticado:', userData);
+
+        // PASO 2: Crear sesión en Supabase
+        const { data: sessionData, error: sessionError } = await supabase
+          .rpc('crear_sesion', { 
+            p_usuario_id: userData.id, 
+            p_duracion_horas: 8 
+          });
+
+        if (sessionError) {
+          console.error('Error al crear sesión:', sessionError);
+          showAlert('Error al iniciar sesión. Intenta nuevamente.', 'danger');
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Iniciar Sesión';
+          return;
+        }
+
+        // sessionData debería ser un array con un objeto
+        const session = Array.isArray(sessionData) ? sessionData[0] : sessionData;
+        
+        if (!session || !session.session_token) {
+          console.error('Token de sesión no válido:', session);
+          showAlert('Error al crear sesión', 'danger');
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Iniciar Sesión';
+          return;
+        }
+
+        console.log('Sesión creada:', session);
+
+        // PASO 3: Guardar en sessionStorage
+        sessionStorage.clear();
+        sessionStorage.setItem('sessionToken', session.session_token);
+        sessionStorage.setItem('sessionExpires', session.expires_at);
+        sessionStorage.setItem('loggedIn', 'true');
+        sessionStorage.setItem('userId', userData.id);
+        sessionStorage.setItem('userName', userData.username);
+        sessionStorage.setItem('userRole', userData.role);
+        
+        if (userData.role === 'estudiante') {
+          sessionStorage.setItem('userYear', userData.year);
+          sessionStorage.setItem('nombreCompleto', userData.nombre_completo || '');
+          sessionStorage.setItem('dni', userData.dni || '');
+          sessionStorage.setItem('direccion', userData.direccion || '');
+          sessionStorage.setItem('tutores', userData.tutores || '');
+          sessionStorage.setItem('email', userData.email || '');
+          sessionStorage.setItem('telefono', userData.telefono || '');
+        }
+
+        showAlert('¡Bienvenido! Iniciando sesión...', 'success');
+
+        console.log('Datos guardados en sessionStorage:', {
+          token: session.session_token,
+          userId: userData.id,
+          role: userData.role
+        });
+
+        // PASO 4: Redirigir según rol
+        setTimeout(() => {
+          if (userData.role === 'estudiante') {
+            window.location.href = `${userData.year} año.html`;
+          } else if (userData.role === 'docente') {
+            window.location.href = 'Profesores.html';
+          } else if (userData.role === 'preceptor') {
+            window.location.href = 'preceptoria.html';
+          }
+        }, 1000);
+
+      } catch (err) {
+        console.error('Error crítico en login:', err);
+        showAlert('Error inesperado. Por favor intenta nuevamente.', 'danger');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Iniciar Sesión';
+      }
     });
 
     function showAlert(message, type) {
@@ -482,7 +582,7 @@
       if (type === 'danger') {
         setTimeout(() => {
           alert.classList.remove('show');
-        }, 3000);
+        }, 4000);
       }
     }
 
@@ -503,4 +603,3 @@
   </script>
 </body>
 </html>
-

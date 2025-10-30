@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Registrar Estudiante - Colegio Dante Alighieri</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  
+  <style>
+    :root {
+      --primary-color: #1a365d;
+      --secondary-color: #2d3748;
+      --accent-color: #667eea;
+      --success-color: #38a169;
+      --warning-color: #d69e2e;
+      --danger-color: #e53e3e;
+      --text-light: #f7fafc;
+      --text-dark: #2d3748;
+      --bg-light: #f8f9fa;
+      --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --shadow: 0 10px 25px rgba(0,0,0,0.1);
+      --shadow-hover: 0 15px 35px rgba(0,0,0,0.2);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      background: var(--bg-light);
+      color: var(--text-dark);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Header */
+    .header {
+      position: fixed;
+      width: 100%;
+      background: rgba(26, 54, 93, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      top: 0;
+      left: 0;
+      z-index: 1030;
+      box-shadow: var(--shadow);
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo-img {
+      height: 60px;
+      width: auto;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+    }
+
+    .logo-text {
+      color: var(--text-light);
+    }
+
+    .logo-text h1 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .logo-text p {
+      font-size: 0.85rem;
+      opacity: 0.8;
+      margin: 0;
+    }
+
+    .back-btn {
+      background: linear-gradient(135deg, #3182ce, #2c5282);
+      border: none;
+      padding: 0.75rem 1.5rem;
+      color: white;
+      border-radius: 25px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+
+    .back-btn:hover {
+      background: linear-gradient(135deg, #2c5282, #3182ce);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(49, 130, 206, 0.4);
+    }
+
+    /* Main Content */
+    .main-content {
+      padding-top: 100px;
+      min-height: 100vh;
+      padding-bottom: 3rem;
+    }
+
+    .page-header {
+      background: var(--bg-gradient);
+      padding: 3rem 0;
+      margin-bottom: 3rem;
+      color: white;
+      text-align: center;
+    }
+
+    .page-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .page-subtitle {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
+    /* Form Container */
+    .form-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .form-card {
+      background: white;
+      border-radius: 20px;
+      padding: 3rem;
+      box-shadow: var(--shadow);
+      animation: slideInUp 0.6s ease forwards;
+    }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .form-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--bg-light);
+    }
+
+    .form-icon {
+      width: 60px;
+      height: 60px;
+      background: var(--bg-gradient);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.8rem;
+    }
+
+    .form-header-text h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin: 0;
+    }
+
+    .form-header-text p {
+      color: var(--text-dark);
+      opacity: 0.7;
+      margin: 0;
+    }
+
+    /* Form Groups */
+    .form-section {
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-title i {
+      color: var(--accent-color);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .required {
+      color: var(--danger-color);
+    }
+
+    .form-control {
+      border-radius: 10px;
+      border: 2px solid #e2e8f0;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .form-control:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      outline: none;
+    }
+
+    .form-control:disabled {
+      background: #f7fafc;
+      cursor: not-allowed;
+    }
+
+    .form-select {
+      border-radius: 10px;
+      border: 2px solid #e2e8f0;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .form-select:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      outline: none;
+    }
+
+    /* Info Box */
+    .info-box {
+      background: #e6f3ff;
+      border-left: 4px solid var(--accent-color);
+      padding: 1rem 1.5rem;
+      border-radius: 10px;
+      margin-bottom: 2rem;
+    }
+
+    .info-box i {
+      color: var(--accent-color);
+      margin-right: 0.5rem;
+    }
+
+    .info-box strong {
+      color: var(--primary-color);
+    }
+
+    /* Buttons */
+    .btn-container {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary-custom {
+      background: var(--bg-gradient);
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 25px;
+      font-weight: 600;
+      color: white;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.1rem;
+    }
+
+    .btn-primary-custom:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-primary-custom:disabled {
+      background: #cbd5e0;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary-custom {
+      background: #e2e8f0;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 25px;
+      font-weight: 600;
+      color: var(--text-dark);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.1rem;
+    }
+
+    .btn-secondary-custom:hover {
+      background: #cbd5e0;
+      transform: translateY(-2px);
+    }
+
+    /* Alerts */
+    .alert-custom {
+      padding: 1rem 1.5rem;
+      border-radius: 10px;
+      margin-bottom: 1.5rem;
+      display: none;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .alert-custom.show {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .alert-success {
+      background-color: #c6f6d5;
+      color: #22543d;
+      border-left: 4px solid var(--success-color);
+    }
+
+    .alert-danger {
+      background-color: #fed7d7;
+      color: #742a2a;
+      border-left: 4px solid var(--danger-color);
+    }
+
+    .alert-info {
+      background-color: #bee3f8;
+      color: #2c5282;
+      border-left: 4px solid #3182ce;
+    }
+
+    /* Loading Spinner */
+    .loading-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-left: 3px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Username Preview */
+    .username-preview {
+      background: #f7fafc;
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      margin-top: 0.5rem;
+      border: 2px solid #e2e8f0;
+      font-family: 'Courier New', monospace;
+      font-weight: 600;
+      color: var(--accent-color);
+    }
+
+    .username-preview i {
+      color: var(--success-color);
+      margin-right: 0.5rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .page-title {
+        font-size: 2rem;
+      }
+
+      .form-card {
+        padding: 2rem 1.5rem;
+      }
+
+      .btn-container {
+        flex-direction: column;
+      }
+
+      .btn-primary-custom,
+      .btn-secondary-custom {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .header-content {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+
+    /* Security Warning */
+    .security-warning {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      color: white;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .warning-content {
+      background: var(--danger-color);
+      padding: 2rem;
+      border-radius: 16px;
+      max-width: 400px;
+    }
+
+    .warning-content i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Security Warning -->
+  <div class="security-warning" id="securityWarning">
+    <div class="warning-content">
+      <i class="fas fa-exclamation-triangle"></i>
+      <h3>¡Acceso Restringido!</h3>
+      <p>Esta página es exclusiva para preceptores. Serás redirigido.</p>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div class="logo-section">
+        <img src="OX4SDh2IwP.png" alt="Logo Colegio Dante Alighieri" class="logo-img" />
+        <div class="logo-text">
+          <h1>Registro de Estudiantes</h1>
+          <p>Panel Administrativo</p>
+        </div>
+      </div>
+      <a href="preceptoria.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+        Volver al Panel
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="page-header">
+      <h1 class="page-title">Registrar Nuevo Estudiante</h1>
+      <p class="page-subtitle">Complete todos los campos para crear una cuenta de estudiante</p>
+    </div>
+
+    <div class="form-container">
+      <div class="form-card">
+        
+        <!-- Alert Message -->
+        <div class="alert-custom" id="alertMessage"></div>
+
+        <!-- Form Header -->
+        <div class="form-header">
+          <div class="form-icon">
+            <i class="fas fa-user-plus"></i>
+          </div>
+          <div class="form-header-text">
+            <h2>Datos del Estudiante</h2>
+            <p>Todos los campos son obligatorios</p>
+          </div>
+        </div>
+
+        <!-- Info Box -->
+        <div class="info-box">
+          <i class="fas fa-info-circle"></i>
+          <strong>Información:</strong> El usuario se generará automáticamente desde el nombre completo. 
+          La contraseña inicial será <strong>123</strong> (el estudiante podrá cambiarla después del primer ingreso).
+        </div>
+
+        <!-- Registration Form -->
+        <form id="registroForm">
+          
+          <!-- Sección: Información Personal -->
+          <div class="form-section">
+            <h3 class="section-title">
+              <i class="fas fa-user"></i>
+              Información Personal
+            </h3>
+            
+            <div class="row">
+              <div class="col-md-8">
+                <div class="form-group">
+                  <label class="form-label">
+                    Nombre Completo <span class="required">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="nombreCompleto" 
+                    placeholder="Ej: Juan Pérez García"
+                    required
+                  />
+                  <div class="username-preview" id="usernamePreview" style="display: none;">
+                    <i class="fas fa-check-circle"></i>
+                    Usuario generado: <span id="generatedUsername"></span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label">
+                    DNI <span class="required">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="dni" 
+                    placeholder="Ej: 45123456"
+                    pattern="[0-9]{7,8}"
+                    maxlength="8"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-8">
+                <div class="form-group">
+                  <label class="form-label">
+                    Email <span class="required">*</span>
+                  </label>
+                  <input 
+                    type="email" 
+                    class="form-control" 
+                    id="email" 
+                    placeholder="Ej: juan.perez@estudiante.dante.edu.ar"
+                    required
+                  />
+                </div>
+              </div>
+              
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label">
+                    Teléfono <span class="required">*</span>
+                  </label>
+                  <input 
+                    type="tel" 
+                    class="form-control" 
+                    id="telefono" 
+                    placeholder="Ej: 387-5551234"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sección: Información Académica -->
+          <div class="form-section">
+            <h3 class="section-title">
+              <i class="fas fa-graduation-cap"></i>
+              Información Académica
+            </h3>
+            
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label class="form-label">
+                    Año <span class="required">*</span>
+                  </label>
+                  <select class="form-select" id="year" required>
+                    <option value="">Seleccionar año</option>
+                    <option value="1">1° Año</option>
+                    <option value="2">2° Año</option>
+                    <option value="3">3° Año</option>
+                    <option value="4">4° Año</option>
+                    <option value="5">5° Año</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sección: Información de Contacto -->
+          <div class="form-section">
+            <h3 class="section-title">
+              <i class="fas fa-home"></i>
+              Información de Domicilio
+            </h3>
+            
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label class="form-label">
+                    Dirección Completa <span class="required">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="direccion" 
+                    placeholder="Ej: Av. Belgrano 1234, Salta Capital"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sección: Tutores -->
+          <div class="form-section">
+            <h3 class="section-title">
+              <i class="fas fa-users"></i>
+              Información de Tutores
+            </h3>
+            
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label class="form-label">
+                    Tutores / Padres <span class="required">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="tutores" 
+                    placeholder="Ej: Roberto Pérez / María García"
+                    required
+                  />
+                  <small class="text-muted">Separar con " / " si son dos tutores</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sección: Credenciales -->
+          <div class="form-section">
+            <h3 class="section-title">
+              <i class="fas fa-key"></i>
+              Credenciales de Acceso
+            </h3>
+            
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label">
+                    Usuario (generado automáticamente)
+                  </label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="username" 
+                    readonly
+                    disabled
+                    placeholder="Se generará del nombre completo"
+                  />
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label">
+                    Contraseña Inicial
+                  </label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="password" 
+                    value="123"
+                    readonly
+                    disabled
+                  />
+                  <small class="text-muted">Contraseña por defecto: 123</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Buttons -->
+          <div class="btn-container">
+            <button type="submit" class="btn-primary-custom" id="submitBtn">
+              <i class="fas fa-save"></i>
+              Registrar Estudiante
+            </button>
+            <button type="button" class="btn-secondary-custom" onclick="limpiarFormulario()">
+              <i class="fas fa-eraser"></i>
+              Limpiar Formulario
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="session-validator.js"></script>
+  <script>
+    // ============================================
+    // CONFIGURACIÓN DE SUPABASE
+    // ============================================
+    const SUPABASE_URL = 'https://zcuodmndmrrvamyvgczm.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpjdW9kbW5kbXJydmFteXZnY3ptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIzNTA1ODMsImV4cCI6MjA2NzkyNjU4M30.l0XJgelYCQQ8sQyhL3XsY_4FOLGu6DwyZQ7PiocyLEE';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // ============================================
+    // VERIFICACIÓN DE SESIÓN
+    // ============================================
+    document.addEventListener('DOMContentLoaded', async function() {
+      // Verificar si existe SessionManager
+      if (typeof SessionManager !== 'undefined') {
+        const sessionData = await SessionManager.verificarSesion();
+        if (!sessionData) return;
+        if (!SessionManager.verificarPermiso(['preceptor'])) return;
+      } else {
+        // Fallback a localStorage
+        checkAccess();
+      }
+
+      initializeForm();
+    });
+
+    function checkAccess() {
+      const isLoggedIn = localStorage.getItem('loggedIn');
+      const userRole = localStorage.getItem('userRole');
+
+      if (isLoggedIn !== 'true' || userRole !== 'preceptor') {
+        showSecurityWarning();
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 3000);
+      }
+    }
+
+    function showSecurityWarning() {
+      document.getElementById('securityWarning').style.display = 'flex';
+    }
+
+    // ============================================
+    // GENERACIÓN AUTOMÁTICA DE USERNAME
+    // ============================================
+    function initializeForm() {
+      const nombreInput = document.getElementById('nombreCompleto');
+      const usernameInput = document.getElementById('username');
+      const usernamePreview = document.getElementById('usernamePreview');
+      const generatedUsername = document.getElementById('generatedUsername');
+
+      nombreInput.addEventListener('input', function() {
+        const nombre = this.value.trim();
+        
+        if (nombre.length > 0) {
+          const username = nombre
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z\s]/g, '')
+            .trim()
+            .replace(/\s+/g, '.');
+
+          usernameInput.value = username;
+          generatedUsername.textContent = username;
+          usernamePreview.style.display = 'block';
+        } else {
+          usernameInput.value = '';
+          usernamePreview.style.display = 'none';
+        }
+      });
+
+      document.getElementById('dni').addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+      });
+
+      setTimeout(() => {
+        document.getElementById('nombreCompleto').focus();
+      }, 500);
+    }
+
+    // ============================================
+    // ENVÍO DEL FORMULARIO
+    // ============================================
+    document.getElementById('registroForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const submitBtn = document.getElementById('submitBtn');
+      const originalBtnContent = submitBtn.innerHTML;
+
+      const estudiante = {
+        username: document.getElementById('username').value.trim(),
+        password: '123',
+        role: 'estudiante',
+        year: parseInt(document.getElementById('year').value),
+        nombre_completo: document.getElementById('nombreCompleto').value.trim(),
+        dni: document.getElementById('dni').value.trim(),
+        direccion: document.getElementById('direccion').value.trim(),
+        tutores: document.getElementById('tutores').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        telefono: document.getElementById('telefono').value.trim(),
+        registrado_por: typeof SessionManager !== 'undefined' 
+          ? SessionManager.obtenerUsuarioActual().username 
+          : localStorage.getItem('userName') || 'Preceptor'
+      };
+
+      // Validaciones
+      if (!estudiante.username) {
+        showAlert('Por favor ingrese un nombre completo válido', 'danger');
+        return;
+      }
+
+      if (estudiante.dni.length < 7 || estudiante.dni.length > 8) {
+        showAlert('El DNI debe tener 7 u 8 dígitos', 'danger');
+        return;
+      }
+
+      if (!estudiante.email.includes('@')) {
+        showAlert('Por favor ingrese un email válido', 'danger');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<div class="loading-spinner"></div> Registrando...';
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('usuarios')
+          .insert([estudiante])
+          .select();
+
+        if (error) {
+          console.error('Error de Supabase:', error);
+          
+          if (error.code === '23505') {
+            if (error.message.includes('username')) {
+              showAlert('Ya existe un estudiante con ese nombre de usuario', 'danger');
+            } else if (error.message.includes('dni')) {
+              showAlert('Ya existe un estudiante con ese DNI', 'danger');
+            } else if (error.message.includes('email')) {
+              showAlert('Ya existe un estudiante con ese email', 'danger');
+            } else {
+              showAlert('El estudiante ya existe en el sistema', 'danger');
+            }
+          } else {
+            showAlert('Error al registrar el estudiante: ' + error.message, 'danger');
+          }
+          
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnContent;
+          return;
+        }
+
+        showAlert(
+          `¡Estudiante registrado exitosamente!<br><br>
+          <strong>Credenciales generadas:</strong><br>
+          Usuario: <strong>${estudiante.username}</strong><br>
+          Contraseña: <strong>123</strong><br><br>
+          <small>Por favor, entregue estas credenciales al estudiante.</small>`,
+          'success'
+        );
+
+        setTimeout(() => {
+          limpiarFormulario();
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnContent;
+        }, 3000);
+
+      } catch (err) {
+        console.error('Error crítico:', err);
+        showAlert('Error crítico al registrar el estudiante. Intente nuevamente.', 'danger');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnContent;
+      }
+    });
+
+    // ============================================
+    // FUNCIONES AUXILIARES
+    // ============================================
+    function showAlert(message, type) {
+      const alert = document.getElementById('alertMessage');
+      alert.className = `alert-custom alert-${type} show`;
+      alert.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'danger' ? 'exclamation-circle' : 'info-circle'}"></i>
+        <div>${message}</div>
+      `;
+
+      alert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      if (type === 'danger') {
+        setTimeout(() => {
+          alert.classList.remove('show');
+        }, 5000);
+      }
+    }
+
+    function limpiarFormulario() {
+      document.getElementById('registroForm').reset();
+      document.getElementById('username').value = '';
+      document.getElementById('usernamePreview').style.display = 'none';
+      document.getElementById('alertMessage').classList.remove('show');
+      document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // ============================================
+    // VALIDACIONES EN TIEMPO REAL
+    // ============================================
+    
+    document.getElementById('email').addEventListener('blur', function() {
+      const email = this.value.trim();
+      if (email && !email.includes('@')) {
+        this.style.borderColor = 'var(--danger-color)';
+        this.style.background = '#fff5f5';
+      } else {
+        this.style.borderColor = '#e2e8f0';
+        this.style.background = 'white';
+      }
+    });
+
+    document.getElementById('dni').addEventListener('blur', function() {
+      const dni = this.value.trim();
+      if (dni && (dni.length < 7 || dni.length > 8)) {
+        this.style.borderColor = 'var(--danger-color)';
+        this.style.background = '#fff5f5';
+      } else {
+        this.style.borderColor = '#e2e8f0';
+        this.style.background = 'white';
+      }
+    });
+
+    document.getElementById('telefono').addEventListener('input', function() {
+      this.value = this.value.replace(/[^0-9\s\-()]/g, '');
+    });
+
+    document.getElementById('nombreCompleto').addEventListener('blur', function() {
+      const palabras = this.value.trim().split(' ');
+      const nombreCapitalizado = palabras.map(palabra => {
+        if (palabra.length > 0) {
+          return palabra.charAt(0).toUpperCase() + palabra.slice(1).toLowerCase();
+        }
+        return palabra;
+      }).join(' ');
+      this.value = nombreCapitalizado;
+      this.dispatchEvent(new Event('input'));
+    });
+
+    document.getElementById('tutores').addEventListener('blur', function() {
+      const tutores = this.value.trim().split('/');
+      const tutoresFormateados = tutores.map(tutor => {
+        const palabras = tutor.trim().split(' ');
+        return palabras.map(palabra => {
+          if (palabra.length > 0) {
+            return palabra.charAt(0).toUpperCase() + palabra.slice(1).toLowerCase();
+          }
+          return palabra;
+        }).join(' ');
+      }).join(' / ');
+      this.value = tutoresFormateados;
+    });
+
+    // ============================================
+    // ANIMACIONES Y UX
+    // ============================================
+    
+    const inputs = document.querySelectorAll('.form-control, .form-select');
+    inputs.forEach(input => {
+      input.addEventListener('focus', function() {
+        this.parentElement.style.transform = 'translateX(5px)';
+        this.parentElement.style.transition = 'transform 0.3s ease';
+      });
+      
+      input.addEventListener('blur', function() {
+        this.parentElement.style.transform = 'translateX(0)';
+      });
+    });
+
+    // ============================================
+    // ACCESIBILIDAD
+    // ============================================
+    
+    const camposOrdenados = [
+      'nombreCompleto', 'dni', 'email', 'telefono', 
+      'year', 'direccion', 'tutores'
+    ];
+
+    camposOrdenados.forEach((campoId, index) => {
+      const campo = document.getElementById(campoId);
+      if (campo && campo.tagName !== 'SELECT') {
+        campo.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            if (index < camposOrdenados.length - 1) {
+              document.getElementById(camposOrdenados[index + 1]).focus();
+            }
+          }
+        });
+      }
+    });
+
+    console.log('%c🔒 PÁGINA DE REGISTRO SEGURA', 
+      'color: #667eea; font-size: 20px; font-weight: bold;');
+    console.log('%cAcceso restringido solo para preceptores autorizados.', 
+      'color: #d69e2e; font-size: 14px;');
+  </script>
+</body>
+</html>

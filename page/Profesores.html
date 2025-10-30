@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       --primary-color: #1a365d;
@@ -38,6 +39,63 @@
       min-height: 100vh;
     }
 
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(26, 54, 93, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    .loading-content {
+      text-align: center;
+      color: white;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .security-warning {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(220, 38, 38, 0.95);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9998;
+    }
+
+    .warning-content {
+      text-align: center;
+      color: white;
+      padding: 2rem;
+    }
+
+    .warning-content i {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+
     .header {
       background: rgba(26, 54, 93, 0.95);
       backdrop-filter: blur(10px);
@@ -63,6 +121,24 @@
     .nav-buttons {
       display: flex;
       gap: 1rem;
+      align-items: center;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: white;
+    }
+
+    .user-avatar {
+      width: 35px;
+      height: 35px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .nav-btn {
@@ -78,6 +154,21 @@
     .nav-btn:hover {
       background: rgba(255, 255, 255, 0.2);
       color: white;
+      transform: translateY(-1px);
+    }
+
+    .logout-btn {
+      background: rgba(220, 38, 38, 0.2);
+      border: 1px solid rgba(220, 38, 38, 0.4);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .logout-btn:hover {
+      background: rgba(220, 38, 38, 0.4);
       transform: translateY(-1px);
     }
 
@@ -752,6 +843,22 @@
   </style>
 </head>
 <body>
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <h3>Verificando acceso...</h3>
+      <p>Portal Profesores</p>
+    </div>
+  </div>
+
+  <div class="security-warning" id="securityWarning">
+    <div class="warning-content">
+      <i class="fas fa-exclamation-triangle"></i>
+      <h3>¡Acceso Restringido!</h3>
+      <p>Este panel es exclusivo para docentes. Serás redirigido.</p>
+    </div>
+  </div>
+
   <header class="header">
     <div class="header-content">
       <div class="logo">
@@ -759,12 +866,18 @@
         Portal Profesores - Dante Alighieri
       </div>
       <div class="nav-buttons">
+        <div class="user-info">
+          <div class="user-avatar">
+            <i class="fas fa-chalkboard-teacher"></i>
+          </div>
+          <span id="userName">Docente</span>
+        </div>
         <a href="index.html" class="nav-btn">
           <i class="fas fa-home"></i> Inicio
         </a>
-        <a href="niveles.html" class="nav-btn">
-          <i class="fas fa-users"></i> Estudiantes
-        </a>
+        <button class="logout-btn" onclick="logout()">
+          <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+        </button>
       </div>
     </div>
   </header>
@@ -832,8 +945,8 @@
           <div class="date-selector">
             <label><strong>Fecha:</strong></label>
             <input type="date" class="date-input" id="attendanceDate" onchange="loadAttendanceTab()">
-            <button class="save-attendance" onclick="saveAttendance()">
-              <i class="fas fa-save"></i> Guardar Localmente
+            <button class="save-attendance" onclick="saveAttendanceToSupabase()">
+              <i class="fas fa-save"></i> Guardar en Base de Datos
             </button>
             <button class="send-attendance-btn" onclick="sendToPreceptoria()">
               <i class="fas fa-file-excel"></i> Enviar a Preceptoría
@@ -878,8 +991,8 @@
           </div>
           
           <div class="grades-container" id="gradesList"></div>
-          <button class="save-grades" onclick="saveGrades()">
-            <i class="fas fa-save"></i> Guardar Calificaciones
+          <button class="save-grades" onclick="saveGradesToSupabase()">
+            <i class="fas fa-save"></i> Guardar en Base de Datos
           </button>
           <button class="send-excel-btn" onclick="sendGradesToPreceptoriaExcel()">
             <i class="fas fa-file-excel"></i> Enviar Excel a Preceptoría
@@ -895,6 +1008,44 @@
   <div id="gradesCapture" class="hidden"></div>
 
   <script>
+    // ============================================
+    // SIMULADOR DE SESSION MANAGER (TEMPORAL)
+    // ============================================
+    const SessionManager = {
+      verificarSesion: async function() {
+        // Simular verificación de sesión
+        const userData = localStorage.getItem('userData');
+        if (!userData) {
+          return { id: 'temp-teacher', username: 'profesor1', role: 'docente' };
+        }
+        return JSON.parse(userData);
+      },
+      verificarPermiso: function(roles) {
+        return true; // Permitir acceso temporal
+      },
+      obtenerUsuarioActual: function() {
+        const userData = localStorage.getItem('userData');
+        if (!userData) {
+          return { id: 'temp-teacher', username: 'profesor1', role: 'docente' };
+        }
+        return JSON.parse(userData);
+      },
+      cerrarSesion: function() {
+        localStorage.removeItem('userData');
+        window.location.href = 'index.html';
+      }
+    };
+
+    // ============================================
+    // CONFIGURACIÓN DE SUPABASE
+    // ============================================
+    const SUPABASE_URL = 'https://zcuodmndmrrvamyvgczm.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpjdW9kbW5kbXJydmFteXZnY3ptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIzNTA1ODMsImV4cCI6MjA2NzkyNjU4M30.l0XJgelYCQQ8sQyhL3XsY_4FOLGu6DwyZQ7PiocyLEE';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // ============================================
+    // MATERIAS POR AÑO
+    // ============================================
     const subjectsByLevel = {
       1: [
         { name: 'Lengua y Literatura', icon: 'fas fa-book' },
@@ -967,28 +1118,133 @@
       ]
     };
 
-    const students = [];
-    for (let i = 1; i <= 25; i++) {
-      students.push({
-        id: i,
-        name: `Alumno ${i}`,
-        attendance: {},
-        grades: {},
-        gradeNames: {},
-        customAverage: {}
-      });
-    }
-
+    // ============================================
+    // VARIABLES GLOBALES
+    // ============================================
     let currentLevel = 1;
     let currentSubject = null;
     let currentYear = null;
     let showAverage = true;
+    let currentDocenteId = null;
+    let students = [];
 
-    document.addEventListener('DOMContentLoaded', function() {
-      showLevel(1);
-      document.getElementById('attendanceDate').value = new Date().toISOString().split('T')[0];
+    // ============================================
+    // VERIFICACIÓN DE SESIÓN
+    // ============================================
+    document.addEventListener('DOMContentLoaded', async function() {
+      try {
+        // Primero cargar estudiantes
+        await cargarEstudiantesDesdeSupabase();
+        
+        // Luego verificar sesión
+        const sessionData = await SessionManager.verificarSesion();
+        
+        if (!sessionData) {
+          return;
+        }
+
+        if (!SessionManager.verificarPermiso(['docente'])) {
+          return;
+        }
+
+        const usuario = SessionManager.obtenerUsuarioActual();
+        currentDocenteId = usuario.id;
+        document.getElementById('userName').textContent = usuario.username || 'Docente';
+        
+        // Inicializar interfaz después de cargar datos
+        showLevel(1);
+        document.getElementById('attendanceDate').value = new Date().toISOString().split('T')[0];
+        
+        // Ocultar pantalla de carga
+        setTimeout(() => {
+          const loadingScreen = document.getElementById('loadingScreen');
+          if (loadingScreen) {
+            loadingScreen.style.opacity = '0';
+            setTimeout(() => {
+              loadingScreen.style.display = 'none';
+            }, 500);
+          }
+        }, 1000);
+      } catch (error) {
+        console.error('Error en inicialización:', error);
+        showNotification('Error al inicializar el sistema', 'error');
+      }
     });
 
+    // ============================================
+    // FUNCIÓN DE LOGOUT
+    // ============================================
+    function logout() {
+      if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+        SessionManager.cerrarSesion();
+      }
+    }
+
+    // ============================================
+    // CARGAR ESTUDIANTES DESDE SUPABASE
+    // ============================================
+    async function cargarEstudiantesDesdeSupabase() {
+      try {
+        const { data, error } = await supabaseClient
+          .from('usuarios')
+          .select('id, nombre_completo, year')
+          .eq('role', 'estudiante')
+          .order('year', { ascending: true })
+          .order('nombre_completo', { ascending: true });
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          students = data.map(student => ({
+            id: student.id,
+            name: student.nombre_completo,
+            year: student.year,
+            attendance: {},
+            grades: {},
+            gradeNames: {},
+            customAverage: {}
+          }));
+          console.log(`Cargados ${students.length} estudiantes desde Supabase`);
+        } else {
+          // Datos de demostración si no hay estudiantes en la BD
+          cargarEstudiantesDemo();
+        }
+      } catch (error) {
+        console.error('Error cargando estudiantes:', error);
+        showNotification('Usando datos de demostración', 'info');
+        cargarEstudiantesDemo();
+      }
+    }
+
+    function cargarEstudiantesDemo() {
+      students = [];
+      const nombres = [
+        'Juan Pérez', 'María González', 'Carlos Rodríguez', 'Ana Martínez',
+        'Luis Fernández', 'Laura López', 'Pedro Sánchez', 'Sofía Ramírez',
+        'Diego Torres', 'Valentina Flores', 'Mateo Silva', 'Camila Vargas',
+        'Santiago Morales', 'Isabella Castro', 'Nicolás Ortiz', 'Lucía Herrera',
+        'Sebastián Ruiz', 'Martina Díaz', 'Benjamín Rojas', 'Emma Jiménez'
+      ];
+      
+      for (let year = 1; year <= 5; year++) {
+        for (let i = 0; i < 20; i++) {
+          students.push({
+            id: `demo-${year}-${i}`,
+            name: nombres[i] || `Estudiante ${i + 1}`,
+            year: year,
+            attendance: {},
+            grades: {},
+            gradeNames: {},
+            customAverage: {}
+          });
+        }
+      }
+      console.log(`Cargados ${students.length} estudiantes de demostración`);
+    }
+
+    // ============================================
+    // NAVEGACIÓN DE NIVELES
+    // ============================================
     function showLevel(level) {
       currentLevel = level;
       document.querySelectorAll('.level-btn').forEach(btn => btn.classList.remove('active'));
@@ -1001,6 +1257,8 @@
     function loadSubjects(level) {
       const container = document.getElementById(`subjects-${level}`);
       const subjects = subjectsByLevel[level] || [];
+      const studentsInYear = students.filter(s => s.year === level);
+      
       container.innerHTML = '';
       subjects.forEach(subject => {
         const card = document.createElement('div');
@@ -1011,7 +1269,7 @@
             <h3 class="subject-name">${subject.name}</h3>
           </div>
           <div class="subject-info">
-            <span><i class="fas fa-users"></i> 25 estudiantes</span>
+            <span><i class="fas fa-users"></i> ${studentsInYear.length} estudiantes</span>
             <span><i class="fas fa-calendar"></i> ${level}° Año</span>
           </div>
         `;
@@ -1042,12 +1300,22 @@
       document.getElementById(`${tabName}-tab`).classList.add('active');
     }
 
+    // ============================================
+    // GESTIÓN DE ASISTENCIAS
+    // ============================================
     function loadAttendanceTab() {
       const container = document.getElementById('attendanceList');
       const date = document.getElementById('attendanceDate').value;
+      const studentsInYear = students.filter(s => s.year === currentYear);
+      
       container.innerHTML = '';
       
-      students.forEach(student => {
+      if (studentsInYear.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">No hay estudiantes registrados para este año</p>';
+        return;
+      }
+      
+      studentsInYear.forEach(student => {
         const row = document.createElement('div');
         row.className = 'student-row';
         const attendanceKey = `${currentSubject}-${currentYear}-${date}`;
@@ -1057,11 +1325,11 @@
           <div class="student-name">${student.name}</div>
           <div class="attendance-controls">
             <button class="attendance-btn present ${currentAttendance === true ? 'active' : ''}" 
-                    onclick="setAttendance(${student.id}, true)">
+                    onclick="setAttendance('${student.id}', true)">
               <i class="fas fa-check"></i>
             </button>
             <button class="attendance-btn absent ${currentAttendance === false ? 'active' : ''}" 
-                    onclick="setAttendance(${student.id}, false)">
+                    onclick="setAttendance('${student.id}', false)">
               <i class="fas fa-times"></i>
             </button>
           </div>
@@ -1070,6 +1338,82 @@
       });
     }
 
+    function setAttendance(studentId, isPresent) {
+      const date = document.getElementById('attendanceDate').value;
+      const attendanceKey = `${currentSubject}-${currentYear}-${date}`;
+      const student = students.find(s => s.id === studentId);
+      if (student) student.attendance[attendanceKey] = isPresent;
+      loadAttendanceTab();
+    }
+
+    async function saveAttendanceToSupabase() {
+      try {
+        const date = document.getElementById('attendanceDate').value;
+        const attendanceKey = `${currentSubject}-${currentYear}-${date}`;
+        const studentsInYear = students.filter(s => s.year === currentYear);
+        
+        const studentsData = studentsInYear.map(s => ({
+          id: s.id,
+          name: s.name,
+          status: s.attendance[attendanceKey] === true ? 'Presente' : 
+                  s.attendance[attendanceKey] === false ? 'Ausente' : 'Sin registrar'
+        }));
+
+        const { data, error } = await supabaseClient
+          .from('asistencias')
+          .insert([{
+            subject: currentSubject,
+            year: currentYear,
+            date: date,
+            students: studentsData,
+            docente_id: currentDocenteId
+          }]);
+
+        if (error) throw error;
+
+        showNotification('Asistencia guardada en la base de datos exitosamente', 'success');
+      } catch (error) {
+        console.error('Error guardando asistencia:', error);
+        showNotification('Error al guardar asistencia en la base de datos', 'error');
+      }
+    }
+
+    function sendToPreceptoria() {
+      if (!confirm('¿Deseas enviar la asistencia a Preceptoría? Esta acción enviará el registro.')) {
+        return;
+      }
+      
+      const date = document.getElementById('attendanceDate').value;
+      const attendanceKey = `${currentSubject}-${currentYear}-${date}`;
+      const studentsInYear = students.filter(s => s.year === currentYear);
+      
+      const wb = XLSX.utils.book_new();
+      const wsData = [
+        ['REPORTE DE ASISTENCIA'],
+        ['Materia:', currentSubject],
+        ['Año:', currentYear + '°'],
+        ['Fecha:', date],
+        [''],
+        ['N°', 'Estudiante', 'Estado']
+      ];
+      
+      studentsInYear.forEach((student, index) => {
+        const status = student.attendance[attendanceKey] === true ? 'PRESENTE' : 
+                      student.attendance[attendanceKey] === false ? 'AUSENTE' : 'SIN REGISTRAR';
+        wsData.push([index + 1, student.name, status]);
+      });
+      
+      const ws = XLSX.utils.aoa_to_sheet(wsData);
+      ws['!cols'] = [{wch: 5}, {wch: 30}, {wch: 15}];
+      XLSX.utils.book_append_sheet(wb, ws, 'Asistencia');
+      XLSX.writeFile(wb, `Asistencia_${currentSubject}_${currentYear}_${date}.xlsx`);
+      
+      showNotification('Asistencia enviada a Preceptoría como Excel', 'success');
+    }
+
+    // ============================================
+    // GESTIÓN DE CALIFICACIONES
+    // ============================================
     function toggleAverageDisplay() {
       showAverage = document.getElementById('showAverageToggle').checked;
       loadGradesTab();
@@ -1077,9 +1421,15 @@
 
     function loadGradesTab() {
       const container = document.getElementById('gradesList');
+      const studentsInYear = students.filter(s => s.year === currentYear);
       container.innerHTML = '';
       
-      students.forEach(student => {
+      if (studentsInYear.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">No hay estudiantes registrados para este año</p>';
+        return;
+      }
+      
+      studentsInYear.forEach(student => {
         const gradesKey = `${currentSubject}-${currentYear}`;
         const studentGrades = student.grades[gradesKey] || [];
         const studentGradeNames = student.gradeNames[gradesKey] || [];
@@ -1096,14 +1446,14 @@
           <div class="student-name">${student.name}</div>
           <div class="grades-input-section" id="grades-${student.id}">
             ${generateGradeInputs(studentGrades, studentGradeNames, student.id)}
-            <button class="add-grade-btn" onclick="addGradeInput(${student.id})">
+            <button class="add-grade-btn" onclick="addGradeInput('${student.id}')">
               <i class="fas fa-plus"></i>
             </button>
           </div>
           <div class="average-display" id="average-${student.id}">
             ${showAverage ? `<input type="number" step="0.01" min="1" max="10" value="${displayAverage !== '--' ? displayAverage : ''}" 
                 placeholder="${calculatedAverage}" 
-                onchange="updateCustomAverage(${student.id}, this.value)"
+                onchange="updateCustomAverage('${student.id}', this.value)"
                 title="Promedio calculado: ${calculatedAverage}">` : 'N/A'}
           </div>
         `;
@@ -1122,14 +1472,14 @@
         html += `
           <div class="grade-item">
             <input type="text" class="grade-name-input" value="${name}" 
-                   onchange="updateGradeName(${studentId}, ${i}, this.value)"
+                   onchange="updateGradeName('${studentId}', ${i}, this.value)"
                    placeholder="Nombre" maxlength="15">
             <div class="grade-value-wrapper">
               <input type="number" class="grade-input" min="1" max="10" 
-                     value="${value}" onchange="updateGrade(${studentId}, ${i}, this.value)"
+                     value="${value}" onchange="updateGrade('${studentId}', ${i}, this.value)"
                      placeholder="--">
               ${i >= 2 && grades[i] !== undefined ? `
-                <button class="remove-grade-btn" onclick="removeGradeInput(${studentId}, ${i})">
+                <button class="remove-grade-btn" onclick="removeGradeInput('${studentId}', ${i})">
                   <i class="fas fa-times"></i>
                 </button>` : ''}
             </div>
@@ -1145,14 +1495,6 @@
       if (validGrades.length === 0) return '--';
       const sum = validGrades.reduce((acc, grade) => acc + parseFloat(grade), 0);
       return (sum / validGrades.length).toFixed(2);
-    }
-
-    function setAttendance(studentId, isPresent) {
-      const date = document.getElementById('attendanceDate').value;
-      const attendanceKey = `${currentSubject}-${currentYear}-${date}`;
-      const student = students.find(s => s.id === studentId);
-      if (student) student.attendance[attendanceKey] = isPresent;
-      loadAttendanceTab();
     }
 
     function updateGradeName(studentId, gradeIndex, name) {
@@ -1199,10 +1541,10 @@
         const newIndex = student.grades[gradesKey].length;
         student.grades[gradesKey].push('');
         student.gradeNames[gradesKey].push(`Nota ${newIndex + 1}`);
-        const container = document.getElementById(`grades-${studentId}`);
+        const container = document.getElementById(`grades-${student.id}`);
         container.innerHTML = `
-          ${generateGradeInputs(student.grades[gradesKey], student.gradeNames[gradesKey], studentId)}
-          <button class="add-grade-btn" onclick="addGradeInput(${studentId})">
+          ${generateGradeInputs(student.grades[gradesKey], student.gradeNames[gradesKey], student.id)}
+          <button class="add-grade-btn" onclick="addGradeInput('${student.id}')">
             <i class="fas fa-plus"></i>
           </button>
         `;
@@ -1215,17 +1557,17 @@
       if (student && student.grades[gradesKey]) {
         student.grades[gradesKey].splice(gradeIndex, 1);
         if (student.gradeNames[gradesKey]) student.gradeNames[gradesKey].splice(gradeIndex, 1);
-        const container = document.getElementById(`grades-${studentId}`);
+        const container = document.getElementById(`grades-${student.id}`);
         container.innerHTML = `
-          ${generateGradeInputs(student.grades[gradesKey], student.gradeNames[gradesKey], studentId)}
-          <button class="add-grade-btn" onclick="addGradeInput(${studentId})">
+          ${generateGradeInputs(student.grades[gradesKey], student.gradeNames[gradesKey], student.id)}
+          <button class="add-grade-btn" onclick="addGradeInput('${student.id}')">
             <i class="fas fa-plus"></i>
           </button>
         `;
         
         if (showAverage && !student.customAverage?.[gradesKey]) {
           const average = calculateAverage(student.grades[gradesKey]);
-          const avgInput = document.querySelector(`#average-${studentId} input`);
+          const avgInput = document.querySelector(`#average-${student.id} input`);
           if (avgInput) {
             avgInput.placeholder = average;
           }
@@ -1241,8 +1583,9 @@
         return;
       }
       const gradesKey = `${currentSubject}-${currentYear}`;
+      const studentsInYear = students.filter(s => s.year === currentYear);
       let appliedCount = 0;
-      students.forEach(student => {
+      studentsInYear.forEach(student => {
         if (!student.gradeNames[gradesKey]) student.gradeNames[gradesKey] = [];
         student.gradeNames[gradesKey][gradeIndex] = gradeName;
         appliedCount++;
@@ -1252,61 +1595,45 @@
       document.getElementById('globalGradeName').value = '';
     }
 
-    function saveAttendance() {
-      showNotification('Asistencia guardada localmente', 'success');
-    }
+    async function saveGradesToSupabase() {
+      try {
+        const gradesKey = `${currentSubject}-${currentYear}`;
+        const studentsInYear = students.filter(s => s.year === currentYear);
+        
+        const studentsData = studentsInYear.map(s => {
+          const studentGrades = s.grades[gradesKey] || [];
+          const studentGradeNames = s.gradeNames[gradesKey] || [];
+          const customAverage = s.customAverage?.[gradesKey];
+          const calculatedAverage = calculateAverage(studentGrades);
+          const finalAverage = customAverage !== undefined ? customAverage : calculatedAverage;
+          
+          return {
+            id: s.id,
+            name: s.name,
+            grades: studentGrades,
+            gradeNames: studentGradeNames,
+            average: finalAverage
+          };
+        });
 
-    function sendToPreceptoria() {
-      if (!confirm('¿Deseas enviar la asistencia a Preceptoría? Esta acción enviará el registro.')) {
-        return;
+        const { data, error } = await supabaseClient
+          .from('calificaciones')
+          .insert([{
+            subject: currentSubject,
+            year: currentYear,
+            date: new Date().toISOString().split('T')[0],
+            students: studentsData,
+            type: 'manual',
+            docente_id: currentDocenteId
+          }]);
+
+        if (error) throw error;
+
+        showNotification('Calificaciones guardadas en la base de datos exitosamente', 'success');
+      } catch (error) {
+        console.error('Error guardando calificaciones:', error);
+        showNotification('Error al guardar calificaciones en la base de datos', 'error');
       }
-      
-      const date = document.getElementById('attendanceDate').value;
-      const attendanceKey = `${currentSubject}-${currentYear}-${date}`;
-      
-      const wb = XLSX.utils.book_new();
-      const wsData = [
-        ['REPORTE DE ASISTENCIA'],
-        ['Materia:', currentSubject],
-        ['Año:', currentYear + '°'],
-        ['Fecha:', date],
-        [''],
-        ['N°', 'Estudiante', 'Estado']
-      ];
-      
-      students.forEach((student, index) => {
-        const status = student.attendance[attendanceKey] === true ? 'PRESENTE' : 
-                      student.attendance[attendanceKey] === false ? 'AUSENTE' : 'SIN REGISTRAR';
-        wsData.push([index + 1, student.name, status]);
-      });
-      
-      const ws = XLSX.utils.aoa_to_sheet(wsData);
-      ws['!cols'] = [{wch: 5}, {wch: 30}, {wch: 15}];
-      XLSX.utils.book_append_sheet(wb, ws, 'Asistencia');
-      XLSX.writeFile(wb, `Asistencia_${currentSubject}_${currentYear}_${date}.xlsx`);
-      
-      const attendanceData = {
-        subject: currentSubject,
-        year: currentYear,
-        date: date,
-        students: students.map(s => ({
-          id: s.id,
-          name: s.name,
-          status: s.attendance[attendanceKey] === true ? 'Presente' : 
-                  s.attendance[attendanceKey] === false ? 'Ausente' : 'Sin registrar'
-        })),
-        timestamp: new Date().toISOString()
-      };
-      
-      const records = JSON.parse(localStorage.getItem('attendanceRecords') || '[]');
-      records.push(attendanceData);
-      localStorage.setItem('attendanceRecords', JSON.stringify(records));
-      
-      showNotification('Asistencia enviada a Preceptoría como Excel', 'success');
-    }
-
-    function saveGrades() {
-      showNotification('Calificaciones guardadas exitosamente', 'success');
     }
 
     function sendGradesToPreceptoriaExcel() {
@@ -1315,9 +1642,10 @@
       }
       
       const gradesKey = `${currentSubject}-${currentYear}`;
+      const studentsInYear = students.filter(s => s.year === currentYear);
       
       let maxGrades = 0;
-      students.forEach(student => {
+      studentsInYear.forEach(student => {
         const grades = student.grades[gradesKey] || [];
         if (grades.length > maxGrades) maxGrades = grades.length;
       });
@@ -1333,8 +1661,8 @@
       
       const headers = ['N°', 'Estudiante'];
       for (let i = 0; i < maxGrades; i++) {
-        const firstStudent = students[0];
-        const gradeName = firstStudent.gradeNames[gradesKey] ? 
+        const firstStudent = studentsInYear[0];
+        const gradeName = firstStudent?.gradeNames[gradesKey] ? 
                          (firstStudent.gradeNames[gradesKey][i] || `Nota ${i+1}`) : 
                          `Nota ${i+1}`;
         headers.push(gradeName);
@@ -1344,7 +1672,7 @@
       }
       wsData.push(headers);
       
-      students.forEach((student, index) => {
+      studentsInYear.forEach((student, index) => {
         const studentGrades = student.grades[gradesKey] || [];
         const customAverage = student.customAverage?.[gradesKey];
         const calculatedAverage = calculateAverage(studentGrades);
@@ -1377,42 +1705,16 @@
       XLSX.utils.book_append_sheet(wb, ws, 'Calificaciones');
       XLSX.writeFile(wb, `Calificaciones_${currentSubject}_${currentYear}_${new Date().toISOString().split('T')[0]}.xlsx`);
       
-      const gradesData = {
-        subject: currentSubject,
-        year: currentYear,
-        date: new Date().toISOString().split('T')[0],
-        students: students.map(s => {
-          const studentGrades = s.grades[gradesKey] || [];
-          const studentGradeNames = s.gradeNames[gradesKey] || [];
-          const customAverage = s.customAverage?.[gradesKey];
-          const calculatedAverage = calculateAverage(studentGrades);
-          const finalAverage = customAverage !== undefined ? customAverage : calculatedAverage;
-          
-          return {
-            id: s.id,
-            name: s.name,
-            grades: studentGrades,
-            gradeNames: studentGradeNames,
-            average: finalAverage
-          };
-        }),
-        timestamp: new Date().toISOString(),
-        type: 'excel'
-      };
-      
-      const records = JSON.parse(localStorage.getItem('gradesRecordsExcel') || '[]');
-      records.push(gradesData);
-      localStorage.setItem('gradesRecordsExcel', JSON.stringify(records));
-      
       showNotification('Calificaciones enviadas a Preceptoría como Excel', 'success');
     }
 
     function sendGradesToPreceptoria() {
       const gradesKey = `${currentSubject}-${currentYear}`;
       const captureDiv = document.getElementById('gradesCapture');
+      const studentsInYear = students.filter(s => s.year === currentYear);
       
       let maxGrades = 0;
-      students.forEach(student => {
+      studentsInYear.forEach(student => {
         const grades = student.grades[gradesKey] || [];
         if (grades.length > maxGrades) maxGrades = grades.length;
       });
@@ -1433,8 +1735,8 @@
       `;
       
       for (let i = 0; i < maxGrades; i++) {
-        const firstStudent = students[0];
-        const gradeName = firstStudent.gradeNames[gradesKey] ? 
+        const firstStudent = studentsInYear[0];
+        const gradeName = firstStudent?.gradeNames[gradesKey] ? 
                          (firstStudent.gradeNames[gradesKey][i] || `Nota ${i+1}`) : 
                          `Nota ${i+1}`;
         tableHTML += `<th>${gradeName}</th>`;
@@ -1446,7 +1748,7 @@
       
       tableHTML += `</tr></thead><tbody>`;
       
-      students.forEach((student, index) => {
+      studentsInYear.forEach((student, index) => {
         const studentGrades = student.grades[gradesKey] || [];
         const customAverage = student.customAverage?.[gradesKey];
         const calculatedAverage = calculateAverage(studentGrades);
@@ -1486,17 +1788,6 @@
             a.click();
             URL.revokeObjectURL(url);
             
-            const gradesData = {
-              subject: currentSubject,
-              year: currentYear,
-              imageData: canvas.toDataURL('image/png'),
-              timestamp: new Date().toISOString()
-            };
-            
-            const records = JSON.parse(localStorage.getItem('gradesRecords') || '[]');
-            records.push(gradesData);
-            localStorage.setItem('gradesRecords', JSON.stringify(records));
-            
             captureDiv.style.left = '-9999px';
             captureDiv.style.position = 'absolute';
             showNotification('Calificaciones enviadas como imagen a Preceptoría', 'success');
@@ -1505,18 +1796,46 @@
       }, 100);
     }
 
+    // ============================================
+    // NOTIFICACIONES
+    // ============================================
     function showNotification(message, type = 'success') {
       const notification = document.createElement('div');
       notification.className = `notification ${type}`;
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 2rem;
+        background: ${type === 'success' ? 'var(--success-color)' : type === 'error' ? 'var(--danger-color)' : 'var(--accent-color)'};
+        color: white;
+        border-radius: 8px;
+        font-weight: 600;
+        z-index: 9999;
+        transform: translateX(400px);
+        transition: transform 0.3s ease;
+        box-shadow: var(--shadow-lg);
+      `;
       notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i> ${message}`;
       document.body.appendChild(notification);
-      setTimeout(() => notification.classList.add('show'), 100);
+      
       setTimeout(() => {
-        notification.classList.remove('show');
-        setTimeout(() => document.body.removeChild(notification), 300);
+        notification.style.transform = 'translateX(0)';
+      }, 100);
+      
+      setTimeout(() => {
+        notification.style.transform = 'translateX(400px)';
+        setTimeout(() => {
+          if (notification.parentNode) {
+            document.body.removeChild(notification);
+          }
+        }, 300);
       }, 3000);
     }
 
+    // ============================================
+    // EVENT LISTENERS
+    // ============================================
     document.addEventListener('click', function(e) {
       if (e.target === document.getElementById('studentModal')) closeModal();
     });
@@ -1524,6 +1843,49 @@
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') closeModal();
     });
+
+    window.addEventListener('popstate', function(event) {
+      history.pushState(null, null, location.href);
+    });
+
+    history.pushState(null, null, location.href);
+
+    document.addEventListener('keydown', function(event) {
+      const blockedKeys = [
+        { key: 'F12' },
+        { key: 'I', ctrl: true, shift: true },
+        { key: 'C', ctrl: true, shift: true },
+        { key: 'J', ctrl: true, shift: true },
+        { key: 'U', ctrl: true }
+      ];
+
+      const currentKey = {
+        key: event.key,
+        ctrl: event.ctrlKey,
+        shift: event.shiftKey
+      };
+
+      const isBlocked = blockedKeys.some(blocked => {
+        return blocked.key === currentKey.key &&
+               (blocked.ctrl === undefined || blocked.ctrl === currentKey.ctrl) &&
+               (blocked.shift === undefined || blocked.shift === currentKey.shift);
+      });
+
+      if (isBlocked) {
+        event.preventDefault();
+        return false;
+      }
+    });
+
+    document.addEventListener('contextmenu', function(event) {
+      event.preventDefault();
+      return false;
+    });
+
+    console.log('%c🔒 PORTAL PROFESORES SEGURO', 
+      'color: #3182ce; font-size: 20px; font-weight: bold;');
+    console.log('%cAcceso restringido solo para docentes autorizados.', 
+      'color: #d69e2e; font-size: 14px;');
   </script>
 </body>
 </html>
